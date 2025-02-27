@@ -3,9 +3,8 @@ import path from "path";
 import cookieParser from "cookie-parser";
 
 import logger from "morgan"
-import indexRouter from "./routes/index";
-import usersRouter from "./routes/users";
-import registerRouter from "./routes/register";
+import {indexRouter, loginRouter, registerRouter, usersRouter} from "./routes/routes";
+
 import connectDB from "./db";
 
 
@@ -24,6 +23,7 @@ connectDB().then(r =>
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use("/register", registerRouter);
+app.use("/login", loginRouter);
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
