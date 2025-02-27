@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "npx nodemon -x 'ts-node --log-error' -e ts src/app.ts",
     "build": "tsc",
-    "serve": "node dist/index.js"
+    "serve": "node dist/app.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
