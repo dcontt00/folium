@@ -1,12 +1,12 @@
-import express, {Request, Response} from "express"
+import express, {NextFunction, Request, Response} from "express"
 import {userModel} from "../models/models";
 import {User} from "../interfaces/user";
+import verifyToken from "../middleware/auth";
 
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', async function (req: Request, res: Response, next) {
-    console.log("test")
+router.get('/', async function (req: Request, res: Response) {
     await userModel.find({}).then((users) => {
         res.json(users);
 
@@ -18,7 +18,7 @@ router.get('/', async function (req: Request, res: Response, next) {
 });
 
 // Edit user
-router.put("/:username", async (req: Request, res: Response) => {
+router.put("/:username", verifyToken, async (req: Request, res: Response, next: NextFunction) => {
     const user: User = req.body;
     const username = req.params.username;
 
