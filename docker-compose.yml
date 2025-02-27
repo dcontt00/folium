@@ -6,3 +6,12 @@ services:
       - "27017:27017"
     volumes:
       - ./data:/data/db
+
+  backend:
+    image: backend:latest
+    build:
+      context: .
+      dockerfile: backend.dockerfile
+    container_name: backend
+    ports:
+      - "3000:3000"
