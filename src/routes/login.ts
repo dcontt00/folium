@@ -2,22 +2,21 @@ import express, {Request, Response} from "express";
 import {userModel} from "../models/models";
 import jwt from "jsonwebtoken"
 import config from "../utils/config";
+import {User} from "../interfaces/user";
 
 const router = express.Router();
 
 router.post("/", async (req: Request, res: Response) => {
     try {
         // ** Get The User Data From Body ;
-        const user = req.body;
+        const user: User = req.body;
 
         // ** destructure the information from user;
-        const {name, email, password} = user;
-        console.log(name, email, password);
 
 
         // Check if user exists
         const isUserExist = await userModel.findOne({
-            email: email,
+            email: user.email,
         });
 
         if (!isUserExist) {
@@ -30,7 +29,7 @@ router.post("/", async (req: Request, res: Response) => {
         }
 
         const isPasswordMatched =
-            isUserExist?.password === password;
+            isUserExist?.password === user.password;
 
         // Check password
         if (!isPasswordMatched) {

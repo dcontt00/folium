@@ -3,7 +3,11 @@ import path from "path";
 import cookieParser from "cookie-parser";
 
 import logger from "morgan"
-import {indexRouter, loginRouter, registerRouter, usersRouter} from "./routes/routes";
+import indexRouter from "./routes/index"
+import userRoute from "./routes/user"
+import registerRouter from "./routes/register"
+import loginRouter from "./routes/login"
+
 import connectDB from "./db";
 
 
@@ -18,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 connectDB();
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', userRoute);
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 
