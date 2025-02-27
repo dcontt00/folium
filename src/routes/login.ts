@@ -1,6 +1,7 @@
 import express, {Request, Response} from "express";
 import {userModel} from "../models/models";
 import jwt from "jsonwebtoken"
+import config from "../utils/config";
 
 const router = express.Router();
 
@@ -44,7 +45,7 @@ router.post("/", async (req: Request, res: Response) => {
         // Create JWT token
         const token = jwt.sign(
             {_id: isUserExist?._id, email: isUserExist?.email},
-            "YOUR_SECRET",
+            config.BACKEND_SECRET,
             {
                 expiresIn: "1d",
             }

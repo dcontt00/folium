@@ -1,11 +1,15 @@
 import express, {Express} from "express";
 import path from "path";
 import cookieParser from "cookie-parser";
+import {configDotenv} from "dotenv";
 
 import logger from "morgan"
 import {indexRouter, loginRouter, registerRouter, usersRouter} from "./routes/routes";
-
 import connectDB from "./db";
+
+
+// Load environment variables from .env file
+configDotenv();
 
 
 const app: Express = express();

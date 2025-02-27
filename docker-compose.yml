@@ -13,5 +13,8 @@ services:
       context: .
       dockerfile: backend.dockerfile
     container_name: backend
+    environment:
+      - MONGO_URI=mongodb://mongo-db:27017
+      - BACKEND_SECRET=secret
     ports:
       - "3000:3000"
