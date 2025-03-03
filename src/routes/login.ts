@@ -2,24 +2,20 @@ import express, {Request, Response} from "express";
 import {userModel} from "../models/models";
 import jwt from "jsonwebtoken"
 import config from "../utils/config";
-import {User} from "../interfaces/user";
 
 const router = express.Router();
 
 router.post("/", async (req: Request, res: Response) => {
     try {
         // ** Get The User Data From Body ;
-        const user: User = req.body;
-
-        // ** destructure the information from user;
-
+        const {email, password} = req.body
 
         // Check if user exists
-        const isUserExist = await userModel.findOne({
-            email: user.email,
+        const user = await userModel.findOne({
+            email: email,
         });
 
-        if (!isUserExist) {
+        if (!user) {
             res.status(404).json({
                 status: 404,
                 success: false,
@@ -29,7 +25,7 @@ router.post("/", async (req: Request, res: Response) => {
         }
 
         const isPasswordMatched =
-            isUserExist?.password === user.password;
+            user?.password === user.password;
 
         // Check password
         if (!isPasswordMatched) {
@@ -41,14 +37,22 @@ router.post("/", async (req: Request, res: Response) => {
             return;
         }
 
+        const userId = user.id
         // Create JWT token
         const token = jwt.sign(
-            {_id: isUserExist?._id, email: isUserExist?.email},
+            {userId},
             config.BACKEND_SECRET,
             {
                 expiresIn: "1d",
             }
         );
+
+        // Set the token in a cookie
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
+        });
 
         res.status(200).json({
             status: 200,
@@ -57,7 +61,7 @@ router.post("/", async (req: Request, res: Response) => {
             token: token,
         });
     } catch (e) {
-        console.error(e)
+        console.error("Error on login", e);
     }
 });
 

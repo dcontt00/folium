@@ -9,7 +9,6 @@ router.post("/", async (req: Request, res: Response) => {
         // ** Get The User Data From Body ;
         const user: User = req.body;
 
-
         // Check if email exists
         const isEmailAllReadyExist = await userModel.findOne({
             email: user.email,

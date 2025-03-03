@@ -29,3 +29,17 @@ app.use("/login", loginRouter);
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+interface UserBasicInfo {
+    id: string;
+    name: string;
+    email: string;
+}
+
+declare global {
+    namespace Express {
+        interface Request {
+            user?: UserBasicInfo | null;
+        }
+    }
+}

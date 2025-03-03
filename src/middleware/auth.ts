@@ -1,20 +1,41 @@
 import {NextFunction, Request, Response} from 'express';
-import jwt from "jsonwebtoken";
-import config from "../utils/config";
+import jwt, {JwtPayload} from "jsonwebtoken";
+import asyncHandler from "express-async-handler";
+import {userModel} from "../models/models";
 
-// Middleware to protect routes
-function verifyToken(req: Request, res: Response, next: NextFunction) {
-    const token = req.header('Authorization');
+export const authenticate = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            let token = req.cookies.jwt;
 
-    if (!token) return res.status(401).json({message: 'Access Denied'});
+            if (!token) {
+                res.status(401);
+                throw new Error("Not authorized, token not found");
+            }
 
-    try {
-        // Verify the token
-        const verified = jwt.verify(token, config.BACKEND_SECRET);
-        next();
-    } catch (err) {
-        res.status(400).json({message: 'Invalid Token'});
+            const jwtSecret = process.env.JWT_SECRET || "";
+            const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
+
+            if (!decoded || !decoded.userId) {
+                res.status(401);
+                throw new Error("Not authorized, userId not found");
+            }
+
+            const user = await userModel.findById(decoded.userId, "_id name email");
+
+            if (!user) {
+                res.status(401);
+                throw new Error("Not authorized, user not found");
+            }
+
+            const {id, name, email} = user;
+
+            req.user = {id, name, email};
+            next();
+        } catch (e) {
+            res.status(401);
+            throw new Error("Not authorized, invalid token");
+        }
     }
-}
+);
 
-export default verifyToken;
