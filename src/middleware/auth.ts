@@ -8,7 +8,8 @@ import config from "../utils/config";
 export const authenticate = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            let token = req.cookies.jwt;
+            let token: string = req.cookies.jwt;
+
 
             if (!token) {
                 res.status(401);
@@ -30,6 +31,7 @@ export const authenticate = asyncHandler(
             }
 
             const {id, name, email} = user;
+            console.log(id, name, email)
 
             req.user = {id, name, email};
             next();
