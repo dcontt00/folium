@@ -11,15 +11,15 @@ router.post("/", async (req: Request, res: Response) => {
         // ** Get The User Data From Body ;
         const user: User = req.body;
 
-        // Check if email exists TODO: Check if username exists
-        const isEmailAllReadyExist = await userModel.findOne({
-            email: user.email,
+        // Check if email or username exists
+        const existingUser = await userModel.findOne({
+            $or: [{email: user.email}, {username: user.username}],
         });
 
-        if (isEmailAllReadyExist) {
+        if (existingUser) {
             res.status(400).json({
                 status: 400,
-                message: "Email all ready in use",
+                message: "Email or username already in use",
             });
             return;
         }
