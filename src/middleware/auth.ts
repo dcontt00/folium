@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from 'express';
 import jwt, {JwtPayload} from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import {userModel} from "../models/models";
+import {AuthenticationError} from "./error";
 
 export const authenticate = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -10,7 +11,7 @@ export const authenticate = asyncHandler(
 
             if (!token) {
                 res.status(401);
-                throw new Error("Not authorized, token not found");
+                throw new AuthenticationError("Not authorized, token not found");
             }
 
             const jwtSecret = process.env.JWT_SECRET || "";
@@ -18,14 +19,14 @@ export const authenticate = asyncHandler(
 
             if (!decoded || !decoded.userId) {
                 res.status(401);
-                throw new Error("Not authorized, userId not found");
+                throw new AuthenticationError("Not authorized, userId not found");
             }
 
             const user = await userModel.findById(decoded.userId, "_id name email");
 
             if (!user) {
                 res.status(401);
-                throw new Error("Not authorized, user not found");
+                throw new AuthenticationError("Not authorized, user not found");
             }
 
             const {id, name, email} = user;
@@ -34,7 +35,7 @@ export const authenticate = asyncHandler(
             next();
         } catch (e) {
             res.status(401);
-            throw new Error("Not authorized, invalid token");
+            throw new AuthenticationError("Not authorized, invalid token");
         }
     }
 );

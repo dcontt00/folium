@@ -9,6 +9,7 @@ import registerRouter from "./routes/register"
 import loginRouter from "./routes/login"
 
 import connectDB from "./db";
+import {errorHandler} from "./middleware/error";
 
 
 const app: Express = express();
@@ -25,6 +26,7 @@ app.use('/', indexRouter);
 app.use('/user', userRoute);
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
+app.use(errorHandler)
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
