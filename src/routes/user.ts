@@ -5,7 +5,7 @@ import {authenticate} from "../middleware/auth";
 
 const router = express.Router();
 
-/* GET users listing. */
+/* TODO: Only for testing */
 router.get('/', authenticate, async function (req: Request, res: Response) {
     await userModel.find({}).then((users) => {
         res.json(users);

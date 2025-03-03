@@ -3,6 +3,7 @@ import jwt, {JwtPayload} from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import {userModel} from "../models/models";
 import {AuthenticationError} from "./error";
+import config from "../utils/config";
 
 export const authenticate = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -14,8 +15,7 @@ export const authenticate = asyncHandler(
                 throw new AuthenticationError("Not authorized, token not found");
             }
 
-            const jwtSecret = process.env.JWT_SECRET || "";
-            const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
+            const decoded = jwt.verify(token, config.JWT_SECRET) as JwtPayload;
 
             if (!decoded || !decoded.userId) {
                 res.status(401);

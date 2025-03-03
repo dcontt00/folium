@@ -7,7 +7,7 @@ let config: Config;
 configDotenv();
 
 config = {
-    BACKEND_SECRET: process.env.BACKEND_SECRET || "secret",
+    JWT_SECRET: process.env.JWT_SECRET || "secret",
     MONGODB_URI: process.env.MONGODB_URI || "mongodb://localhost:27017"
 };
 
