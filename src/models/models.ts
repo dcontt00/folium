@@ -2,13 +2,14 @@ import mongoose from "mongoose";
 import UserSchema from "./userSchema";
 import PortfolioSchema from "./portfolioSchema";
 import StyleSchema from "./styleSchema";
-import TextComponentSchema from "./portfolioComponents/textComponentSchema";
-import ButtonComponentSchema from "./portfolioComponents/buttonComponentSchema";
+import buttonComponentModel from "./portfolioComponents/buttonComponentModel";
+import textComponentModel from "./portfolioComponents/textComponentModel";
 
 const userModel = mongoose.model('User', UserSchema);
 const portfolioModel = mongoose.model('Portfolio', PortfolioSchema);
 const styleModel = mongoose.model('Style', StyleSchema);
-const textComponentModel = mongoose.model('TextComponent', TextComponentSchema);
-const buttonComponentModel = mongoose.model('ButtonComponent', ButtonComponentSchema);
+
+
+// Components
 
 export {userModel, portfolioModel, styleModel, textComponentModel, buttonComponentModel};
