@@ -9,12 +9,10 @@ const PortfolioSchema = new mongoose.Schema(
         },
         title: {
             type: String,
-            unique: true,
             required: true,
         },
         description: {
             type: String,
-            required: true,
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,
