@@ -1,5 +1,5 @@
 import express from "express";
-import {portfolioModel} from "../models/models";
+import {portfolioModel, textComponentModel} from "../models/models";
 import {authenticate} from "../middleware/auth";
 
 
@@ -19,6 +19,7 @@ router.post("/", authenticate, async (req, res) => {
         if (!req.body.url || !req.body.title) {
             throw new Error("URL and title are required");
         }
+
 
         await portfolioModel.create({
             url: req.body.url,
@@ -85,26 +86,45 @@ router.put("/:url", authenticate, async (req, res) => {
             throw new Error("User not found");
         }
 
+        const portfolio = await portfolioModel.findOne({url: req.params.url, user: user.id});
+
+        if (!portfolio) {
+            throw new Error("Portfolio not found");
+        }
+
+        const components: any[] = [];
+        if (req.body.components) {
+            for (const component of req.body.components) {
+                switch (component.type) {
+                    case "text":
+                        if (!component.text) {
+                            throw new Error("Text is required for text component")
+                        }
+                        await textComponentModel.create({
+                            index: component.index,
+                            text: component.text,
+                            portfolio_id: portfolio._id
+                        }).then((textComponent) => {
+                            console.log(textComponent)
+                            components.push(textComponent._id)
+                        })
+                }
+            }
+        }
+
         await portfolioModel.findOneAndUpdate(
             {url: req.params.url, user: user.id},
-            req.body,
+            {...req.body, components: components},
             {new: true}
         ).then((portfolio) => {
-            if (!portfolio) {
-                res.status(404).json({
-                    status: 404,
-                    success: false,
-                    message: "Portfolio not found",
-                });
-                return;
-            } else {
-                res.status(200).json({
-                    status: 200,
-                    success: true,
-                    data: portfolio,
-                });
-            }
-        });
+            res.status(200).json({
+                status: 200,
+                success: true,
+                data: portfolio,
+            });
+        })
+
+
     } catch (err: any) {
         res.status(400).json({
             status: 400,

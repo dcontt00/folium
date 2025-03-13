@@ -17,7 +17,13 @@ const PortfolioSchema = new mongoose.Schema(
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-        }
+        },
+        components: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Component",
+            },
+        ],
     },
     {timestamps: true}
 );
