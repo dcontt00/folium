@@ -79,6 +79,8 @@ router.get("/", authenticate, async (req, res) => {
 });
 
 router.put("/:url", authenticate, async (req, res) => {
+    const components: any[] = [];
+
     try {
         const user = req.user;
 
@@ -92,7 +94,6 @@ router.put("/:url", authenticate, async (req, res) => {
             throw new Error("Portfolio not found");
         }
 
-        const components: any[] = [];
         if (req.body.components) {
             for (const component of req.body.components) {
                 switch (component.type) {
@@ -123,9 +124,12 @@ router.put("/:url", authenticate, async (req, res) => {
                 data: portfolio,
             });
         })
-
-
     } catch (err: any) {
+        // Remove created components if anything goes wrong
+        for (const component of components) {
+            await textComponentModel.findByIdAndDelete(component._id)
+        }
+
         res.status(400).json({
             status: 400,
             success: false,
