@@ -9,38 +9,45 @@ const router = express.Router();
 router.post("/", authenticate, async (req, res) => {
     try {
 
-        console.log()
-
         // Get user from the request
         const user = req.user;
 
         if (!user) {
-            res.status(404).json({
-                status: 404,
-                success: false,
-                message: "User not found",
-            });
-            return;
+            throw new Error("User not found");
         }
 
-        const portfolio = await portfolioModel.create({
+        if (!req.body.url || !req.body.title) {
+            throw new Error("URL and title are required");
+        }
+
+        await portfolioModel.create({
             url: req.body.url,
             title: req.body.title,
             description: req.body.description,
             user: user.id,
-        });
+        }).then((portfolio) => {
+            res.status(201).json({
+                status: 201,
+                success: true,
+                data: portfolio,
+            });
+        })
 
-        res.status(201).json({
-            status: 201,
-            success: true,
-            data: portfolio,
-        });
     } catch (err: any) {
-        res.status(400).json({
-            status: 400,
-            success: false,
-            message: err.message,
-        });
+        if (err.code === 11000) {
+            res.status(400).json({
+                status: 400,
+                success: false,
+                message: "URL already exists",
+            });
+        } else {
+            res.status(400).json({
+                status: 400,
+                success: false,
+                message: err.message,
+            });
+        }
+
     }
 });
 
@@ -49,21 +56,18 @@ router.get("/", authenticate, async (req, res) => {
         const user = req.user;
 
         if (!user) {
-            res.status(404).json({
-                status: 404,
-                success: false,
-                message: "User not found",
-            });
-            return;
+            throw new Error("User not found");
         }
 
-        const portfolios = await portfolioModel.find({user: user.id});
-
-        res.status(200).json({
-            status: 200,
-            success: true,
-            data: portfolios,
+        await portfolioModel.find({user: user.id}).then((portfolios) => {
+            res.status(200).json({
+                status: 200,
+                success: true,
+                data: portfolios,
+            });
         });
+
+
     } catch (err: any) {
         res.status(400).json({
             status: 400,
@@ -78,33 +82,28 @@ router.put("/:url", authenticate, async (req, res) => {
         const user = req.user;
 
         if (!user) {
-            res.status(404).json({
-                status: 404,
-                success: false,
-                message: "User not found",
-            });
-            return;
+            throw new Error("User not found");
         }
 
-        const portfolio = await portfolioModel.findOneAndUpdate(
+        await portfolioModel.findOneAndUpdate(
             {url: req.params.url, user: user.id},
             req.body,
             {new: true}
-        );
-
-        if (!portfolio) {
-            res.status(404).json({
-                status: 404,
-                success: false,
-                message: "Portfolio not found",
-            });
-            return;
-        }
-
-        res.status(200).json({
-            status: 200,
-            success: true,
-            data: portfolio,
+        ).then((portfolio) => {
+            if (!portfolio) {
+                res.status(404).json({
+                    status: 404,
+                    success: false,
+                    message: "Portfolio not found",
+                });
+                return;
+            } else {
+                res.status(200).json({
+                    status: 200,
+                    success: true,
+                    data: portfolio,
+                });
+            }
         });
     } catch (err: any) {
         res.status(400).json({
