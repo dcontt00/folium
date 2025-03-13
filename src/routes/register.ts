@@ -11,51 +11,38 @@ router.post("/", async (req: Request, res: Response) => {
         // ** Get The User Data From Body ;
         const user: User = req.body;
 
-        // Check if email or username exists
-        const existingUser = await userModel.findOne({
-            $or: [{email: user.email}, {username: user.username}],
-        });
-
-        if (existingUser) {
-            res.status(400).json({
-                status: 400,
-                message: "Email or username already in use",
-            });
-            return;
-        }
-
         // Hash the password
-        bcrypt.hash(user.password, saltRounds, async (err, hash) => {
-            if (err) throw err;
-            // Create a new user
+        user.password = await bcrypt.hash(user.password, saltRounds)
 
-            user.password = hash;
-            const newUser = await userModel.create(user);
-
+        await userModel.create(user).then((user) => {
             const userResponse = {
-                name: newUser.name,
-                email: newUser.email,
-                username: newUser.username
+                name: user.name,
+                email: user.email,
+                username: user.username
             }
 
             res.status(200).json({
                 status: 201,
                 success: true,
-                message: " User created Successfully",
+                message: "User created Successfully",
                 user: userResponse,
             });
-        });
-
-
+        })
     } catch (error: any) {
-        // console the error to debug
-        console.log(error);
+        console.error("Error on register", error);
 
-        // Send the error message to the client
-        res.status(400).json({
-            status: 400,
-            message: error.message.toString(),
-        });
+        if (error.code == 11000) {
+            const keys = Object.keys(error.errorResponse.keyValue)
+            res.status(400).json({
+                status: 400,
+                message: `${keys} already exists`,
+            });
+        } else {
+            res.status(400).json({
+                status: 400,
+                message: error.message,
+            });
+        }
     }
 });
 
