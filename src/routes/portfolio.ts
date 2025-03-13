@@ -106,7 +106,6 @@ router.put("/:url", authenticate, async (req, res) => {
                             text: component.text,
                             portfolio_id: portfolio._id
                         }).then((textComponent) => {
-                            console.log(textComponent)
                             components.push(textComponent._id)
                         })
 
@@ -145,6 +144,38 @@ router.put("/:url", authenticate, async (req, res) => {
             await textComponentModel.findByIdAndDelete(component._id)
         }
 
+        res.status(400).json({
+            status: 400,
+            success: false,
+            message: err.message,
+        });
+    }
+})
+
+
+// TODO: Test this works
+router.delete("/:url", authenticate, async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        console.log("URL: " + req.params.url)
+        console.log("User id: " + user.id)
+
+        const portfolio = await portfolioModel.findOne({user: user.id, url: req.params.url});
+
+        console.log(portfolio)
+        await portfolioModel.findOneAndDelete({url: req.params.url, user: user.id}).then(() => {
+            res.status(200).json({
+                status: 200,
+                success: true,
+            });
+        })
+
+    } catch (err: any) {
         res.status(400).json({
             status: 400,
             success: false,
