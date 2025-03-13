@@ -1,5 +1,5 @@
 import express from "express";
-import {portfolioModel, textComponentModel} from "../models/models";
+import {buttonComponentModel, portfolioModel, textComponentModel} from "../models/models";
 import {authenticate} from "../middleware/auth";
 
 
@@ -109,6 +109,21 @@ router.put("/:url", authenticate, async (req, res) => {
                             console.log(textComponent)
                             components.push(textComponent._id)
                         })
+
+                        break;
+                    case "button":
+                        if (!component.text || !component.url) {
+                            throw new Error("Text and URL are required for button component")
+                        }
+                        await buttonComponentModel.create({
+                            index: component.index,
+                            text: component.text,
+                            url: component.url,
+                            portfolio_id: portfolio._id
+                        }).then((buttonComponent) => {
+                            components.push(buttonComponent._id)
+                        })
+                        break;
                 }
             }
         }
