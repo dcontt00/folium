@@ -1,6 +1,7 @@
 import express from "express";
 import {buttonComponentModel, portfolioModel, textComponentModel} from "../models/models";
 import {authenticate} from "../middleware/auth";
+import ApiError from "../interfaces/ApiError";
 
 
 const router = express.Router();
@@ -165,9 +166,12 @@ router.delete("/:url", authenticate, async (req, res) => {
         console.log("URL: " + req.params.url)
         console.log("User id: " + user.id)
 
-        const portfolio = await portfolioModel.findOne({user: user.id, url: req.params.url});
+        const portfolio = await portfolioModel.findOne({url: req.params.url});
 
-        console.log(portfolio)
+        if (!portfolio) {
+            throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+        }
+
         await portfolioModel.findOneAndDelete({url: req.params.url, user: user.id}).then(() => {
             res.status(200).json({
                 status: 200,
@@ -176,11 +180,19 @@ router.delete("/:url", authenticate, async (req, res) => {
         })
 
     } catch (err: any) {
-        res.status(400).json({
-            status: 400,
-            success: false,
-            message: err.message,
-        });
+        if (err instanceof ApiError) {
+            res.status(err.status).json({
+                status: err.status,
+                success: false,
+                message: err.message,
+            });
+        } else {
+            res.status(400).json({
+                status: 400,
+                success: false,
+                message: err.message,
+            });
+        }
     }
 })
 
