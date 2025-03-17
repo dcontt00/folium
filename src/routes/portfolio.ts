@@ -58,7 +58,7 @@ router.get("/", authenticate, async (req, res) => {
         const user = req.user;
 
         if (!user) {
-            throw new Error("User not found");
+            throw new ApiError(404, "User not found", "User not found");
         }
 
         await portfolioModel.find({user: user.id}).then((portfolios) => {
@@ -71,11 +71,19 @@ router.get("/", authenticate, async (req, res) => {
 
 
     } catch (err: any) {
-        res.status(400).json({
-            status: 400,
-            success: false,
-            message: err.message,
-        });
+        if (err instanceof ApiError) {
+            res.status(err.status).json({
+                status: err.status,
+                success: false,
+                message: err.message,
+            });
+        } else {
+            res.status(400).json({
+                status: 400,
+                success: false,
+                message: err.message,
+            });
+        }
     }
 });
 
@@ -86,13 +94,13 @@ router.put("/:url", authenticate, async (req, res) => {
         const user = req.user;
 
         if (!user) {
-            throw new Error("User not found");
+            throw new ApiError(404, "User not found", "User not found");
         }
 
         const portfolio = await portfolioModel.findOne({url: req.params.url, user: user.id});
 
         if (!portfolio) {
-            throw new Error("Portfolio not found");
+            throw new ApiError(404, "Portfolio not found", "Portfolio not found");
         }
 
         if (req.body.components) {
@@ -100,7 +108,7 @@ router.put("/:url", authenticate, async (req, res) => {
                 switch (component.type) {
                     case "text":
                         if (!component.text) {
-                            throw new Error("Text is required for text component")
+                            throw new ApiError(400, "Text is required for text component", "Text is required for text component");
                         }
                         await textComponentModel.create({
                             index: component.index,
@@ -113,7 +121,7 @@ router.put("/:url", authenticate, async (req, res) => {
                         break;
                     case "button":
                         if (!component.text || !component.url) {
-                            throw new Error("Text and URL are required for button component")
+                            throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
                         }
                         await buttonComponentModel.create({
                             index: component.index,
@@ -145,11 +153,19 @@ router.put("/:url", authenticate, async (req, res) => {
             await textComponentModel.findByIdAndDelete(component._id)
         }
 
-        res.status(400).json({
-            status: 400,
-            success: false,
-            message: err.message,
-        });
+        if (err instanceof ApiError) {
+            res.status(err.status).json({
+                status: err.status,
+                success: false,
+                message: err.message,
+            });
+        } else {
+            res.status(400).json({
+                status: 400,
+                success: false,
+                message: err.message,
+            });
+        }
     }
 })
 
