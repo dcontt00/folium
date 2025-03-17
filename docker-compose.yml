@@ -12,7 +12,7 @@ services:
     image: backend:latest
     build:
       context: .
-      dockerfile: backend.dockerfile
+      dockerfile: backend/backend.dockerfile
     container_name: backend
     environment:
       - MONGODB_URI=mongodb://mongo-db:27017
