@@ -154,7 +154,6 @@ router.put("/:url", authenticate, async (req, res) => {
 })
 
 
-// TODO: Test this works
 router.delete("/:url", authenticate, async (req, res) => {
     try {
         const user = req.user;
@@ -172,7 +171,7 @@ router.delete("/:url", authenticate, async (req, res) => {
             throw new ApiError(404, "Portfolio not found", "Portfolio not found");
         }
 
-        await portfolioModel.findOneAndDelete({url: req.params.url, user: user.id}).then(() => {
+        await portfolioModel.deleteOne({url: req.params.url}).then(() => {
             res.status(200).json({
                 status: 200,
                 success: true,
