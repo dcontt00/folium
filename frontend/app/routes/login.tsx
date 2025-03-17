@@ -1,5 +1,5 @@
 import type {Route} from "./+types/home";
-import {Button, Group, TextInput} from "@mantine/core";
+import {Button, Group, PasswordInput, TextInput} from "@mantine/core";
 import {useForm} from '@mantine/form';
 import {useDisclosure} from "@mantine/hooks";
 import axios from "axios";
@@ -53,7 +53,7 @@ function Login() {
                 key={form.key('email')}
                 {...form.getInputProps('email')}
             />
-            <TextInput
+            <PasswordInput
                 withAsterisk
                 label="Password"
                 key={form.key('password')}
