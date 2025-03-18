@@ -1,11 +1,9 @@
-import {useDisclosure} from "@mantine/hooks";
-import {AppShell, Burger, Button, Group, Highlight, Stack, Title} from "@mantine/core";
+import {AppShell, Button, Group, Highlight, Stack, Title} from "@mantine/core";
 import {useNavigate} from "react-router";
 
 
 export default function Index() {
 
-    const [opened, {toggle}] = useDisclosure();
     const navigate = useNavigate();
 
     return (
@@ -14,12 +12,6 @@ export default function Index() {
             padding="xl"
         >
             <AppShell.Header>
-                <Burger
-                    opened={opened}
-                    onClick={toggle}
-                    hiddenFrom="sm"
-                    size="sm"
-                />
                 <div>Logo</div>
             </AppShell.Header>
             <AppShell.Main>
