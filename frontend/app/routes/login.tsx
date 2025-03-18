@@ -1,7 +1,6 @@
 import type {Route} from "./+types/home";
 import {Button, Group, PasswordInput, TextInput} from "@mantine/core";
 import {useForm} from '@mantine/form';
-import {useDisclosure} from "@mantine/hooks";
 import axios from "axios";
 import {useNavigate} from "react-router";
 
@@ -19,7 +18,7 @@ interface FormValues {
 }
 
 
-function Login() {
+export default function Login() {
     const navigate = useNavigate();
     const form = useForm<FormValues>({
         mode: 'uncontrolled',
@@ -68,11 +67,5 @@ function Login() {
     );
 }
 
-export default function Home() {
-    const [opened, {toggle}] = useDisclosure();
 
-    return (
-        <Login/>
-    );
-}
 
