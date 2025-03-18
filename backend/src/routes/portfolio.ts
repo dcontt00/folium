@@ -95,7 +95,7 @@ router.get("/:url", authenticate, async (req, res) => {
             throw new ApiError(404, "User not found", "User not found");
         }
 
-        await portfolioModel.findOne({url: req.params.url, user: user.id}).then((portfolio) => {
+        await portfolioModel.findOne({url: req.params.url, user: user.id}).populate("components").then((portfolio) => {
             if (!portfolio) {
                 throw new ApiError(404, "Portfolio not found", "Portfolio not found");
             }
@@ -149,6 +149,7 @@ router.put("/:url", authenticate, async (req, res) => {
                             throw new ApiError(400, "Text is required for text component", "Text is required for text component");
                         }
                         await textComponentModel.create({
+                            type: "text",
                             index: component.index,
                             text: component.text,
                             portfolio_id: portfolio._id
@@ -162,6 +163,7 @@ router.put("/:url", authenticate, async (req, res) => {
                             throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
                         }
                         await buttonComponentModel.create({
+                            type: "button",
                             index: component.index,
                             text: component.text,
                             url: component.url,
@@ -178,13 +180,14 @@ router.put("/:url", authenticate, async (req, res) => {
             {url: req.params.url, user: user.id},
             {...req.body, components: components},
             {new: true}
-        ).then((portfolio) => {
+        ).populate("components").then((portfolio) => {
             res.status(200).json({
                 status: 200,
                 success: true,
                 data: portfolio,
             });
         })
+
     } catch (err: any) {
         // Remove created components if anything goes wrong
         for (const component of components) {
