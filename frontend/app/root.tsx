@@ -2,8 +2,9 @@ import {isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration,} 
 import '@mantine/core/styles.css';
 import type {Route} from "./+types/root";
 import "./app.css";
-import {ColorSchemeScript, createTheme, mantineHtmlProps, MantineProvider, rem} from "@mantine/core";
+import {ColorSchemeScript, mantineHtmlProps, MantineProvider} from "@mantine/core";
 import React from "react";
+import theme from "./theme/theme";
 
 export const links: Route.LinksFunction = () => [
     {rel: "preconnect", href: "https://fonts.googleapis.com"},
@@ -21,19 +22,6 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({children}: { children: React.ReactNode }) {
 
-    const theme = createTheme({
-        headings: {
-            sizes: {
-                h1: {fontSize: rem(80), lineHeight: 1.2},
-                h2: {fontSize: rem(50), lineHeight: 1.2},
-                h3: {fontSize: rem(24), lineHeight: 1.2},
-                h4: {fontSize: rem(20), lineHeight: 1.2},
-                h5: {fontSize: rem(18), lineHeight: 1.2},
-                h6: {fontSize: rem(16), lineHeight: 1.2},
-            }
-        }
-        /** Your theme override here */
-    });
     return (
         <html lang="en" {...mantineHtmlProps}>
         <head>
