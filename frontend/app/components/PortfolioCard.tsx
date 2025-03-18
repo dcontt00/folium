@@ -1,5 +1,6 @@
-import {Card, Image, Text} from "@mantine/core";
-
+import {Button, Card, Group, Image, Stack, Text} from "@mantine/core";
+import {IconEdit, IconExternalLink, IconTrash} from "@tabler/icons-react";
+import {useNavigate} from "react-router";
 
 interface PortfolioCardProps {
     title: string;
@@ -8,12 +9,12 @@ interface PortfolioCardProps {
 }
 
 export default function PortfolioCard({title, description, url}: PortfolioCardProps) {
+    const navigate = useNavigate();
     return (
         <Card
             shadow="sm"
             padding="xl"
             component="a"
-            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
             target="_blank"
         >
             <Card.Section>
@@ -23,14 +24,36 @@ export default function PortfolioCard({title, description, url}: PortfolioCardPr
                     alt="No way!"
                 />
             </Card.Section>
+            <Stack>
+                <Text fw={500} size="lg" mt="md">
+                    {title}
+                </Text>
 
-            <Text fw={500} size="lg" mt="md">
-                {title}
-            </Text>
+                <Text c="dimmed" size="sm">
+                    {description}
+                </Text>
+                <Group>
 
-            <Text mt="xs" c="dimmed" size="sm">
-                {description}
-            </Text>
+                    <Button
+                        variant="default"
+                        leftSection={<IconExternalLink size={14}/>}
+                        onClick={() => navigate(url)}
+                    >
+                        Visit
+                    </Button>
+                    <Button
+                        leftSection={<IconEdit size={14}/>}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        variant="danger"
+                        leftSection={<IconTrash size={14}/>}
+                    >
+                        Remove
+                    </Button>
+                </Group>
+            </Stack>
         </Card>
     );
 }

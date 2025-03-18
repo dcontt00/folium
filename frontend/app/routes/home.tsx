@@ -1,6 +1,6 @@
 import type {Route} from "./+types/home";
 import {Welcome} from "~/welcome/welcome";
-import {AppShell, Burger, Flex, Group, Skeleton} from "@mantine/core";
+import {AppShell, Burger, Flex, Group} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import axios from "axios";
 import PortfolioCard from "~/components/PortfolioCard";
@@ -46,28 +46,19 @@ export default function Home({loaderData}: Route.ComponentProps) {
             </AppShell.Header>
             <AppShell.Navbar p="md">
                 Navbar
-                {portfolios.length > 0 ? (
-                    portfolios.map((portfolio: Portfolio, index) => (
-                        <div key={index}>
-                            <h1>{portfolio.title}</h1>
-                            <p>{portfolio.description}</p>
-                            <a href={portfolio.url}>Visit</a>
-                        </div>
-                    ))
-
-                ) : (
-                    Array(15)
-                        .fill(0)
-                        .map((_, index) => <Skeleton key={index} h={28} mt="sm" animate={false}/>)
-                )}
-
             </AppShell.Navbar>
             <AppShell.Main>
-                <Flex>
+                <Flex
+                    gap="md"
+                >
                     {
                         portfolios.map((portfolio: Portfolio, index) => (
-                            <PortfolioCard key={index} title={portfolio.title} description={portfolio.description}
-                                           url={portfolio.url}/>
+                            <PortfolioCard
+                                key={index}
+                                title={portfolio.title}
+                                description={portfolio.description}
+                                url={portfolio.url}
+                            />
                         ))
                     }
                 </Flex>
