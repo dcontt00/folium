@@ -5,7 +5,7 @@ import axios from "axios";
 import type Portfolio from "../../../common/interfaces/portfolio";
 
 // provides `loaderData` to the component
-export async function loader({params}: Route.ClientLoaderArgs) {
+export async function clientLoader({params}: Route.ClientLoaderArgs) {
     console.log(`http://localhost:3000/portfolio/${params.url}`)
     const portfolio: Portfolio = await axios.get(`http://localhost:3000/portfolio/${params.url}`, {withCredentials: true}).then((response) => {
         return response.data.data;
@@ -15,6 +15,10 @@ export async function loader({params}: Route.ClientLoaderArgs) {
     return portfolio
 }
 
+// HydrateFallback is rendered while the client loader is running
+export function HydrateFallback() {
+    return <div>Loading...</div>;
+}
 export default function Edit({loaderData}: Route.ComponentProps) {
     const portfolio: Portfolio = loaderData;
     return (
