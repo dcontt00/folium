@@ -3,3 +3,4 @@ dist
 .idea
 data
 frontend/.react-router
+frontend/build
