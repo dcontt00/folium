@@ -1,5 +1,5 @@
 import type {Route} from "./+types/home";
-import {Button, PasswordInput, Stack, TextInput} from "@mantine/core";
+import {AppShell, Button, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
 import {useForm} from '@mantine/form';
 import axios from "axios";
 import {useNavigate} from "react-router";
@@ -51,48 +51,55 @@ export default function Register() {
                 })
         })}
         >
-            <Stack
-                bg="var(--mantine-color-body)"
-                align="stretch"
-                justify="center"
-                gap="md"
+            <AppShell
+                padding="xl"
             >
-                <TextInput
-                    withAsterisk
-                    label="Name"
-                    key={form.key('name')}
-                    {...form.getInputProps('name')}
-                />
+                <AppShell.Main>
 
-                <TextInput
-                    withAsterisk
-                    label="Surname"
-                    key={form.key('surname')}
-                    {...form.getInputProps('surname')}
-                />
-                <TextInput
-                    withAsterisk
-                    label="Username"
-                    key={form.key('username')}
-                    {...form.getInputProps('username')}
-                />
+                    <Stack
+                        align="stretch"
+                        justify="center"
+                        gap="md"
+                    >
+                        <Title order={3}>Register</Title>
+                        <TextInput
+                            withAsterisk
+                            label="Name"
+                            key={form.key('name')}
+                            {...form.getInputProps('name')}
+                        />
 
-                <TextInput
-                    withAsterisk
-                    label="Email"
-                    key={form.key('email')}
-                    {...form.getInputProps('email')}
-                />
-                <PasswordInput
-                    withAsterisk
-                    label="Password"
-                    key={form.key('password')}
-                    {...form.getInputProps('password')}
-                />
+                        <TextInput
+                            withAsterisk
+                            label="Surname"
+                            key={form.key('surname')}
+                            {...form.getInputProps('surname')}
+                        />
+                        <TextInput
+                            withAsterisk
+                            label="Username"
+                            key={form.key('username')}
+                            {...form.getInputProps('username')}
+                        />
+
+                        <TextInput
+                            withAsterisk
+                            label="Email"
+                            key={form.key('email')}
+                            {...form.getInputProps('email')}
+                        />
+                        <PasswordInput
+                            withAsterisk
+                            label="Password"
+                            key={form.key('password')}
+                            {...form.getInputProps('password')}
+                        />
 
 
-                <Button type="submit">Submit</Button>
-            </Stack>
+                        <Button type="submit">Submit</Button>
+                    </Stack>
+                </AppShell.Main>
+            </AppShell>
         </form>
     );
 }

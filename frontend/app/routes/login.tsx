@@ -1,5 +1,5 @@
 import type {Route} from "./+types/home";
-import {Button, Group, PasswordInput, TextInput} from "@mantine/core";
+import {AppShell, Button, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
 import {useForm} from '@mantine/form';
 import axios from "axios";
 import {useNavigate} from "react-router";
@@ -45,24 +45,29 @@ export default function Login() {
                 })
         })}
         >
-            <TextInput
-                withAsterisk
-                label="Email"
-                placeholder="your@email.com"
-                key={form.key('email')}
-                {...form.getInputProps('email')}
-            />
-            <PasswordInput
-                withAsterisk
-                label="Password"
-                key={form.key('password')}
-                {...form.getInputProps('password')}
-            />
-
-
-            <Group justify="flex-end" mt="md">
-                <Button type="submit">Submit</Button>
-            </Group>
+            <AppShell
+                padding="md"
+            >
+                <AppShell.Main>
+                    <Stack>
+                        <Title order={3}>Login</Title>
+                        <TextInput
+                            withAsterisk
+                            label="Email"
+                            placeholder="your@email.com"
+                            key={form.key('email')}
+                            {...form.getInputProps('email')}
+                        />
+                        <PasswordInput
+                            withAsterisk
+                            label="Password"
+                            key={form.key('password')}
+                            {...form.getInputProps('password')}
+                        />
+                        <Button type="submit">Submit</Button>
+                    </Stack>
+                </AppShell.Main>
+            </AppShell>
         </form>
     );
 }
