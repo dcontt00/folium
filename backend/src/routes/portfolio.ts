@@ -87,6 +87,44 @@ router.get("/", authenticate, async (req, res) => {
     }
 });
 
+router.get("/:url", authenticate, async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user) {
+            throw new ApiError(404, "User not found", "User not found");
+        }
+
+        await portfolioModel.findOne({url: req.params.url, user: user.id}).then((portfolio) => {
+            if (!portfolio) {
+                throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+            }
+
+            res.status(200).json({
+                status: 200,
+                success: true,
+                data: portfolio,
+            });
+        });
+
+    } catch (err: any) {
+        if (err instanceof ApiError) {
+            res.status(err.status).json({
+                status: err.status,
+                success: false,
+                message: err.message,
+            });
+        } else {
+            res.status(400).json({
+                status: 400,
+                success: false,
+                message: err.message,
+            });
+        }
+    }
+
+});
+
 router.put("/:url", authenticate, async (req, res) => {
     const components: any[] = [];
 
