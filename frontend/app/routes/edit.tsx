@@ -1,8 +1,9 @@
-import {AppShell} from "@mantine/core";
+import {AppShell, Stack, Textarea, TextInput, Title} from "@mantine/core";
 import type {Route} from "./+types";
 import axios from "axios";
 
 import type Portfolio from "../../../common/interfaces/portfolio";
+import {useState} from "react";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
@@ -19,14 +20,42 @@ export async function clientLoader({params}: Route.ClientLoaderArgs) {
 export function HydrateFallback() {
     return <div>Loading...</div>;
 }
+
 export default function Edit({loaderData}: Route.ComponentProps) {
     const portfolio: Portfolio = loaderData;
+    const [description, setDescription] = useState(portfolio.description);
+    const [title, setTitle] = useState(portfolio.title);
     return (
-        <AppShell>
+        <AppShell
+            navbar={{
+                width: 300,
+                breakpoint: 'sm',
+            }}
+            padding="md"
+        >
+            <AppShell.Navbar>
+                <Stack>
+
+                    <TextInput
+                        label="Title"
+                        value={title}
+                        onChange={(event) => setTitle(event.currentTarget.value)}
+                    />
+                    <Textarea
+                        label="Description"
+                        value={description}
+                        onChange={(event) => setDescription(event.currentTarget.value)}
+                    />
+
+                    <Title order={3}>Components</Title>
+                </Stack>
+
+
+            </AppShell.Navbar>
             <AppShell.Main>
                 <h1>Edit</h1>
-                {portfolio != null && <h2>{portfolio.title}</h2>}
             </AppShell.Main>
+
         </AppShell>
     )
 }
