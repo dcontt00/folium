@@ -43,6 +43,7 @@ export default function PortfolioCard({title, description, url}: PortfolioCardPr
                     </Button>
                     <Button
                         leftSection={<IconEdit size={14}/>}
+                        onClick={() => navigate(`/edit/${url}`)}
                     >
                         Edit
                     </Button>
