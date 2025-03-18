@@ -11,11 +11,6 @@ export default function Index() {
     return (
         <AppShell
             header={{height: 60}}
-            navbar={{
-                width: 300,
-                breakpoint: 'sm',
-                collapsed: {mobile: !opened},
-            }}
             padding="xl"
         >
             <AppShell.Header>
@@ -27,9 +22,7 @@ export default function Index() {
                 />
                 <div>Logo</div>
             </AppShell.Header>
-            <AppShell.Main
-                style={{paddingLeft: 10}}
-            >
+            <AppShell.Main>
 
                 <Stack align="center">
 
