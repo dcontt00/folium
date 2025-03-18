@@ -38,7 +38,7 @@ export default function Login() {
             await axios.post('http://localhost:3000/login', values, {withCredentials: true})
                 .then((response) => {
                     console.log(response);
-                    navigate('/');
+                    navigate('/home');
                 })
                 .catch((error) => {
                     console.log(error);
