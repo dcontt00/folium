@@ -59,10 +59,10 @@ To build and run using Docker:
 docker build -t my-app .
 
 # For pnpm
-docker build -f Dockerfile.pnpm -t my-app .
+docker build -f frontend.dockerfile.pnpm -t my-app .
 
 # For bun
-docker build -f Dockerfile.bun -t my-app .
+docker build -f frontend.dockerfile.bun -t my-app .
 
 # Run the container
 docker run -p 3000:3000 my-app

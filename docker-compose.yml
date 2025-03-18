@@ -11,11 +11,18 @@ services:
   backend:
     image: backend:latest
     build:
-      context: .
-      dockerfile: backend/backend.dockerfile
+      context: ./backend
+      dockerfile: backend.dockerfile
     container_name: backend
     environment:
       - MONGODB_URI=mongodb://mongo-db:27017
       - JWT_SECRET=secret
+
+  frontend:
+    image: frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: frontend.dockerfile
+    container_name: frontend
     ports:
-      - "3000:3000"
+      - "8080:3000"
