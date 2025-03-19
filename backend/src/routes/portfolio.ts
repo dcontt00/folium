@@ -164,6 +164,7 @@ router.put("/:url", authenticate, async (req, res) => {
                         }
                         await buttonComponentModel.create({
                             type: "button",
+                            color: component.color,
                             index: component.index,
                             text: component.text,
                             url: component.url,
