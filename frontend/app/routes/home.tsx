@@ -4,6 +4,7 @@ import {useDisclosure} from "@mantine/hooks";
 import axios from "axios";
 import PortfolioCard from "~/components/PortfolioCard";
 import Logo from "~/Logo.svg";
+import NewPortfolioModal from "~/components/NewPortfolioModal";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -31,45 +32,49 @@ export function HydrateFallback() {
 }
 
 export default function Home({loaderData}: Route.ComponentProps) {
-    const [opened, {toggle}] = useDisclosure();
+    const [openedBurger, {toggle}] = useDisclosure();
+    const [openedModal, {open, close}] = useDisclosure();
     const portfolios: Array<Portfolio> = loaderData;
     return (
-        <AppShell
-            header={{height: 60}}
-            padding="md"
-        >
-            <AppShell.Header>
-                <Group h="100%" px="md" justify="space-between">
-                    <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
-                    <Avatar src={Logo} radius="xs"/>
-                    <Text>Folium</Text>
-                    <Group>
-                        <Button>New Portfolio</Button>
-                        <Avatar/>
+        <>
+            <AppShell
+                header={{height: 60}}
+                padding="md"
+            >
+                <AppShell.Header>
+                    <Group h="100%" px="md" justify="space-between">
+                        <Burger opened={openedBurger} onClick={toggle} hiddenFrom="sm" size="sm"/>
+                        <Avatar src={Logo} radius="xs"/>
+                        <Text>Folium</Text>
+                        <Group>
+                            <Button onClick={open}>New Portfolio</Button>
+                            <Avatar/>
+                        </Group>
                     </Group>
-                </Group>
-            </AppShell.Header>
-            <AppShell.Main>
-                <Stack>
-                    <Title order={2}>My portfolios</Title>
+                </AppShell.Header>
+                <AppShell.Main>
+                    <Stack>
+                        <Title order={2}>My portfolios</Title>
 
-                    <Flex
-                        gap="md"
-                    >
-                        {
-                            portfolios.map((portfolio: Portfolio, index) => (
-                                <PortfolioCard
-                                    key={index}
-                                    title={portfolio.title}
-                                    description={portfolio.description}
-                                    url={portfolio.url}
-                                />
-                            ))
-                        }
-                    </Flex>
-                </Stack>
-            </AppShell.Main>
-        </AppShell>
+                        <Flex
+                            gap="md"
+                        >
+                            {
+                                portfolios.map((portfolio: Portfolio, index) => (
+                                    <PortfolioCard
+                                        key={index}
+                                        title={portfolio.title}
+                                        description={portfolio.description}
+                                        url={portfolio.url}
+                                    />
+                                ))
+                            }
+                        </Flex>
+                    </Stack>
+                </AppShell.Main>
+            </AppShell>
+            <NewPortfolioModal opened={openedModal} close={close}/>
+        </>
     );
 }
 
