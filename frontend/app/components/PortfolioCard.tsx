@@ -6,9 +6,10 @@ interface PortfolioCardProps {
     title: string;
     description: string;
     url: string;
+    onDelete: (url: string) => void;
 }
 
-export default function PortfolioCard({title, description, url}: PortfolioCardProps) {
+export default function PortfolioCard({title, description, url, onDelete}: PortfolioCardProps) {
     const navigate = useNavigate();
     return (
         <Card
@@ -50,6 +51,7 @@ export default function PortfolioCard({title, description, url}: PortfolioCardPr
                     <Button
                         variant="danger"
                         leftSection={<IconTrash size={14}/>}
+                        onClick={() => onDelete(url)}
                     >
                         Remove
                     </Button>
