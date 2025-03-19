@@ -30,6 +30,9 @@ export default function NewPortfolioModal({opened, close}: Props) {
             console.log(result)
             navigate("/edit/" + values.url)
         }).catch(err => {
+            if (err.response.data.message == "URL already exists") {
+                form.setFieldError('url', 'URL already exists')
+            }
             console.log(err)
         })
     }
