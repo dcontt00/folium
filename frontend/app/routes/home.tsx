@@ -1,5 +1,5 @@
 import type {Route} from "./+types/home";
-import {AppShell, Avatar, Burger, Flex, Group, Stack, Text, Title} from "@mantine/core";
+import {AppShell, Avatar, Burger, Button, Flex, Group, Stack, Text, Title} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import axios from "axios";
 import PortfolioCard from "~/components/PortfolioCard";
@@ -43,7 +43,10 @@ export default function Home({loaderData}: Route.ComponentProps) {
                     <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
                     <Avatar src={Logo} radius="xs"/>
                     <Text>Folium</Text>
-                    <Avatar/>
+                    <Group>
+                        <Button>New Portfolio</Button>
+                        <Avatar/>
+                    </Group>
                 </Group>
             </AppShell.Header>
             <AppShell.Main>

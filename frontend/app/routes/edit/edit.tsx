@@ -48,7 +48,6 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         const index = portfolioState.components.findIndex((c) => c._id === component._id);
         const newPortfolio = {...portfolioState};
         newPortfolio.components[index] = component;
-
         setPortfolioState(newPortfolio);
     }
 
@@ -58,7 +57,6 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     }
 
     async function onSave() {
-        console.log(portfolioState)
         const newPortfolio = {...portfolioState};
         newPortfolio.title = title;
         newPortfolio.description = description;
