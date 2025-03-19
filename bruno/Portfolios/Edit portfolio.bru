@@ -1,11 +1,11 @@
 meta {
   name: Edit portfolio
   type: http
-  seq: 9
+  seq: 3
 }
 
 put {
-  url: http://localhost:3000/portfolio/modified-portfolio
+  url: http://localhost:3000/portfolio/art-portfolio
   body: json
   auth: none
 }
@@ -14,7 +14,7 @@ body:json {
   {
     "title": "Modified portfolio",
     "description": "Portfolio about art",
-    "url": "modified-portfolio",
+    "url": "art-portfolio",
     
     "components":[
       {
