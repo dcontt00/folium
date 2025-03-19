@@ -47,6 +47,7 @@ export default function EditButtonComponent({component, onEditComponent}: Props)
                 onChange={(event) => onUrlChange(event)}
             />
             <ColorInput
+                label="Button color"
                 value={color}
                 onChange={(event) => onColorChange(event)}
             />

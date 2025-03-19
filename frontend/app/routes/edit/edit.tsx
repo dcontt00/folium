@@ -1,6 +1,6 @@
-import {AppShell, Button, Group, Stack, Textarea, TextInput, Title} from "@mantine/core";
+import {Alert, AppShell, Avatar, Button, Group, Stack, Textarea, TextInput, Title} from "@mantine/core";
 import axios from "axios";
-import {IconArrowLeft, IconDeviceFloppy} from "@tabler/icons-react"
+import {IconArrowLeft, IconDeviceFloppy, IconInfoCircle, IconSettings} from "@tabler/icons-react"
 
 import type {ComponentType, Portfolio} from "../../../../common/interfaces/interfaces";
 import {useState} from "react";
@@ -9,6 +9,7 @@ import ComponentsSection from "~/routes/edit/ComponentsSection";
 import {useNavigate} from "react-router";
 import type {Route} from "../+types";
 import EditComponentSection from "~/routes/edit/EditComponentSection";
+import Logo from "app/Logo.svg";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
@@ -68,26 +69,34 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     return (
         <AppShell
             header={{height: 60}}
-            aside={{width: 300, breakpoint: "sm", collapsed: {mobile: !openedSettings}}}
+            aside={{width: 300, breakpoint: "sm", collapsed: {mobile: !openedSettings, desktop: !openedSettings}}}
             navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !openedEditComponent}}}
             padding="md"
         >
             <AppShell.Header>
-                <Group>
-                    <div>Logo</div>
+                <Group h="100%" px="md">
+                    <Avatar src={Logo} radius="xs"/>
                     <Button leftSection={<IconArrowLeft/>} onClick={() => navigate("/home")}>Go Back</Button>
                     <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}>Save</Button>
-                    <Button leftSection={<IconDeviceFloppy/>} onClick={toggleOpenedSettings}>Settings</Button>
+                    <Button leftSection={<IconSettings/>} onClick={toggleOpenedSettings}>Settings</Button>
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar>
-                {editComponent && (
-                    <EditComponentSection
-                        component={editComponent}
-                        onEditComponent={onEditComponent}
-                        onOk={toggleOpenedEditComponent}
-                    />
-                )}
+                <Stack p="sm">
+
+                    {editComponent ? (
+                            <EditComponentSection
+                                component={editComponent}
+                                onEditComponent={onEditComponent}
+                            />
+                        ) :
+                        (
+                            <Alert variant="light" color="blue" title="Select a component to edit it"
+                                   icon={<IconInfoCircle/>}/>
+                        )
+                    }
+                </Stack>
+                <Button hiddenFrom="sm">Close</Button>
             </AppShell.Navbar>
             <AppShell.Aside>
                 <Stack p="sm">

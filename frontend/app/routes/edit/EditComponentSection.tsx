@@ -1,16 +1,14 @@
 import type {ButtonComponentType, ComponentType, TextComponentType} from "../../../../common/interfaces/interfaces";
 import EditTextComponent from "~/routes/edit/EditTextComponent";
 import EditButtonComponent from "~/routes/edit/EditButtonComponent";
-import {Button, Stack} from "@mantine/core";
 
 
 interface Props {
     component: ComponentType;
     onEditComponent: (component: ComponentType) => void;
-    onOk: () => void;
 }
 
-export default function EditComponentSection({component, onEditComponent, onOk}: Props) {
+export default function EditComponentSection({component, onEditComponent}: Props) {
 
 
     function renderComponent(component: ComponentType, onEditComponent: (component: ComponentType) => void) {
@@ -29,11 +27,7 @@ export default function EditComponentSection({component, onEditComponent, onOk}:
 
 
     return (
-        <Stack p="sm">
-
-            {renderComponent(component, onEditComponent)}
-            <Button onClick={onOk}>Ok</Button>
-        </Stack>
+        renderComponent(component, onEditComponent)
     )
 
 
