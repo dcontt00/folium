@@ -1,8 +1,9 @@
 import type {Route} from "./+types/home";
-import {AppShell, Burger, Flex, Group} from "@mantine/core";
+import {AppShell, Avatar, Burger, Flex, Group, Stack, Text, Title} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import axios from "axios";
 import PortfolioCard from "~/components/PortfolioCard";
+import Logo from "~/Logo.svg";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -35,32 +36,35 @@ export default function Home({loaderData}: Route.ComponentProps) {
     return (
         <AppShell
             header={{height: 60}}
-            navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
             padding="md"
         >
             <AppShell.Header>
-                <Group h="100%" px="md">
+                <Group h="100%" px="md" justify="space-between">
                     <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
+                    <Avatar src={Logo} radius="xs"/>
+                    <Text>Folium</Text>
+                    <Avatar/>
                 </Group>
             </AppShell.Header>
-            <AppShell.Navbar p="md">
-                Navbar
-            </AppShell.Navbar>
             <AppShell.Main>
-                <Flex
-                    gap="md"
-                >
-                    {
-                        portfolios.map((portfolio: Portfolio, index) => (
-                            <PortfolioCard
-                                key={index}
-                                title={portfolio.title}
-                                description={portfolio.description}
-                                url={portfolio.url}
-                            />
-                        ))
-                    }
-                </Flex>
+                <Stack>
+                    <Title order={2}>My portfolios</Title>
+
+                    <Flex
+                        gap="md"
+                    >
+                        {
+                            portfolios.map((portfolio: Portfolio, index) => (
+                                <PortfolioCard
+                                    key={index}
+                                    title={portfolio.title}
+                                    description={portfolio.description}
+                                    url={portfolio.url}
+                                />
+                            ))
+                        }
+                    </Flex>
+                </Stack>
             </AppShell.Main>
         </AppShell>
     );
