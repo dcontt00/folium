@@ -1,0 +1,27 @@
+meta {
+  name: Register
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "user",
+    "email":"user@mail.com",
+    "password": "password",
+    "surname":"surname",
+    "username": "username"
+  }
+}
+
+body:multipart-form {
+  name: user
+  email: user@mail.com
+  password: 1234
+}

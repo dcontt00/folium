@@ -1,0 +1,19 @@
+meta {
+  name: Create portfolio
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:3000/portfolio
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "description": "Portfolio about art",
+    "url": "art-portfolio",
+    "title":"Art Portfolio"
+  }
+}

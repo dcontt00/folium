@@ -1,0 +1,21 @@
+meta {
+  name: Edit user
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:3000/user/:username
+  body: json
+  auth: none
+}
+
+params:path {
+  username: username
+}
+
+body:json {
+  {
+    "name": "test"
+  }
+}
