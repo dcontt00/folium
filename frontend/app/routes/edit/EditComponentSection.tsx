@@ -1,6 +1,6 @@
 import type {ButtonComponentType, ComponentType, TextComponentType} from "../../../../common/interfaces/interfaces";
-import EditTextComponent from "~/routes/edit/EditTextComponent";
-import EditButtonComponent from "~/routes/edit/EditButtonComponent";
+import EditTextComponent from "~/components/editComponents/EditTextComponent";
+import EditButtonComponent from "~/components/editComponents/EditButtonComponent";
 
 
 interface Props {

@@ -1,11 +1,11 @@
-import TextComponent from "~/components/TextComponent";
+import TextComponent from "~/components/components/TextComponent";
 import type {
     ButtonComponentType,
     ComponentType,
     Portfolio,
     TextComponentType
 } from "../../../../common/interfaces/interfaces"
-import ButtonComponent from "~/components/ButtonComponent";
+import ButtonComponent from "~/components/components/ButtonComponent";
 import {Stack} from "@mantine/core";
 
 interface Props {

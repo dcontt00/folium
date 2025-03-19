@@ -1,6 +1,6 @@
 import {ActionIcon, Button, Indicator} from "@mantine/core";
 import {IconAdjustments} from "@tabler/icons-react";
-import type {ButtonComponentType} from "../../../common/interfaces/interfaces";
+import type {ButtonComponentType} from "../../../../common/interfaces/interfaces";
 
 interface TextComponentProps {
     buttonComponent: ButtonComponentType;

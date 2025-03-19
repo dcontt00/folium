@@ -1,6 +1,6 @@
 import {ActionIcon, Indicator, Text} from "@mantine/core";
 import {IconAdjustments} from "@tabler/icons-react";
-import type {TextComponentType} from "../../../common/interfaces/interfaces";
+import type {TextComponentType} from "../../../../common/interfaces/interfaces";
 
 interface TextComponentProps {
     textComponent: TextComponentType;
