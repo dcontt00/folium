@@ -1,11 +1,12 @@
-import {AppShell, Burger, Button, Stack, Textarea, TextInput, Title} from "@mantine/core";
-import type {Route} from "./+types";
+import {AppShell, Burger, Button, Group, Stack, Textarea, TextInput, Title} from "@mantine/core";
+import type {Route} from "../../../.react-router/types/app/routes";
 import axios from "axios";
-import {IconArrowLeft} from "@tabler/icons-react"
+import {IconArrowLeft, IconDeviceFloppy} from "@tabler/icons-react"
 
-import type Portfolio from "../../../common/interfaces/portfolio";
+import type Portfolio from "../../../../common/interfaces/portfolio";
 import {useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
+import EditComponentsSection from "~/routes/edit/EditComponentsSection";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
@@ -26,29 +27,31 @@ export function HydrateFallback() {
 
 export default function Edit({loaderData}: Route.ComponentProps) {
     const portfolio: Portfolio = loaderData;
-    const [description, setDescription] = useState(portfolio.description);
-    const [title, setTitle] = useState(portfolio.title);
+    const [portfolioState, setPortfolioState] = useState(portfolio);
+
+    const [description, setDescription] = useState(portfolioState.description);
+    const [title, setTitle] = useState(portfolioState.title);
     const [opened, {toggle}] = useDisclosure();
+
+
     return (
         <AppShell
             header={{height: 60}}
-            navbar={{
-                width: 300,
-                breakpoint: 'sm',
-            }}
+            navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
             padding="md"
         >
             <AppShell.Header>
-                <Burger
-                    opened={opened}
-                    onClick={toggle}
-                    hiddenFrom="sm"
-                    size="sm"
-                />
-
-                <Button onClick={() => console.log("Save")}>Save</Button>
-                <Button leftSection={<IconArrowLeft/>} onClick={() => console.log("Go Back")}>Go Back</Button>
-                <div>Logo</div>
+                <Group>
+                    <Burger
+                        opened={opened}
+                        onClick={toggle}
+                        hiddenFrom="sm"
+                        size="sm"
+                    />
+                    <Button leftSection={<IconArrowLeft/>} onClick={() => console.log("Go Back")}>Go Back</Button>
+                    <Button leftSection={<IconDeviceFloppy/>} onClick={() => console.log("Save")}>Save</Button>
+                    <div>Logo</div>
+                </Group>
             </AppShell.Header>
             <AppShell.Navbar>
                 <Stack>
@@ -63,17 +66,11 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                         onChange={(event) => setDescription(event.currentTarget.value)}
                     />
                     <Title order={3}>Components</Title>
+                    <Button>TextComponent</Button>
                 </Stack>
             </AppShell.Navbar>
             <AppShell.Main>
-                <h1>Edit</h1>
-                {portfolio.components.map((component) => {
-                    return (
-                        <div key={component._id}>
-                            {component.__t}
-                        </div>
-                    )
-                })}
+                <EditComponentsSection portfolio={portfolioState} setPortfolio={setPortfolioState}/>
 
             </AppShell.Main>
 
