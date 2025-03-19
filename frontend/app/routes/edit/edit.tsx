@@ -48,6 +48,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         const index = portfolioState.components.findIndex((c) => c._id === component._id);
         const newPortfolio = {...portfolioState};
         newPortfolio.components[index] = component;
+
         setPortfolioState(newPortfolio);
     }
 
@@ -58,7 +59,10 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 
     async function onSave() {
         console.log(portfolioState)
-        await axios.put(`http://localhost:3000/portfolio/${portfolioState.url}`, portfolioState, {withCredentials: true}).then((response) => {
+        const newPortfolio = {...portfolioState};
+        newPortfolio.title = title;
+        newPortfolio.description = description;
+        await axios.put(`http://localhost:3000/portfolio/${newPortfolio.url}`, newPortfolio, {withCredentials: true}).then((response) => {
             console.log(response);
         }).catch((error) => {
             console.log(error);
