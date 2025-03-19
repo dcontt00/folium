@@ -1,5 +1,4 @@
 import type {Route} from "./+types/home";
-import {Welcome} from "~/welcome/welcome";
 import {AppShell, Burger, Flex, Group} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import axios from "axios";
@@ -62,7 +61,6 @@ export default function Home({loaderData}: Route.ComponentProps) {
                         ))
                     }
                 </Flex>
-                <Welcome/>
             </AppShell.Main>
         </AppShell>
     );
