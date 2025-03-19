@@ -48,6 +48,15 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         setPortfolioState(newPortfolio);
     }
 
+    async function onSave() {
+        console.log(portfolioState)
+        await axios.put(`http://localhost:3000/portfolio/${portfolioState.url}`, portfolioState, {withCredentials: true}).then((response) => {
+            console.log(response);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
 
     return (
         <AppShell
@@ -65,7 +74,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     />
                     <div>Logo</div>
                     <Button leftSection={<IconArrowLeft/>} onClick={() => navigate("/home")}>Go Back</Button>
-                    <Button leftSection={<IconDeviceFloppy/>} onClick={() => console.log("Save")}>Save</Button>
+                    <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}>Save</Button>
 
                 </Group>
             </AppShell.Header>

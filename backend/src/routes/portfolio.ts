@@ -130,6 +130,7 @@ router.put("/:url", authenticate, async (req, res) => {
 
     try {
         const user = req.user;
+        console.log(req.body);
 
         if (!user) {
             throw new ApiError(404, "User not found", "User not found");
@@ -142,9 +143,10 @@ router.put("/:url", authenticate, async (req, res) => {
         }
 
         if (req.body.components) {
+            console.log("There are components")
             for (const component of req.body.components) {
-                switch (component.type) {
-                    case "text":
+                switch (component.__t) {
+                    case "TextComponent":
                         if (!component.text) {
                             throw new ApiError(400, "Text is required for text component", "Text is required for text component");
                         }
@@ -158,7 +160,7 @@ router.put("/:url", authenticate, async (req, res) => {
                         })
 
                         break;
-                    case "button":
+                    case "ButtonComponent":
                         if (!component.text || !component.url) {
                             throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
                         }
@@ -176,6 +178,8 @@ router.put("/:url", authenticate, async (req, res) => {
                 }
             }
         }
+
+        console.log(components)
 
         await portfolioModel.findOneAndUpdate(
             {url: req.params.url, user: user.id},
