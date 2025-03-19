@@ -29,7 +29,7 @@ export default function EditComponentSection({component, onEditComponent, onOk}:
 
 
     return (
-        <Stack>
+        <Stack p="sm">
 
             {renderComponent(component, onEditComponent)}
             <Button onClick={onOk}>Ok</Button>

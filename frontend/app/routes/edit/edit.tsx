@@ -1,4 +1,4 @@
-import {AppShell, Burger, Button, Group, Stack, Textarea, TextInput} from "@mantine/core";
+import {AppShell, Button, Group, Stack, Textarea, TextInput, Title} from "@mantine/core";
 import axios from "axios";
 import {IconArrowLeft, IconDeviceFloppy} from "@tabler/icons-react"
 
@@ -33,7 +33,9 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 
     const [description, setDescription] = useState(portfolioState.description);
     const [title, setTitle] = useState(portfolioState.title);
-    const [opened, {toggle}] = useDisclosure(false);
+    const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
+    const [openedSettings, {toggle: toggleOpenedSettings}] = useDisclosure(false);
+
     const navigate = useNavigate();
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
 
@@ -50,7 +52,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 
     function onSelecEditComponent(component: ComponentType) {
         setEditComponent(component);
-        toggle()
+        toggleOpenedEditComponent()
     }
 
     async function onSave() {
@@ -66,25 +68,30 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     return (
         <AppShell
             header={{height: 60}}
-            navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
+            aside={{width: 300, breakpoint: "sm", collapsed: {mobile: !openedSettings}}}
+            navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !openedEditComponent}}}
             padding="md"
         >
             <AppShell.Header>
                 <Group>
-                    <Burger
-                        opened={opened}
-                        onClick={toggle}
-                        hiddenFrom="sm"
-                        size="sm"
-                    />
                     <div>Logo</div>
                     <Button leftSection={<IconArrowLeft/>} onClick={() => navigate("/home")}>Go Back</Button>
                     <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}>Save</Button>
-
+                    <Button leftSection={<IconDeviceFloppy/>} onClick={toggleOpenedSettings}>Settings</Button>
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar>
-                <Stack>
+                {editComponent && (
+                    <EditComponentSection
+                        component={editComponent}
+                        onEditComponent={onEditComponent}
+                        onOk={toggleOpenedEditComponent}
+                    />
+                )}
+            </AppShell.Navbar>
+            <AppShell.Aside>
+                <Stack p="sm">
+                    <Title order={3}>Settings</Title>
                     <TextInput
                         label="Title"
                         value={title}
@@ -95,12 +102,9 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                         value={description}
                         onChange={(event) => setDescription(event.currentTarget.value)}
                     />
-                    {editComponent && (
-                        <EditComponentSection component={editComponent} onEditComponent={onEditComponent}
-                                              onOk={toggle}/>
-                    )}
                 </Stack>
-            </AppShell.Navbar>
+
+            </AppShell.Aside>
             <AppShell.Main>
                 <ComponentsSection
                     portfolio={portfolioState}
