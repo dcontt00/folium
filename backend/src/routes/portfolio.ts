@@ -22,14 +22,26 @@ router.post("/", authenticate, async (req, res) => {
         }
 
 
-        await portfolioModel.create({
+        const newPortfolio = await portfolioModel.create({
             url: req.body.url,
             title: req.body.title,
             description: req.body.description,
             user: user.id,
-        }).then((portfolio) => {
-            res.status(201).json({
-                status: 201,
+        })
+
+        const newTextComponent = await textComponentModel.create({
+            index: 0,
+            text: "Welcome to your new portfolio",
+            portfolio_id: newPortfolio._id
+        })
+
+        await portfolioModel.findOneAndUpdate(
+            {url: newPortfolio.url, user: user.id},
+            {...req.body, components: [newTextComponent._id]},
+            {new: true}
+        ).populate("components").then((portfolio) => {
+            res.status(200).json({
+                status: 200,
                 success: true,
                 data: portfolio,
             });
