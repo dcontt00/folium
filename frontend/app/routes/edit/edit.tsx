@@ -1,12 +1,14 @@
-import {AppShell, Burger, Button, Group, Stack, Textarea, TextInput, Title} from "@mantine/core";
-import type {Route} from "../../../.react-router/types/app/routes";
+import {AppShell, Burger, Button, Group, Stack, Textarea, TextInput} from "@mantine/core";
 import axios from "axios";
 import {IconArrowLeft, IconDeviceFloppy} from "@tabler/icons-react"
 
-import type Portfolio from "../../../../common/interfaces/portfolio";
+import type {ComponentType, Portfolio} from "../../../../common/interfaces/interfaces";
 import {useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
-import EditComponentsSection from "~/routes/edit/EditComponentsSection";
+import ComponentsSection from "~/routes/edit/ComponentsSection";
+import {useNavigate} from "react-router";
+import type {Route} from "../+types";
+import EditComponentSection from "~/routes/edit/EditComponentSection";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
@@ -32,6 +34,19 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const [description, setDescription] = useState(portfolioState.description);
     const [title, setTitle] = useState(portfolioState.title);
     const [opened, {toggle}] = useDisclosure();
+    const navigate = useNavigate();
+    const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
+
+
+    function onEditComponent(component: ComponentType) {
+        setEditComponent(component);
+
+        // Update the component in the portfolio
+        const index = portfolioState.components.findIndex((c) => c._id === component._id);
+        const newPortfolio = {...portfolioState};
+        newPortfolio.components[index] = component;
+        setPortfolioState(newPortfolio);
+    }
 
 
     return (
@@ -48,9 +63,10 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                         hiddenFrom="sm"
                         size="sm"
                     />
-                    <Button leftSection={<IconArrowLeft/>} onClick={() => console.log("Go Back")}>Go Back</Button>
-                    <Button leftSection={<IconDeviceFloppy/>} onClick={() => console.log("Save")}>Save</Button>
                     <div>Logo</div>
+                    <Button leftSection={<IconArrowLeft/>} onClick={() => navigate("/home")}>Go Back</Button>
+                    <Button leftSection={<IconDeviceFloppy/>} onClick={() => console.log("Save")}>Save</Button>
+
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar>
@@ -65,12 +81,20 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                         value={description}
                         onChange={(event) => setDescription(event.currentTarget.value)}
                     />
-                    <Title order={3}>Components</Title>
-                    <Button>TextComponent</Button>
+
+
+                    {editComponent && (
+                        <EditComponentSection component={editComponent} onEditComponent={onEditComponent}/>
+                    )}
                 </Stack>
             </AppShell.Navbar>
             <AppShell.Main>
-                <EditComponentsSection portfolio={portfolioState} setPortfolio={setPortfolioState}/>
+                <ComponentsSection
+                    portfolio={portfolioState}
+                    setPortfolio={setPortfolioState}
+                    editComponent={editComponent}
+                    setEditComponent={setEditComponent}
+                />
 
             </AppShell.Main>
 
