@@ -10,7 +10,6 @@ import {Stack} from "@mantine/core";
 
 interface Props {
     portfolio: Portfolio;
-    setPortfolio: (portfolio: Portfolio) => void;
     editComponent: ComponentType | undefined,
     setEditComponent: (component: ComponentType | undefined) => void;
 }
@@ -24,13 +23,13 @@ function renderComponent(component: any, setEditComponent: (component: Component
 
         case "ButtonComponent":
             const buttonComponent = component as ButtonComponentType;
-            return <ButtonComponent {...buttonComponent} edit={false}/>
+            return <ButtonComponent buttonComponent={buttonComponent} setEditComponent={setEditComponent}/>
         default:
             return <div>Component not found</div>
     }
 }
 
-export default function ComponentsSection({portfolio, setPortfolio, editComponent, setEditComponent}: Props) {
+export default function ComponentsSection({portfolio, setEditComponent}: Props) {
     return (
         <div>
             <Stack align="center">

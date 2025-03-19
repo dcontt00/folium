@@ -20,7 +20,9 @@ export default function TextComponent({textComponent, edit, setEditComponent}: T
                         <ActionIcon
                             variant="filled"
                             aria-label="Settings"
-                            onClick={() => setEditComponent(textComponent)}
+                            onClick={() =>
+                                setEditComponent(textComponent)
+                            }
                         >
                             <IconAdjustments style={{width: '70%', height: '70%'}} stroke={1.5}/>
                         </ActionIcon>

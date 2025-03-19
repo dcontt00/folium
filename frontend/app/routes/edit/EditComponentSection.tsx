@@ -1,6 +1,6 @@
-import ButtonComponent from "~/components/ButtonComponent";
 import type {ButtonComponentType, ComponentType, TextComponentType} from "../../../../common/interfaces/interfaces";
 import EditTextComponent from "~/routes/edit/EditTextComponent";
+import EditButtonComponent from "~/routes/edit/EditButtonComponent";
 
 
 interface Props {
@@ -19,7 +19,7 @@ export default function EditComponentSection({component, onEditComponent}: Props
 
             case "ButtonComponent":
                 const buttonComponent = component as ButtonComponentType;
-                return <ButtonComponent {...buttonComponent} edit={false}/>
+                return <EditButtonComponent component={buttonComponent} onEditComponent={onEditComponent}/>
             default:
                 return <div>Component not found</div>
         }

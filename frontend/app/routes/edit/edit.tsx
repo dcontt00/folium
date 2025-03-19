@@ -33,12 +33,14 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 
     const [description, setDescription] = useState(portfolioState.description);
     const [title, setTitle] = useState(portfolioState.title);
-    const [opened, {toggle}] = useDisclosure();
+    const [opened, {toggle}] = useDisclosure(false);
     const navigate = useNavigate();
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
 
 
     function onEditComponent(component: ComponentType) {
+        toggle()
+
         setEditComponent(component);
 
         // Update the component in the portfolio
@@ -100,7 +102,6 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             <AppShell.Main>
                 <ComponentsSection
                     portfolio={portfolioState}
-                    setPortfolio={setPortfolioState}
                     editComponent={editComponent}
                     setEditComponent={setEditComponent}
                 />
