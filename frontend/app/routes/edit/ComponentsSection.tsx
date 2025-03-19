@@ -10,31 +10,30 @@ import {Stack} from "@mantine/core";
 
 interface Props {
     portfolio: Portfolio;
-    editComponent: ComponentType | undefined,
-    setEditComponent: (component: ComponentType | undefined) => void;
+    onSelectEditComponent: (component: ComponentType) => void;
 }
 
-function renderComponent(component: any, setEditComponent: (component: ComponentType) => void) {
+function renderComponent(component: any, onSelectEditComponent: (component: ComponentType) => void) {
 
     switch (component.__t) {
         case "TextComponent":
             const textComponent = component as TextComponentType;
-            return <TextComponent textComponent={textComponent} edit={false} setEditComponent={setEditComponent}/>
+            return <TextComponent textComponent={textComponent} onSelectEditComponent={onSelectEditComponent}/>
 
         case "ButtonComponent":
             const buttonComponent = component as ButtonComponentType;
-            return <ButtonComponent buttonComponent={buttonComponent} setEditComponent={setEditComponent}/>
+            return <ButtonComponent buttonComponent={buttonComponent} onSelectEditComponent={onSelectEditComponent}/>
         default:
             return <div>Component not found</div>
     }
 }
 
-export default function ComponentsSection({portfolio, setEditComponent}: Props) {
+export default function ComponentsSection({portfolio, onSelectEditComponent}: Props) {
     return (
         <div>
             <Stack align="center">
                 {portfolio.components.map((component, index) => (
-                    <div key={index}>{renderComponent(component, setEditComponent)}</div>
+                    <div key={index}>{renderComponent(component, onSelectEditComponent)}</div>
                 ))}
             </Stack>
         </div>

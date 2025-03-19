@@ -39,8 +39,6 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 
 
     function onEditComponent(component: ComponentType) {
-        toggle()
-
         setEditComponent(component);
 
         // Update the component in the portfolio
@@ -48,6 +46,11 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         const newPortfolio = {...portfolioState};
         newPortfolio.components[index] = component;
         setPortfolioState(newPortfolio);
+    }
+
+    function onSelecEditComponent(component: ComponentType) {
+        setEditComponent(component);
+        toggle()
     }
 
     async function onSave() {
@@ -92,18 +95,16 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                         value={description}
                         onChange={(event) => setDescription(event.currentTarget.value)}
                     />
-
-
                     {editComponent && (
-                        <EditComponentSection component={editComponent} onEditComponent={onEditComponent}/>
+                        <EditComponentSection component={editComponent} onEditComponent={onEditComponent}
+                                              onOk={toggle}/>
                     )}
                 </Stack>
             </AppShell.Navbar>
             <AppShell.Main>
                 <ComponentsSection
                     portfolio={portfolioState}
-                    editComponent={editComponent}
-                    setEditComponent={setEditComponent}
+                    onSelectEditComponent={onSelecEditComponent}
                 />
 
             </AppShell.Main>

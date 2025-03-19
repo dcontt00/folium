@@ -1,5 +1,5 @@
 import type {TextComponentType} from "../../../../common/interfaces/interfaces";
-import {Button, Stack, Textarea} from "@mantine/core";
+import {Textarea} from "@mantine/core";
 import {useState} from "react";
 
 
@@ -19,13 +19,10 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
     }
 
     return (
-        <Stack>
-            <Textarea
-                label="Text"
-                value={value}
-                onChange={(event) => onChange(event)}
-            />
-            <Button>Ok</Button>
-        </Stack>
+        <Textarea
+            label="Text"
+            value={value}
+            onChange={(event) => onChange(event)}
+        />
     )
 }

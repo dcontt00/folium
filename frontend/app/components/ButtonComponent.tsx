@@ -4,10 +4,10 @@ import type {ButtonComponentType} from "../../../common/interfaces/interfaces";
 
 interface TextComponentProps {
     buttonComponent: ButtonComponentType;
-    setEditComponent: (component: ButtonComponentType) => void;
+    onSelectEditComponent: (component: ButtonComponentType) => void;
 }
 
-export default function ButtonComponent({buttonComponent, setEditComponent}: TextComponentProps) {
+export default function ButtonComponent({buttonComponent, onSelectEditComponent}: TextComponentProps) {
 
     return (
         <>
@@ -17,8 +17,7 @@ export default function ButtonComponent({buttonComponent, setEditComponent}: Tex
                         variant="filled"
                         aria-label="Settings"
                         onClick={() => {
-                            console.log(buttonComponent);
-                            setEditComponent(buttonComponent)
+                            onSelectEditComponent(buttonComponent)
                         }}
                     >
                         <IconAdjustments style={{width: '70%', height: '70%'}} stroke={1.5}/>
