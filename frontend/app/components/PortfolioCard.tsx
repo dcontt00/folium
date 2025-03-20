@@ -1,16 +1,20 @@
 import {Button, Card, Group, Image, Stack, Text} from "@mantine/core";
 import {IconEdit, IconExternalLink, IconTrash} from "@tabler/icons-react";
 import {useNavigate} from "react-router";
+import {useDisclosure} from "@mantine/hooks";
+import DeletePortfolioModal from "~/components/DeletePortfolioModal";
 
 interface PortfolioCardProps {
     title: string;
     description: string;
     url: string;
-    onDelete: (url: string) => void;
 }
 
-export default function PortfolioCard({title, description, url, onDelete}: PortfolioCardProps) {
+export default function PortfolioCard({title, description, url}: PortfolioCardProps) {
     const navigate = useNavigate();
+    const [opened, {open, close}] = useDisclosure();
+
+
     return (
         <Card
             shadow="sm"
@@ -51,12 +55,14 @@ export default function PortfolioCard({title, description, url, onDelete}: Portf
                     <Button
                         variant="danger"
                         leftSection={<IconTrash size={14}/>}
-                        onClick={() => onDelete(url)}
+                        onClick={() => open}
                     >
                         Remove
                     </Button>
                 </Group>
             </Stack>
+            <DeletePortfolioModal opened={opened} close={close}
+                                  portfolioUrl={url}/>
         </Card>
     );
 }

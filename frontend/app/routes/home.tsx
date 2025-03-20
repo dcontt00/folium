@@ -5,8 +5,6 @@ import axios from "axios";
 import PortfolioCard from "~/components/PortfolioCard";
 import Logo from "~/Logo.svg";
 import NewPortfolioModal from "~/components/NewPortfolioModal";
-import DeletePortfolioModal from "~/components/DeletePortfolioModal";
-import {useState} from "react";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -36,16 +34,6 @@ export function HydrateFallback() {
 export default function Home({loaderData}: Route.ComponentProps) {
     const [openedBurger, {toggle}] = useDisclosure();
     const [openedNewPortfolioModal, {open: openNewPortfolioModal, close: closeNewPortfolioModal}] = useDisclosure();
-    const [openedDeletePortfolioModal, {
-        open: openDeletePortfolioModal,
-        close: closeDeletePortfolioModal
-    }] = useDisclosure();
-    const [portfolioToDelete, setPortfolioToDelete] = useState<string>("");
-
-    function onDeletePortfolio(url: String) {
-        setPortfolioToDelete(url);
-        openDeletePortfolioModal();
-    }
 
 
     const portfolios: Array<Portfolio> = loaderData;
@@ -80,7 +68,6 @@ export default function Home({loaderData}: Route.ComponentProps) {
                                         title={portfolio.title}
                                         description={portfolio.description}
                                         url={portfolio.url}
-                                        onDelete={onDeletePortfolio}
                                     />
                                 ))
                             }
@@ -89,8 +76,6 @@ export default function Home({loaderData}: Route.ComponentProps) {
                 </AppShell.Main>
             </AppShell>
             <NewPortfolioModal opened={openedNewPortfolioModal} close={closeNewPortfolioModal}/>
-            <DeletePortfolioModal opened={openedDeletePortfolioModal} close={closeDeletePortfolioModal}
-                                  portfolioUrl={portfolioToDelete}/>
         </>
     );
 }
