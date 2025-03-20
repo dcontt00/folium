@@ -4,12 +4,14 @@ import axios from 'axios';
 interface Props {
     opened: boolean;
     close: () => void;
-    portfolioUrl: string
+    portfolioUrl: string,
+    onDelete: () => Promise<void>;
 }
 
-export default function DeletePortfolioModal({opened, close, portfolioUrl}: Props) {
-    async function onDelete() {
+export default function DeletePortfolioModal({opened, close, portfolioUrl, onDelete}: Props) {
+    async function deletePortfolio() {
         await axios.delete(`http://localhost:3000/portfolio/${portfolioUrl}`, {withCredentials: true});
+        await onDelete();
         close();
     }
 
@@ -19,7 +21,7 @@ export default function DeletePortfolioModal({opened, close, portfolioUrl}: Prop
                 <Stack>
                     Are you sure you want to delete this portfolio?
                     <Group>
-                        <Button variant="danger" onClick={onDelete}>Delete</Button>
+                        <Button variant="danger" onClick={deletePortfolio}>Delete</Button>
                         <Button variant="outline" onClick={close}>Cancel</Button>
                     </Group>
                 </Stack>

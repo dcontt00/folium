@@ -8,9 +8,10 @@ interface PortfolioCardProps {
     title: string;
     description: string;
     url: string;
+    onDelete: () => Promise<void>;
 }
 
-export default function PortfolioCard({title, description, url}: PortfolioCardProps) {
+export default function PortfolioCard({title, description, url, onDelete}: PortfolioCardProps) {
     const navigate = useNavigate();
     const [opened, {open, close}] = useDisclosure();
 
@@ -55,14 +56,18 @@ export default function PortfolioCard({title, description, url}: PortfolioCardPr
                     <Button
                         variant="danger"
                         leftSection={<IconTrash size={14}/>}
-                        onClick={() => open}
+                        onClick={open}
                     >
                         Remove
                     </Button>
                 </Group>
             </Stack>
-            <DeletePortfolioModal opened={opened} close={close}
-                                  portfolioUrl={url}/>
+            <DeletePortfolioModal
+                opened={opened}
+                close={close}
+                portfolioUrl={url}
+                onDelete={onDelete}
+            />
         </Card>
     );
 }

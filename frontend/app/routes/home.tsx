@@ -5,6 +5,7 @@ import axios from "axios";
 import PortfolioCard from "~/components/PortfolioCard";
 import Logo from "~/Logo.svg";
 import NewPortfolioModal from "~/components/NewPortfolioModal";
+import {useFetcher} from "react-router";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -34,9 +35,13 @@ export function HydrateFallback() {
 export default function Home({loaderData}: Route.ComponentProps) {
     const [openedBurger, {toggle}] = useDisclosure();
     const [openedNewPortfolioModal, {open: openNewPortfolioModal, close: closeNewPortfolioModal}] = useDisclosure();
+    const fetcher = useFetcher();
 
+    async function handleDelete() {
+        await fetcher.load("/home")
+    }
 
-    const portfolios: Array<Portfolio> = loaderData;
+    const portfolios: Array<Portfolio> = fetcher.data || loaderData;
     return (
         <>
             <AppShell
@@ -68,6 +73,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
                                         title={portfolio.title}
                                         description={portfolio.description}
                                         url={portfolio.url}
+                                        onDelete={() => handleDelete()}
                                     />
                                 ))
                             }
