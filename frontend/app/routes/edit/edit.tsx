@@ -95,7 +95,8 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 <Group h="100%" px="md">
                     <Avatar src={Logo} radius="xs"/>
                     <Button leftSection={<IconArrowLeft/>} onClick={onBack}>Go Back</Button>
-                    <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}>Save</Button>
+                    <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}
+                            variant={edited ? "outline" : "filled"}>Save</Button>
                     <Button leftSection={<IconSettings/>} onClick={toggleOpenedSettings}>Settings</Button>
                 </Group>
             </AppShell.Header>
