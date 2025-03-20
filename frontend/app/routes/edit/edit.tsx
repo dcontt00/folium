@@ -30,6 +30,10 @@ export function HydrateFallback() {
 }
 
 export default function Edit({loaderData}: Route.ComponentProps) {
+    if (!loaderData) {
+        return <div>Error: Portfolio data not found</div>;
+    }
+
     const portfolio: Portfolio = loaderData;
     const [portfolioState, setPortfolioState] = useState(portfolio);
 
