@@ -10,6 +10,7 @@ import {data, useNavigate} from "react-router";
 import type {Route} from "../+types";
 import EditComponentSection from "~/routes/edit/EditComponentSection";
 import Logo from "app/Logo.svg";
+import ConfirmModal from "~/components/ConfirmModal";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
@@ -36,6 +37,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const [title, setTitle] = useState(portfolioState.title);
     const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
     const [openedSettings, {toggle: toggleOpenedSettings}] = useDisclosure(false);
+    const [openedBackModal, {open: openBackModal, close: closeBackModal}] = useDisclosure(false);
     const [edited, setEdited] = useState(false); // Use to check if the portfolio has been edited
 
     const navigate = useNavigate();
@@ -69,6 +71,14 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         });
     }
 
+    function onBack() {
+        if (edited) {
+            openBackModal();
+        } else {
+            navigate("/home");
+        }
+    }
+
 
     return (
         <AppShell
@@ -80,7 +90,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             <AppShell.Header>
                 <Group h="100%" px="md">
                     <Avatar src={Logo} radius="xs"/>
-                    <Button leftSection={<IconArrowLeft/>} onClick={() => navigate("/home")}>Go Back</Button>
+                    <Button leftSection={<IconArrowLeft/>} onClick={onBack}>Go Back</Button>
                     <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}>Save</Button>
                     <Button leftSection={<IconSettings/>} onClick={toggleOpenedSettings}>Settings</Button>
                 </Group>
@@ -125,6 +135,9 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 />
 
             </AppShell.Main>
+
+            <ConfirmModal opened={openedBackModal} text="You have unsaved changes. Want to continue?"
+                          close={closeBackModal} onOk={() => navigate("/home")}/>
 
         </AppShell>
     )
