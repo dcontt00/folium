@@ -1,29 +1,19 @@
-import {ActionIcon, Indicator, Text} from "@mantine/core";
-import {IconAdjustments} from "@tabler/icons-react";
+import BaseComponent from "./BaseComponent";
 import type {TextComponentType} from "../../../../common/interfaces/interfaces";
+
+
+import {Text} from "@mantine/core";
 
 interface TextComponentProps {
     textComponent: TextComponentType;
     onSelectEditComponent: (component: TextComponentType) => void;
+    selectable?: boolean;
 }
 
-export default function TextComponent({textComponent, onSelectEditComponent}: TextComponentProps) {
+export default function TextComponent({textComponent, onSelectEditComponent, selectable = false}: TextComponentProps) {
     return (
-        <Indicator
-            label={
-                <ActionIcon
-                    variant="filled"
-                    aria-label="Settings"
-                    onClick={() =>
-                        onSelectEditComponent(textComponent)
-                    }
-                >
-                    <IconAdjustments style={{width: '70%', height: '70%'}} stroke={1.5}/>
-                </ActionIcon>
-            }
-            color="transparent"
-        >
+        <BaseComponent component={textComponent} onSelectEditComponent={onSelectEditComponent} selectable={selectable}>
             <Text>{textComponent.text}</Text>
-        </Indicator>
+        </BaseComponent>
     )
 }

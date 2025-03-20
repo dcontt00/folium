@@ -18,11 +18,13 @@ function renderComponent(component: any, onSelectEditComponent: (component: Comp
     switch (component.__t) {
         case "TextComponent":
             const textComponent = component as TextComponentType;
-            return <TextComponent textComponent={textComponent} onSelectEditComponent={onSelectEditComponent}/>
+            return <TextComponent textComponent={textComponent} onSelectEditComponent={onSelectEditComponent}
+                                  selectable/>
 
         case "ButtonComponent":
             const buttonComponent = component as ButtonComponentType;
-            return <ButtonComponent buttonComponent={buttonComponent} onSelectEditComponent={onSelectEditComponent}/>
+            return <ButtonComponent buttonComponent={buttonComponent} onSelectEditComponent={onSelectEditComponent}
+                                    selectable/>
         default:
             return <div>Component not found</div>
     }

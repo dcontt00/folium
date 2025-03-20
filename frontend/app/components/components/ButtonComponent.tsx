@@ -1,37 +1,28 @@
-import {ActionIcon, Button, Indicator} from "@mantine/core";
-import {IconAdjustments} from "@tabler/icons-react";
+import {Button} from "@mantine/core";
 import type {ButtonComponentType} from "../../../../common/interfaces/interfaces";
+import BaseComponent from "~/components/components/BaseComponent";
 
 interface TextComponentProps {
     buttonComponent: ButtonComponentType;
     onSelectEditComponent: (component: ButtonComponentType) => void;
+    selectable?: boolean;
 }
 
-export default function ButtonComponent({buttonComponent, onSelectEditComponent}: TextComponentProps) {
+export default function ButtonComponent({
+                                            buttonComponent,
+                                            onSelectEditComponent,
+                                            selectable = false
+                                        }: TextComponentProps) {
 
     return (
-        <>
-            <Indicator
-                label={
-                    <ActionIcon
-                        variant="filled"
-                        aria-label="Settings"
-                        onClick={() => {
-                            onSelectEditComponent(buttonComponent)
-                        }}
-                    >
-                        <IconAdjustments style={{width: '70%', height: '70%'}} stroke={1.5}/>
-                    </ActionIcon>
-                }
-                color="transparent"
+        <BaseComponent component={buttonComponent} onSelectEditComponent={onSelectEditComponent}
+                       selectable={selectable}>
+            <Button
+                color={buttonComponent.color}
+                onClick={() => window.location.href = buttonComponent.url}
             >
-                <Button
-                    color={buttonComponent.color}
-                    onClick={() => window.location.href = buttonComponent.url}
-                >
-                    {buttonComponent.text}
-                </Button>
-            </Indicator>
-        </>
+                {buttonComponent.text}
+            </Button>
+        </BaseComponent>
     )
 }
