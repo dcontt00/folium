@@ -42,7 +42,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
     const [openedSettings, {toggle: toggleOpenedSettings}] = useDisclosure(false);
     const [openedBackModal, {open: openBackModal, close: closeBackModal}] = useDisclosure(false);
-    const [edited, setEdited] = useState(false); // Use to check if the portfolio has been edited
+    const [unsaved, setUnsaved] = useState(false); // Use to check if the portfolio has been edited
 
     const navigate = useNavigate();
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
@@ -56,7 +56,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         const newPortfolio = {...portfolioState};
         newPortfolio.components[index] = component;
         setPortfolioState(newPortfolio);
-        setEdited(true);
+        setUnsaved(true);
     }
 
     function onSelectEditComponent(component: ComponentType) {
@@ -73,16 +73,16 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         }).catch((error) => {
             console.log(error);
         });
+        setUnsaved(false);
     }
 
     function onBack() {
-        if (edited) {
+        if (unsaved) {
             openBackModal();
         } else {
             navigate("/home");
         }
     }
-
 
     return (
         <AppShell
@@ -96,7 +96,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     <Avatar src={Logo} radius="xs"/>
                     <Button leftSection={<IconArrowLeft/>} onClick={onBack}>Go Back</Button>
                     <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}
-                            variant={edited ? "outline" : "filled"}>Save</Button>
+                            variant={unsaved ? "outline" : "filled"}>Save</Button>
                     <Button leftSection={<IconSettings/>} onClick={toggleOpenedSettings}>Settings</Button>
                 </Group>
             </AppShell.Header>
@@ -123,12 +123,18 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     <TextInput
                         label="Title"
                         value={title}
-                        onChange={(event) => setTitle(event.currentTarget.value)}
+                        onChange={(event) => {
+                            setTitle(event.currentTarget.value)
+                            setUnsaved(true);
+                        }}
                     />
                     <Textarea
                         label="Description"
                         value={description}
-                        onChange={(event) => setDescription(event.currentTarget.value)}
+                        onChange={(event) => {
+                            setDescription(event.currentTarget.value)
+                            setUnsaved(true);
+                        }}
                     />
                 </Stack>
 
