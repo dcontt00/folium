@@ -47,6 +47,11 @@ export default function Home({loaderData}: Route.ComponentProps) {
         await fetcher.load("/home")
     }
 
+    async function deletePortfolio(portfolioUrl: string) {
+        await axios.delete(`http://localhost:3000/portfolio/${portfolioUrl}`, {withCredentials: true});
+        await fetcher.load("/home")
+    }
+
     const portfolios: Array<Portfolio> = fetcher.data || loaderData;
     return (
         <>

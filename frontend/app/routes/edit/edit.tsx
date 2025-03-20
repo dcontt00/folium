@@ -36,6 +36,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const [title, setTitle] = useState(portfolioState.title);
     const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
     const [openedSettings, {toggle: toggleOpenedSettings}] = useDisclosure(false);
+    const [edited, setEdited] = useState(false); // Use to check if the portfolio has been edited
 
     const navigate = useNavigate();
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
@@ -49,9 +50,10 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         const newPortfolio = {...portfolioState};
         newPortfolio.components[index] = component;
         setPortfolioState(newPortfolio);
+        setEdited(true);
     }
 
-    function onSelecEditComponent(component: ComponentType) {
+    function onSelectEditComponent(component: ComponentType) {
         setEditComponent(component);
         toggleOpenedEditComponent()
     }
@@ -119,7 +121,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             <AppShell.Main>
                 <ComponentsSection
                     portfolio={portfolioState}
-                    onSelectEditComponent={onSelecEditComponent}
+                    onSelectEditComponent={onSelectEditComponent}
                 />
 
             </AppShell.Main>

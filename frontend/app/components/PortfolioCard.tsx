@@ -2,7 +2,8 @@ import {Button, Card, Group, Image, Stack, Text} from "@mantine/core";
 import {IconEdit, IconExternalLink, IconTrash} from "@tabler/icons-react";
 import {useNavigate} from "react-router";
 import {useDisclosure} from "@mantine/hooks";
-import DeletePortfolioModal from "~/components/DeletePortfolioModal";
+import ConfirmModal from "~/components/ConfirmModal";
+import axios from "axios";
 
 interface PortfolioCardProps {
     title: string;
@@ -14,6 +15,12 @@ interface PortfolioCardProps {
 export default function PortfolioCard({title, description, url, onDelete}: PortfolioCardProps) {
     const navigate = useNavigate();
     const [opened, {open, close}] = useDisclosure();
+
+    async function deletePortfolio(portfolioUrl: string) {
+        await axios.delete(`http://localhost:3000/portfolio/${portfolioUrl}`, {withCredentials: true});
+        await onDelete();
+        close();
+    }
 
 
     return (
@@ -62,11 +69,11 @@ export default function PortfolioCard({title, description, url, onDelete}: Portf
                     </Button>
                 </Group>
             </Stack>
-            <DeletePortfolioModal
+            <ConfirmModal
+                text="Are you sure you want to delete this portfolio?"
                 opened={opened}
                 close={close}
-                portfolioUrl={url}
-                onDelete={onDelete}
+                onOk={() => deletePortfolio(url)}
             />
         </Card>
     );
