@@ -1,25 +1,25 @@
 import {Alert, AppShell, Avatar, Button, Group, Stack, Textarea, TextInput, Title} from "@mantine/core";
-import axios from "axios";
+import axios, {type AxiosResponse} from "axios";
 import {IconArrowLeft, IconDeviceFloppy, IconInfoCircle, IconSettings} from "@tabler/icons-react"
 
 import type {ComponentType, Portfolio} from "../../../../common/interfaces/interfaces";
 import {useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import ComponentsSection from "~/routes/edit/ComponentsSection";
-import {useNavigate} from "react-router";
+import {data, useNavigate} from "react-router";
 import type {Route} from "../+types";
 import EditComponentSection from "~/routes/edit/EditComponentSection";
 import Logo from "app/Logo.svg";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
-    console.log(`http://localhost:3000/portfolio/${params.url}`)
-    const portfolio: Portfolio = await axios.get(`http://localhost:3000/portfolio/${params.url}`, {withCredentials: true}).then((response) => {
-        return response.data.data;
-    }).catch((error) => {
-        console.log(error);
-    });
-    console.log(portfolio)
+    const portfolio: Portfolio = await axios.get(`http://localhost:3000/portfolio/${params.url}`, {withCredentials: true})
+        .then((response: AxiosResponse) => {
+            return response.data.data;
+        }).catch((error) => {
+            const responseError = error.response
+            throw data(responseError.data.message, {status: responseError.status});
+        });
     return portfolio
 }
 

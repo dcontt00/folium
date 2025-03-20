@@ -35,8 +35,7 @@ export const authenticate = asyncHandler(
 
             req.user = {id, name, email};
             next();
-        } catch (e) {
-            res.status(401);
+        } catch (e: any) {
             throw new AuthenticationError("Not authorized, invalid token");
         }
     }

@@ -1,11 +1,11 @@
 import type {Route} from "./+types/home";
 import {AppShell, Avatar, Burger, Button, Flex, Group, Stack, Text, Title} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
-import axios from "axios";
+import axios, {type AxiosResponse} from "axios";
 import PortfolioCard from "~/components/PortfolioCard";
 import Logo from "~/Logo.svg";
 import NewPortfolioModal from "~/components/NewPortfolioModal";
-import {useFetcher} from "react-router";
+import {data, useFetcher} from "react-router";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -21,9 +21,15 @@ interface Portfolio {
 }
 
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
-    const res = await axios.get(`http://localhost:3000/portfolio`, {withCredentials: true});
-    const portfolios: Array<Portfolio> = res.data.data;
-    return portfolios;
+    const response: Array<Portfolio> = await axios.get(`http://localhost:3000/portfolio`, {withCredentials: true})
+        .then((response: AxiosResponse) => {
+            return response.data.data;
+        })
+        .catch(error => {
+            const responseError = error.response
+            throw data(responseError.data.message, {status: responseError.status});
+        })
+    return response;
 }
 
 
