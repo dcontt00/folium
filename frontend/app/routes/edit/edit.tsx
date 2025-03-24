@@ -5,12 +5,12 @@ import {IconArrowLeft, IconDeviceFloppy, IconInfoCircle, IconSettings} from "@ta
 import type {ComponentType, Portfolio} from "../../../../common/interfaces/interfaces";
 import {useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
-import ComponentsSection from "~/routes/edit/ComponentsSection";
 import {data, useNavigate} from "react-router";
 import type {Route} from "../+types";
 import EditComponentSection from "~/routes/edit/EditComponentSection";
 import Logo from "app/Logo.svg";
 import ConfirmModal from "~/components/ConfirmModal";
+import Component from "~/components/components/Component";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
@@ -140,10 +140,19 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 
             </AppShell.Aside>
             <AppShell.Main>
-                <ComponentsSection
-                    portfolio={portfolioState}
-                    onSelectEditComponent={onSelectEditComponent}
-                />
+                <div>
+                    <Stack align="center">
+                        {portfolio.components.map((component, index) => (
+                            <div
+                                style={{backgroundColor: "blue", padding: "1em"}}
+                                onClick={() => onSelectEditComponent(component)}
+                                key={index}
+                            >
+                                <Component component={component}/>
+                            </div>
+                        ))}
+                    </Stack>
+                </div>
 
             </AppShell.Main>
 
