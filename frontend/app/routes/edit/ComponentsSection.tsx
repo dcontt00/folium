@@ -35,7 +35,9 @@ export default function ComponentsSection({portfolio, onSelectEditComponent}: Pr
         <div>
             <Stack align="center">
                 {portfolio.components.map((component, index) => (
-                    <div key={index}>{renderComponent(component, onSelectEditComponent)}</div>
+                    <div style={{backgroundColor: "blue", padding: "1em"}}
+                         onClick={() => onSelectEditComponent(component)}
+                         key={index}>{renderComponent(component, onSelectEditComponent)}</div>
                 ))}
             </Stack>
         </div>
