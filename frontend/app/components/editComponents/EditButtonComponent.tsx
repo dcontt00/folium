@@ -1,6 +1,6 @@
 import type {ButtonComponentType} from "../../../../common/interfaces/interfaces";
 import {ColorInput, Stack, TextInput} from "@mantine/core";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 
 interface Props {
@@ -12,6 +12,12 @@ export default function EditButtonComponent({component, onEditComponent}: Props)
     const [text, setText] = useState(component.text);
     const [url, setUrl] = useState(component.url);
     const [color, setColor] = useState(component.color);
+
+    useEffect(() => {
+        setColor(component.color);
+        setText(component.text);
+        setUrl(component.url);
+    }, [component]);
 
     function onTextChange(event: any) {
         setText(event.target.value);

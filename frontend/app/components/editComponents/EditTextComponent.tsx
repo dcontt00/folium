@@ -1,6 +1,6 @@
 import type {TextComponentType} from "../../../../common/interfaces/interfaces";
 import {Textarea} from "@mantine/core";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 
 interface Props {
@@ -10,6 +10,10 @@ interface Props {
 
 export default function EditTextComponent({component, onEditComponent}: Props) {
     const [value, setValue] = useState(component.text);
+    useEffect(() => {
+        // Update local state when the component prop changes
+        setValue(component.text);
+    }, [component]);
 
     function onChange(event: any) {
         setValue(event.target.value);
