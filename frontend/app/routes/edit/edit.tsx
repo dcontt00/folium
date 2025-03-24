@@ -12,6 +12,7 @@ import Logo from "app/Logo.svg";
 import ConfirmModal from "~/components/ConfirmModal";
 import Component from "~/components/components/Component";
 import "./styles.css"
+import AddComponentMenu from "~/routes/edit/AddComponentMenu";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
@@ -60,6 +61,19 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         setUnsaved(true);
     }
 
+    function onRemoveComponent(component: ComponentType) {
+        const index = portfolioState.components.findIndex((c) => c._id === component._id);
+        const newPortfolio = {...portfolioState};
+        newPortfolio.components.splice(index, 1);
+
+        // Change index of the components
+        for (let i = index; i < newPortfolio.components.length; i++) {
+            newPortfolio.components[i].index = i;
+        }
+        setPortfolioState(newPortfolio);
+        setUnsaved(true);
+    }
+
     function onSelectEditComponent(component: ComponentType) {
         setEditComponent(component);
         toggleOpenedEditComponent()
@@ -85,6 +99,15 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         }
     }
 
+    function onAddComponent(component: ComponentType) {
+        const newPortfolio = {...portfolioState};
+        newPortfolio.components.push(component);
+        setPortfolioState(newPortfolio);
+        setUnsaved(true);
+        setEditComponent(portfolioState.components[portfolioState.components.length - 1]);
+
+    }
+
     return (
         <AppShell
             header={{height: 60}}
@@ -105,11 +128,13 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             </AppShell.Header>
             <AppShell.Navbar>
                 <Stack p="sm">
+                    <AddComponentMenu portfolio={portfolio} onAddComponent={onAddComponent}/>
 
                     {editComponent ? (
                             <EditComponentSection
                                 component={editComponent}
                                 onEditComponent={onEditComponent}
+                                onRemoveComponent={onRemoveComponent}
                             />
                         ) :
                         (
@@ -147,8 +172,8 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     <Stack align="center">
                         {portfolioState.components.map((component, index) => (
                             <div className="edit"
-                                onClick={() => onSelectEditComponent(component)}
-                                key={index}
+                                 onClick={() => onSelectEditComponent(component)}
+                                 key={index}
                             >
                                 <Component component={component}/>
                             </div>

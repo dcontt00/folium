@@ -1,14 +1,18 @@
 import type {ButtonComponentType, ComponentType, TextComponentType} from "../../../../common/interfaces/interfaces";
 import EditTextComponent from "~/components/editComponents/EditTextComponent";
 import EditButtonComponent from "~/components/editComponents/EditButtonComponent";
+import {Button} from "@mantine/core";
+import {IconTrash} from "@tabler/icons-react";
 
 
 interface Props {
     component: ComponentType;
     onEditComponent: (component: ComponentType) => void;
+    onRemoveComponent: (component: ComponentType) => void;
+
 }
 
-export default function EditComponentSection({component, onEditComponent}: Props) {
+export default function EditComponentSection({component, onEditComponent, onRemoveComponent}: Props) {
 
 
     function renderComponent(component: ComponentType, onEditComponent: (component: ComponentType) => void) {
@@ -27,7 +31,16 @@ export default function EditComponentSection({component, onEditComponent}: Props
 
 
     return (
-        renderComponent(component, onEditComponent)
+        <>
+            {renderComponent(component, onEditComponent)}
+            <Button
+                variant="danger"
+                leftSection={<IconTrash/>}
+                onClick={() => onRemoveComponent(component)}
+            >
+                Remove
+            </Button>
+        </>
     )
 
 
