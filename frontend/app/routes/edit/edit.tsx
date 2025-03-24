@@ -1,6 +1,6 @@
 import {Alert, AppShell, Avatar, Button, Group, Stack, Textarea, TextInput, Title} from "@mantine/core";
 import axios, {type AxiosResponse} from "axios";
-import {IconArrowLeft, IconDeviceFloppy, IconInfoCircle, IconSettings} from "@tabler/icons-react"
+import {IconArrowLeft, IconDeviceDesktop, IconDeviceFloppy, IconInfoCircle, IconSettings} from "@tabler/icons-react"
 
 import type {ComponentType, Portfolio} from "../../../../common/interfaces/interfaces";
 import {useState} from "react";
@@ -97,7 +97,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     <Button leftSection={<IconArrowLeft/>} onClick={onBack}>Go Back</Button>
                     <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}
                             variant={unsaved ? "outline" : "filled"}>Save</Button>
-                    <Button leftSection={<IconDeviceFloppy/>}
+                    <Button leftSection={<IconDeviceDesktop/>}
                             onClick={() => navigate(`/preview/${portfolio.url}`)}>Preview</Button>
                     <Button leftSection={<IconSettings/>} onClick={toggleOpenedSettings}>Settings</Button>
                 </Group>
