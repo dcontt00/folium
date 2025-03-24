@@ -11,6 +11,7 @@ import EditComponentSection from "~/routes/edit/EditComponentSection";
 import Logo from "app/Logo.svg";
 import ConfirmModal from "~/components/ConfirmModal";
 import Component from "~/components/components/Component";
+import "./styles.css"
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
@@ -145,8 +146,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 <div>
                     <Stack align="center">
                         {portfolioState.components.map((component, index) => (
-                            <div
-                                style={{backgroundColor: "blue", padding: "1em"}}
+                            <div className="edit"
                                 onClick={() => onSelectEditComponent(component)}
                                 key={index}
                             >
