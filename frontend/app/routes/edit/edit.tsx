@@ -97,6 +97,8 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     <Button leftSection={<IconArrowLeft/>} onClick={onBack}>Go Back</Button>
                     <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}
                             variant={unsaved ? "outline" : "filled"}>Save</Button>
+                    <Button leftSection={<IconDeviceFloppy/>}
+                            onClick={() => navigate(`/preview/${portfolio.url}`)}>Preview</Button>
                     <Button leftSection={<IconSettings/>} onClick={toggleOpenedSettings}>Settings</Button>
                 </Group>
             </AppShell.Header>
@@ -142,7 +144,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             <AppShell.Main>
                 <div>
                     <Stack align="center">
-                        {portfolio.components.map((component, index) => (
+                        {portfolioState.components.map((component, index) => (
                             <div
                                 style={{backgroundColor: "blue", padding: "1em"}}
                                 onClick={() => onSelectEditComponent(component)}
