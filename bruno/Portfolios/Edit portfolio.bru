@@ -5,29 +5,65 @@ meta {
 }
 
 put {
-  url: http://localhost:3000/portfolio/art-portfolio
+  url: http://localhost:3000/portfolio/test-portfolio
   body: json
   auth: none
 }
 
 body:json {
   {
-    "title": "Modified portfolio",
-    "description": "Portfolio about art",
-    "url": "art-portfolio",
-    
-    "components":[
+    "components": [
       {
         "__t": "TextComponent",
-        "index":0,
-        "text": "Texto 1"
+        "index": 0,
+        "text": "Welcome to My Art Portfolio"
+      },
+      {
+        "__t": "TextComponent",
+        "index": 1,
+        "text": "About Me"
+      },
+      {
+        "__t": "TextComponent",
+        "index": 2,
+        "text": "I am a passionate artist with a love for creating unique and expressive works of art. My journey in the world of art began at a young age, and over the years, I have honed my skills in various mediums including painting, drawing, and digital art."
+      },
+      {
+        "__t": "TextComponent",
+        "index": 3,
+        "text": "My Work"
+      },
+      {
+        "__t": "TextComponent",
+        "index": 4,
+        "text": "My portfolio showcases a diverse range of artworks that reflect my creativity and artistic vision. Each piece is a testament to my dedication to the craft and my desire to evoke emotions and tell stories through art."
+      },
+      {
+        "__t": "TextComponent",
+        "index": 5,
+        "text": "Gallery"
+      },
+       {
+        "__t": "ButtonComponent",
+        "index": 8,
+        "text": "Go to example.com",
+        "url": "https://example.com"
+      }
+      {
+        "__t": "TextComponent",
+        "index": 6,
+        "text": "Explore my collection of artworks below. Click on any image to view it in full size and learn more about the inspiration behind each piece."
+      },
+      {
+        "__t": "TextComponent",
+        "index": 7,
+        "text": "If you are interested in purchasing any of my artworks or would like to commission a custom piece, please feel free to reach out to me via email at [your-email@example.com].  Thank you for visiting my portfolio. I hope you enjoy my work as much as I enjoyed creating it.  <hr></hr> Feel free to customize this text to better fit your personal style and the specifics of your art portfolio."
       },
       {
         "__t": "ButtonComponent",
-        "index":0,
-        "text":"Go to google",
-        "url": "https://google.com",
-        "color":"#800080"
+        "index": 8,
+        "text": "Go to google",
+        "url": "google.com"
       }
     ]
   }
