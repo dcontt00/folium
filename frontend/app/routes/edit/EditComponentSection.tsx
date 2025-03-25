@@ -1,8 +1,14 @@
-import type {ButtonComponentType, ComponentType, TextComponentType} from "../../../../common/interfaces/interfaces";
+import type {
+    ButtonComponentType,
+    ComponentType,
+    ImageComponentType,
+    TextComponentType
+} from "../../../../common/interfaces/interfaces";
 import EditTextComponent from "~/components/editComponents/EditTextComponent";
 import EditButtonComponent from "~/components/editComponents/EditButtonComponent";
 import {Button} from "@mantine/core";
 import {IconTrash} from "@tabler/icons-react";
+import EditImageComponent from "~/components/editComponents/EditImageComponent";
 
 
 interface Props {
@@ -24,6 +30,9 @@ export default function EditComponentSection({component, onEditComponent, onRemo
             case "ButtonComponent":
                 const buttonComponent = component as ButtonComponentType;
                 return <EditButtonComponent component={buttonComponent} onEditComponent={onEditComponent}/>
+            case "ImageComponent":
+                const imageComponent = component as ImageComponentType;
+                return <EditImageComponent component={imageComponent} onEditComponent={onEditComponent}/>
             default:
                 return <div>Component not found</div>
         }

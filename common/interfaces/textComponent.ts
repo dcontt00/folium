@@ -20,5 +20,4 @@ export default interface TextComponent extends Component {
     text: string;
     style: TextStyle;
     type: TextType;
-    fontSize: number; //
 }

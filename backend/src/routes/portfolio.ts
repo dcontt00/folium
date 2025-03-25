@@ -2,6 +2,7 @@ import express from "express";
 import {buttonComponentModel, portfolioModel, textComponentModel} from "../models/models";
 import {authenticate} from "../middleware/auth";
 import ApiError from "../interfaces/ApiError";
+import imageComponentModel from "../models/portfolioComponents/imageComponentModel";
 
 
 const router = express.Router();
@@ -162,7 +163,6 @@ router.put("/:url", authenticate, async (req, res) => {
         }
 
         if (req.body.components) {
-            console.log("There are components")
             for (const component of req.body.components) {
                 switch (component.__t) {
                     case "TextComponent":
@@ -193,11 +193,21 @@ router.put("/:url", authenticate, async (req, res) => {
                             components.push(buttonComponent._id)
                         })
                         break;
+                    case "ImageComponent":
+                        if (!component.url) {
+                            throw new ApiError(400, "URL is required for image component", "URL is required for image component");
+                        }
+                        await imageComponentModel.create({
+                            portfolio_id: portfolio._id,
+                            index: component.index,
+                            url: component.url,
+                        }).then((imageComponent) => {
+                            components.push(imageComponent._id)
+                        })
+                        break;
                 }
             }
         }
-
-        console.log(components)
 
         await portfolioModel.findOneAndUpdate(
             {url: req.params.url, user: user.id},

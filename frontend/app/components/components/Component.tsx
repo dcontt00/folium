@@ -1,6 +1,12 @@
-import type {ButtonComponentType, ComponentType, TextComponentType} from "../../../../common/interfaces/interfaces";
+import type {
+    ButtonComponentType,
+    ComponentType,
+    ImageComponentType,
+    TextComponentType
+} from "../../../../common/interfaces/interfaces";
 import TextComponent from "~/components/components/TextComponent";
 import ButtonComponent from "~/components/components/ButtonComponent";
+import ImageComponent from "~/components/components/ImageComponent";
 
 
 interface Props {
@@ -18,6 +24,10 @@ export default function Component({component}: Props) {
             case "ButtonComponent":
                 const buttonComponent = component as ButtonComponentType;
                 return <ButtonComponent buttonComponent={buttonComponent}/>
+
+            case "ImageComponent":
+                const imageComponent = component as ImageComponentType;
+                return <ImageComponent imageComponent={imageComponent}/>
             default:
                 return <div>Component not found</div>
         }

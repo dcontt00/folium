@@ -1,11 +1,13 @@
 import {Button, Menu} from "@mantine/core";
-import {IconHandClick, IconTextCaption} from "@tabler/icons-react";
+import {IconHandClick, IconPhoto, IconTextCaption} from "@tabler/icons-react";
 import type {
     ButtonComponentType,
     ComponentType,
+    ImageComponentType,
     Portfolio,
     TextComponentType
 } from "../../../../common/interfaces/interfaces";
+import {TextStyle, TextType} from "../../../../common/interfaces/textComponent";
 
 
 interface Props {
@@ -21,7 +23,9 @@ export default function AddComponentMenu({portfolio, onAddComponent}: Props) {
             index: portfolio.components.length - 1,
             portfolio_id: portfolio._id,
             __t: "TextComponent",
-            text: "Hello World"
+            text: "Hello World",
+            type: TextType.TEXT,
+            style: TextStyle.NORMAL
         }
         onAddComponent(newComponent);
     }
@@ -39,6 +43,17 @@ export default function AddComponentMenu({portfolio, onAddComponent}: Props) {
         onAddComponent(newComponent);
     }
 
+    function onAddImageComponent() {
+        const newComponent: ImageComponentType = {
+            _id: "",
+            index: portfolio.components.length - 1,
+            portfolio_id: portfolio._id,
+            __t: "ImageComponent",
+            url: "https://via.placeholder.com/150",
+        }
+        onAddComponent(newComponent);
+    }
+
     return (
         <Menu shadow="md" width={200}>
             <Menu.Target>
@@ -50,6 +65,9 @@ export default function AddComponentMenu({portfolio, onAddComponent}: Props) {
                 </Menu.Item>
                 <Menu.Item onClick={onAddButtonComponent} leftSection={<IconHandClick/>}>
                     Button
+                </Menu.Item>
+                <Menu.Item onClick={onAddImageComponent} leftSection={<IconPhoto/>}>
+                    Image
                 </Menu.Item>
             </Menu.Dropdown>
         </Menu>
