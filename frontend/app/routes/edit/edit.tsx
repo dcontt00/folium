@@ -1,6 +1,6 @@
-import {ActionIcon, Alert, AppShell, Avatar, Button, Group, Stack, Textarea, TextInput, Title} from "@mantine/core";
+import {Alert, AppShell, Button, Stack} from "@mantine/core";
 import axios, {type AxiosResponse} from "axios";
-import {IconArrowLeft, IconDeviceDesktop, IconDeviceFloppy, IconInfoCircle, IconSettings} from "@tabler/icons-react"
+import {IconInfoCircle} from "@tabler/icons-react"
 
 import type {ComponentType, Portfolio} from "../../../../common/interfaces/interfaces";
 import {useState} from "react";
@@ -8,11 +8,12 @@ import {useDisclosure} from "@mantine/hooks";
 import {data, useNavigate} from "react-router";
 import type {Route} from "../+types";
 import EditComponentSection from "~/components/edit/EditComponentSection";
-import Logo from "app/Logo.svg";
 import ConfirmModal from "~/components/ConfirmModal";
 import Component from "~/components/portfolioComponents/Component";
 import "./styles.css"
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
+import SettingsSection from "~/components/edit/editComponents/SettingsSection";
+import HeaderButtons from "~/components/edit/HeaderButtons";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
@@ -117,31 +118,8 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             padding="md"
         >
             <AppShell.Header>
-                <Group h="100%" px="md" visibleFrom="sm">
-                    <Avatar src={Logo} radius="xs"/>
-                    <Button leftSection={<IconArrowLeft/>} onClick={onBack}>Go Back</Button>
-                    <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}
-                            variant={unsaved ? "outline" : "filled"}>Save</Button>
-                    <Button leftSection={<IconDeviceDesktop/>}
-                            onClick={() => navigate(`/preview/${portfolio.url}`)}>Preview</Button>
-                    <Button leftSection={<IconSettings/>} onClick={toggleOpenedSettings}>Settings</Button>
-                </Group>
-                <Group h="100%" px="md" hiddenFrom="sm">
-                    <Avatar src={Logo} radius="xs"/>
-                    <ActionIcon onClick={onBack}>
-                        <IconArrowLeft/>
-                    </ActionIcon>
-
-                    <ActionIcon onClick={onSave} variant={unsaved ? "outline" : "filled"}>
-                        <IconDeviceFloppy/>
-                    </ActionIcon>
-                    <ActionIcon onClick={() => navigate(`/preview/${portfolio.url}`)}>
-                        <IconDeviceDesktop/>
-                    </ActionIcon>
-                    <ActionIcon onClick={toggleOpenedSettings}>
-                        <IconSettings/>
-                    </ActionIcon>
-                </Group>
+                <HeaderButtons onBack={onBack} onSave={onSave} toggleOpenedSettings={toggleOpenedSettings}
+                               unsaved={unsaved} portfolio={portfolio}/>
             </AppShell.Header>
             <AppShell.Navbar>
                 <Stack p="sm">
@@ -163,41 +141,27 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 </Stack>
             </AppShell.Navbar>
             <AppShell.Aside>
-                <Stack p="sm">
-                    <Title order={3}>Settings</Title>
-                    <TextInput
-                        label="Title"
-                        value={title}
-                        onChange={(event) => {
-                            setTitle(event.currentTarget.value)
-                            setUnsaved(true);
-                        }}
-                    />
-                    <Textarea
-                        label="Description"
-                        value={description}
-                        onChange={(event) => {
-                            setDescription(event.currentTarget.value)
-                            setUnsaved(true);
-                        }}
-                    />
-                    <Button hiddenFrom="sm" onClick={toggleOpenedSettings}>Close</Button>
-                </Stack>
+                <SettingsSection
+                    toggleOpenedSettings={toggleOpenedSettings}
+                    title={title}
+                    setTitle={setTitle}
+                    description={description}
+                    setDescription={setDescription}
+                    setUnsaved={setUnsaved}
+                />
 
             </AppShell.Aside>
             <AppShell.Main>
-                <div>
-                    <Stack align="center">
-                        {portfolioState.components.map((component, index) => (
-                            <div className="edit"
-                                 onClick={() => onSelectEditComponent(component)}
-                                 key={index}
-                            >
-                                <Component component={component}/>
-                            </div>
-                        ))}
-                    </Stack>
-                </div>
+                <Stack align="center">
+                    {portfolioState.components.map((component, index) => (
+                        <div className="edit"
+                             onClick={() => onSelectEditComponent(component)}
+                             key={index}
+                        >
+                            <Component component={component}/>
+                        </div>
+                    ))}
+                </Stack>
 
             </AppShell.Main>
 
