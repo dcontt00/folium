@@ -29,15 +29,22 @@ router.post("/", authenticate, async (req, res) => {
             user: user.id,
         })
 
-        const newTextComponent = await textComponentModel.create({
+        const titleComponent = await textComponentModel.create({
             index: 0,
             text: "Welcome to your new portfolio",
+            type: "h1",
+            portfolio_id: newPortfolio._id
+        })
+
+        const textComponent = await textComponentModel.create({
+            index: 1,
+            text: "You can add components from left menu",
             portfolio_id: newPortfolio._id
         })
 
         await portfolioModel.findOneAndUpdate(
             {url: newPortfolio.url, user: user.id},
-            {...req.body, components: [newTextComponent._id]},
+            {...req.body, components: [titleComponent._id, textComponent._id]},
             {new: true}
         ).populate("components").then((portfolio) => {
             res.status(200).json({
