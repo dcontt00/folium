@@ -7,12 +7,12 @@ import {useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import {data, useNavigate} from "react-router";
 import type {Route} from "../+types";
-import EditComponentSection from "~/routes/edit/EditComponentSection";
+import EditComponentSection from "~/components/edit/EditComponentSection";
 import Logo from "app/Logo.svg";
 import ConfirmModal from "~/components/ConfirmModal";
-import Component from "~/components/components/Component";
+import Component from "~/components/portfolioComponents/Component";
 import "./styles.css"
-import AddComponentMenu from "~/routes/edit/AddComponentMenu";
+import AddComponentMenu from "~/components/edit/AddComponentMenu";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
@@ -66,7 +66,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         const newPortfolio = {...portfolioState};
         newPortfolio.components.splice(index, 1);
 
-        // Change index of the components
+        // Change index of the portfolioComponents
         for (let i = index; i < newPortfolio.components.length; i++) {
             newPortfolio.components[i].index = i;
         }

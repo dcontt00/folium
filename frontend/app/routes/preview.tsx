@@ -4,7 +4,7 @@ import axios, {type AxiosResponse} from "axios";
 import type {Portfolio} from "../../../common/interfaces/interfaces";
 import {data} from "react-router";
 import type {Route} from "./+types";
-import Component from "~/components/components/Component";
+import Component from "~/components/portfolioComponents/Component";
 
 // provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {

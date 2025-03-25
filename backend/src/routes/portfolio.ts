@@ -39,7 +39,7 @@ router.post("/", authenticate, async (req, res) => {
 
         const textComponent = await textComponentModel.create({
             index: 1,
-            text: "You can add components from left menu",
+            text: "You can add portfolioComponents from left menu",
             portfolio_id: newPortfolio._id
         })
 
@@ -222,7 +222,7 @@ router.put("/:url", authenticate, async (req, res) => {
         })
 
     } catch (err: any) {
-        // Remove created components if anything goes wrong
+        // Remove created portfolioComponents if anything goes wrong
         for (const component of components) {
             await textComponentModel.findByIdAndDelete(component._id)
         }

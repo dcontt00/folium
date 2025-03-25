@@ -4,9 +4,9 @@ import type {
     ImageComponentType,
     TextComponentType
 } from "../../../../common/interfaces/interfaces";
-import TextComponent from "~/components/components/TextComponent";
-import ButtonComponent from "~/components/components/ButtonComponent";
-import ImageComponent from "~/components/components/ImageComponent";
+import TextComponent from "~/components/portfolioComponents/TextComponent";
+import ButtonComponent from "~/components/portfolioComponents/ButtonComponent";
+import ImageComponent from "~/components/portfolioComponents/ImageComponent";
 
 
 interface Props {

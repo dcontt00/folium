@@ -4,11 +4,11 @@ import type {
     ImageComponentType,
     TextComponentType
 } from "../../../../common/interfaces/interfaces";
-import EditTextComponent from "~/components/editComponents/EditTextComponent";
-import EditButtonComponent from "~/components/editComponents/EditButtonComponent";
+import EditTextComponent from "~/components/edit/editComponents/EditTextComponent";
+import EditButtonComponent from "~/components/edit/editComponents/EditButtonComponent";
 import {Button} from "@mantine/core";
 import {IconTrash} from "@tabler/icons-react";
-import EditImageComponent from "~/components/editComponents/EditImageComponent";
+import EditImageComponent from "~/components/edit/editComponents/EditImageComponent";
 
 
 interface Props {

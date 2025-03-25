@@ -1,7 +1,7 @@
-import type {TextComponentType} from "../../../../common/interfaces/interfaces";
+import type {TextComponentType} from "../../../../../common/interfaces/interfaces";
 import {Combobox, Input, InputBase, Stack, Textarea, useCombobox} from "@mantine/core";
 import {useEffect, useState} from "react";
-import {TextType} from "../../../../common/interfaces/textComponent";
+import {TextType} from "../../../../../common/interfaces/textComponent";
 import {capitalize} from "~/utils";
 
 interface Props {
