@@ -1,7 +1,8 @@
 import type {TextComponentType} from "../../../../common/interfaces/interfaces";
-import {Textarea} from "@mantine/core";
+import {Combobox, Input, InputBase, Stack, Textarea, useCombobox} from "@mantine/core";
 import {useEffect, useState} from "react";
-
+import {TextType} from "../../../../common/interfaces/textComponent";
+import {capitalize} from "~/utils";
 
 interface Props {
     component: TextComponentType;
@@ -9,24 +10,72 @@ interface Props {
 }
 
 export default function EditTextComponent({component, onEditComponent}: Props) {
-    const [value, setValue] = useState(component.text);
+    const [text, setText] = useState(component.text);
+    const [textType, setTextType] = useState<string | null>(component.type);
+    const combobox = useCombobox({
+        onDropdownClose: () => combobox.resetSelectedOption(),
+    });
+
+    // Needed when selecting a different component
     useEffect(() => {
-        // Update local state when the component prop changes
-        setValue(component.text);
+        setText(component.text);
+        setTextType(component.type);
     }, [component]);
 
-    function onChange(event: any) {
-        setValue(event.target.value);
+    function onTextChange(event: any) {
+        setText(event.target.value);
+
         // Change the text of the component
         component.text = event.target.value;
         onEditComponent(component);
     }
 
+    function onTextTypeChange(value: string) {
+        setTextType(value);
+        combobox.closeDropdown();
+
+        // Change the text type of the component
+        component.type = value as TextType;
+        onEditComponent(component);
+    }
+
+
+    const textTypeOptions = Object.values(TextType).map((item) => (
+        <Combobox.Option value={item} key={item}>
+            {capitalize(item)}
+        </Combobox.Option>
+    ));
+
     return (
-        <Textarea
-            label="Text"
-            value={value}
-            onChange={(event) => onChange(event)}
-        />
-    )
+        <Stack>
+            <Combobox
+                store={combobox}
+                withinPortal={false}
+                onOptionSubmit={(val) => onTextTypeChange(val)}
+            >
+                <Combobox.Target>
+                    <InputBase
+                        label="Text Type"
+                        component="button"
+                        type="button"
+                        pointer
+                        rightSection={<Combobox.Chevron/>}
+                        onClick={() => combobox.toggleDropdown()}
+                        rightSectionPointerEvents="none"
+                    >
+                        {capitalize(textType) || <Input.Placeholder>Pick value</Input.Placeholder>}
+                    </InputBase>
+                </Combobox.Target>
+
+                <Combobox.Dropdown>
+                    <Combobox.Options>{textTypeOptions}</Combobox.Options>
+                </Combobox.Dropdown>
+            </Combobox>
+            <Textarea
+                label="Text"
+                value={text}
+                onChange={(event) => onTextChange(event)}
+            />
+        </Stack>
+    );
 }

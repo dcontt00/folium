@@ -170,7 +170,7 @@ router.put("/:url", authenticate, async (req, res) => {
                             throw new ApiError(400, "Text is required for text component", "Text is required for text component");
                         }
                         await textComponentModel.create({
-                            type: "text",
+                            type: component.type,
                             index: component.index,
                             text: component.text,
                             portfolio_id: portfolio._id
@@ -184,7 +184,6 @@ router.put("/:url", authenticate, async (req, res) => {
                             throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
                         }
                         await buttonComponentModel.create({
-                            type: "button",
                             color: component.color,
                             index: component.index,
                             text: component.text,
