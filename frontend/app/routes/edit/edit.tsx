@@ -71,6 +71,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             newPortfolio.components[i].index = i;
         }
         setPortfolioState(newPortfolio);
+        setEditComponent(undefined)
         setUnsaved(true);
     }
 
