@@ -1,4 +1,4 @@
-import {Alert, AppShell, Avatar, Button, Group, Stack, Textarea, TextInput, Title} from "@mantine/core";
+import {ActionIcon, Alert, AppShell, Avatar, Button, Group, Stack, Textarea, TextInput, Title} from "@mantine/core";
 import axios, {type AxiosResponse} from "axios";
 import {IconArrowLeft, IconDeviceDesktop, IconDeviceFloppy, IconInfoCircle, IconSettings} from "@tabler/icons-react"
 
@@ -117,7 +117,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             padding="md"
         >
             <AppShell.Header>
-                <Group h="100%" px="md">
+                <Group h="100%" px="md" visibleFrom="sm">
                     <Avatar src={Logo} radius="xs"/>
                     <Button leftSection={<IconArrowLeft/>} onClick={onBack}>Go Back</Button>
                     <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}
@@ -125,6 +125,22 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     <Button leftSection={<IconDeviceDesktop/>}
                             onClick={() => navigate(`/preview/${portfolio.url}`)}>Preview</Button>
                     <Button leftSection={<IconSettings/>} onClick={toggleOpenedSettings}>Settings</Button>
+                </Group>
+                <Group h="100%" px="md" hiddenFrom="sm">
+                    <Avatar src={Logo} radius="xs"/>
+                    <ActionIcon onClick={onBack}>
+                        <IconArrowLeft/>
+                    </ActionIcon>
+
+                    <ActionIcon onClick={onSave} variant={unsaved ? "outline" : "filled"}>
+                        <IconDeviceFloppy/>
+                    </ActionIcon>
+                    <ActionIcon onClick={() => navigate(`/preview/${portfolio.url}`)}>
+                        <IconDeviceDesktop/>
+                    </ActionIcon>
+                    <ActionIcon onClick={toggleOpenedSettings}>
+                        <IconSettings/>
+                    </ActionIcon>
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar>
@@ -143,8 +159,8 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                                    icon={<IconInfoCircle/>}/>
                         )
                     }
+                    <Button hiddenFrom="sm" onClick={toggleOpenedEditComponent}>Close</Button>
                 </Stack>
-                <Button hiddenFrom="sm">Close</Button>
             </AppShell.Navbar>
             <AppShell.Aside>
                 <Stack p="sm">
@@ -165,6 +181,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                             setUnsaved(true);
                         }}
                     />
+                    <Button hiddenFrom="sm" onClick={toggleOpenedSettings}>Close</Button>
                 </Stack>
 
             </AppShell.Aside>
