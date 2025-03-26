@@ -138,7 +138,6 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                             <EditComponentSection
                                 component={editComponent}
                                 onEditComponent={onEditComponent}
-                                onRemoveComponent={onRemoveComponent}
                             />
                         ) :
                         (
@@ -160,8 +159,12 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 />
             </AppShell.Aside>
             <AppShell.Main>
-                <ComponentsDnD onSelectEditComponent={onSelectEditComponent} portfolioState={portfolioState}
-                               setPortfolioState={setPortfolioState} onDragEnd={onDragEnd}/>
+                <ComponentsDnD
+                    onSelectEditComponent={onSelectEditComponent}
+                    portfolioState={portfolioState}
+                    onRemoveComponent={onRemoveComponent}
+                    onDragEnd={onDragEnd}
+                />
             </AppShell.Main>
 
             <ConfirmModal opened={openedBackModal} text="You have unsaved changes. Want to continue?"

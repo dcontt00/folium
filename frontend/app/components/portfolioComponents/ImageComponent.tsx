@@ -6,6 +6,6 @@ interface Props {
 
 export default function ImageComponent({imageComponent}: Props) {
     return (
-        <img src={imageComponent.url} alt={imageComponent.url}/>
+        <img style={{width: "100%"}} src={imageComponent.url} alt={imageComponent.url}/>
     )
 }

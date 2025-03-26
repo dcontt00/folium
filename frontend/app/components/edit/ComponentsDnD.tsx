@@ -2,18 +2,18 @@ import {DragDropContext, Draggable, Droppable, type DropResult} from "@hello-pan
 import Component from "~/components/portfolioComponents/Component";
 import type {ComponentType} from "../../../../common/interfaces/interfaces";
 import type Portfolio from "../../../../common/interfaces/portfolio";
-import {IconEdit, IconMenu2} from "@tabler/icons-react";
+import {IconEdit, IconMenu2, IconTrash} from "@tabler/icons-react";
 import {ActionIcon} from "@mantine/core";
 
 
 interface Props {
     onSelectEditComponent: (component: ComponentType) => void;
     portfolioState: Portfolio;
-    setPortfolioState: (portfolio: Portfolio) => void;
     onDragEnd: (result: DropResult) => void;
+    onRemoveComponent: (component: ComponentType) => void;
 }
 
-export default function ComponentsDnD({onSelectEditComponent, portfolioState, setPortfolioState, onDragEnd}: Props) {
+export default function ComponentsDnD({onSelectEditComponent, portfolioState, onDragEnd, onRemoveComponent}: Props) {
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -33,6 +33,10 @@ export default function ComponentsDnD({onSelectEditComponent, portfolioState, se
                                         <Component component={component}/>
                                         <ActionIcon className="icon" onClick={() => onSelectEditComponent(component)}>
                                             <IconEdit/>
+                                        </ActionIcon>
+                                        <ActionIcon color="red" className="icon"
+                                                    onClick={() => onRemoveComponent(component)}>
+                                            <IconTrash/>
                                         </ActionIcon>
                                     </div>
                                 )}
