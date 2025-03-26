@@ -1,8 +1,8 @@
-import type {TextComponentType} from "../../../../common/interfaces/interfaces";
+import type {TextComponentType} from "~/interfaces/interfaces";
 
 
 import {Text, Title} from "@mantine/core";
-import {TextType} from "../../../../common/interfaces/textComponent";
+import {TextType} from "~/interfaces/textComponent";
 
 interface TextComponentProps {
     textComponent: TextComponentType;

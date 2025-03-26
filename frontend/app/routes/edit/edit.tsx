@@ -2,7 +2,7 @@ import {Alert, AppShell, Button, Stack} from "@mantine/core";
 import axios, {type AxiosResponse} from "axios";
 import {IconInfoCircle} from "@tabler/icons-react";
 
-import type {ComponentType, Portfolio} from "../../../../common/interfaces/interfaces";
+import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
 import {useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import {data, useNavigate} from "react-router";

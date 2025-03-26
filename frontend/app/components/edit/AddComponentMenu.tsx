@@ -6,8 +6,8 @@ import type {
     ImageComponentType,
     Portfolio,
     TextComponentType
-} from "../../../../common/interfaces/interfaces";
-import {TextStyle, TextType} from "../../../../common/interfaces/textComponent";
+} from "~/interfaces/interfaces";
+import {TextStyle, TextType} from "~/interfaces/textComponent";
 
 
 interface Props {

@@ -1,5 +1,5 @@
 import {Button} from "@mantine/core";
-import type {ButtonComponentType} from "../../../../common/interfaces/interfaces";
+import type {ButtonComponentType} from "~/interfaces/interfaces";
 
 interface TextComponentProps {
     buttonComponent: ButtonComponentType;

@@ -1,4 +1,4 @@
-import type {ImageComponentType} from "../../../../common/interfaces/interfaces";
+import type {ImageComponentType} from "~/interfaces/interfaces";
 
 interface Props {
     imageComponent: ImageComponentType;

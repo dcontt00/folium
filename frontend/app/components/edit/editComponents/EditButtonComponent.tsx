@@ -1,4 +1,4 @@
-import type {ButtonComponentType} from "../../../../../common/interfaces/interfaces";
+import type {ButtonComponentType} from "~/interfaces/interfaces";
 import {ColorInput, Stack, TextInput} from "@mantine/core";
 import {useEffect, useState} from "react";
 

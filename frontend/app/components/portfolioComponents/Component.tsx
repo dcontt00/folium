@@ -1,9 +1,4 @@
-import type {
-    ButtonComponentType,
-    ComponentType,
-    ImageComponentType,
-    TextComponentType
-} from "../../../../common/interfaces/interfaces";
+import type {ButtonComponentType, ComponentType, ImageComponentType, TextComponentType} from "~/interfaces/interfaces";
 import TextComponent from "~/components/portfolioComponents/TextComponent";
 import ButtonComponent from "~/components/portfolioComponents/ButtonComponent";
 import ImageComponent from "~/components/portfolioComponents/ImageComponent";

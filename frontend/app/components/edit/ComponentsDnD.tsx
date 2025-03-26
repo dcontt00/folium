@@ -1,7 +1,7 @@
 import {DragDropContext, Draggable, Droppable, type DropResult} from "@hello-pangea/dnd";
 import Component from "~/components/portfolioComponents/Component";
-import type {ComponentType} from "../../../../common/interfaces/interfaces";
-import type Portfolio from "../../../../common/interfaces/portfolio";
+import type {ComponentType} from "~/interfaces/interfaces";
+import type Portfolio from "~/interfaces/portfolio";
 import {IconEdit, IconMenu2, IconTrash} from "@tabler/icons-react";
 import {ActionIcon} from "@mantine/core";
 

@@ -1,4 +1,4 @@
-import type {ImageComponentType} from "../../../../../common/interfaces/interfaces";
+import type {ImageComponentType} from "~/interfaces/interfaces";
 import {Stack, TextInput} from "@mantine/core";
 import {useEffect, useState} from "react";
 

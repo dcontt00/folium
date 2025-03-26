@@ -5,7 +5,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./data:/data/db
+      - ./db:/data/db
     restart: unless-stopped
 
   backend:
