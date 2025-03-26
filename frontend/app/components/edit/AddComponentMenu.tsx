@@ -19,7 +19,7 @@ export default function AddComponentMenu({portfolio, onAddComponent}: Props) {
 
     function onAddTextComponent() {
         const newComponent: TextComponentType = {
-            _id: "",
+            _id: Date.now().toString(),
             index: portfolio.components.length - 1,
             portfolio_id: portfolio._id,
             __t: "TextComponent",
@@ -32,7 +32,7 @@ export default function AddComponentMenu({portfolio, onAddComponent}: Props) {
 
     function onAddButtonComponent() {
         const newComponent: ButtonComponentType = {
-            _id: "",
+            _id: Date.now().toString(),
             index: portfolio.components.length - 1,
             portfolio_id: portfolio._id,
             __t: "ButtonComponent",
@@ -45,7 +45,7 @@ export default function AddComponentMenu({portfolio, onAddComponent}: Props) {
 
     function onAddImageComponent() {
         const newComponent: ImageComponentType = {
-            _id: "",
+            _id: Date.now().toString(),
             index: portfolio.components.length - 1,
             portfolio_id: portfolio._id,
             __t: "ImageComponent",
