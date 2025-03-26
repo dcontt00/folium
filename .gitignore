@@ -4,3 +4,4 @@ dist
 data
 frontend/.react-router
 frontend/build
+db
