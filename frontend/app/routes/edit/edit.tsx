@@ -1,6 +1,6 @@
 import {Alert, AppShell, Button, Stack} from "@mantine/core";
 import axios, {type AxiosResponse} from "axios";
-import {IconInfoCircle} from "@tabler/icons-react"
+import {IconInfoCircle} from "@tabler/icons-react";
 
 import type {ComponentType, Portfolio} from "../../../../common/interfaces/interfaces";
 import {useState} from "react";
@@ -10,24 +10,23 @@ import type {Route} from "../+types";
 import EditComponentSection from "~/components/edit/EditComponentSection";
 import ConfirmModal from "~/components/ConfirmModal";
 import Component from "~/components/portfolioComponents/Component";
-import "./styles.css"
+import "./styles.css";
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
 import SettingsSection from "~/components/edit/editComponents/SettingsSection";
 import HeaderButtons from "~/components/edit/HeaderButtons";
+import {DragDropContext, Draggable, Droppable, type DropResult} from "@hello-pangea/dnd";
 
-// provides `loaderData` to the component
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
     const portfolio: Portfolio = await axios.get(`http://localhost:3000/portfolio/${params.url}`, {withCredentials: true})
         .then((response: AxiosResponse) => {
             return response.data.data;
         }).catch((error) => {
-            const responseError = error.response
+            const responseError = error.response;
             throw data(responseError.data.message, {status: responseError.status});
         });
-    return portfolio
+    return portfolio;
 }
 
-// HydrateFallback is rendered while the client loader is running
 export function HydrateFallback() {
     return <div>Loading...</div>;
 }
@@ -45,16 +44,13 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
     const [openedSettings, {toggle: toggleOpenedSettings}] = useDisclosure(false);
     const [openedBackModal, {open: openBackModal, close: closeBackModal}] = useDisclosure(false);
-    const [unsaved, setUnsaved] = useState(false); // Use to check if the portfolio has been edited
-
+    const [unsaved, setUnsaved] = useState(false);
     const navigate = useNavigate();
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
-
 
     function onEditComponent(component: ComponentType) {
         setEditComponent(component);
 
-        // Update the component in the portfolio
         const index = portfolioState.components.findIndex((c) => c._id === component._id);
         const newPortfolio = {...portfolioState};
         newPortfolio.components[index] = component;
@@ -67,18 +63,17 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         const newPortfolio = {...portfolioState};
         newPortfolio.components.splice(index, 1);
 
-        // Change index of the portfolioComponents
         for (let i = index; i < newPortfolio.components.length; i++) {
             newPortfolio.components[i].index = i;
         }
         setPortfolioState(newPortfolio);
-        setEditComponent(undefined)
+        setEditComponent(undefined);
         setUnsaved(true);
     }
 
     function onSelectEditComponent(component: ComponentType) {
         setEditComponent(component);
-        toggleOpenedEditComponent()
+        toggleOpenedEditComponent();
     }
 
     async function onSave() {
@@ -107,7 +102,21 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         setPortfolioState(newPortfolio);
         setUnsaved(true);
         setEditComponent(portfolioState.components[portfolioState.components.length - 1]);
+    }
 
+    function onDragEnd(result: DropResult) {
+        console.log(result);
+        if (!result.destination) {
+            return;
+        }
+
+        const newComponents = Array.from(portfolioState.components);
+        const [movedComponent] = newComponents.splice(result.source.index, 1);
+        newComponents.splice(result.destination.index, 0, movedComponent);
+
+        const newPortfolio = {...portfolioState, components: newComponents};
+        setPortfolioState(newPortfolio);
+        setUnsaved(true);
     }
 
     return (
@@ -149,25 +158,52 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     setDescription={setDescription}
                     setUnsaved={setUnsaved}
                 />
-
             </AppShell.Aside>
             <AppShell.Main>
-                <Stack align="center">
-                    {portfolioState.components.map((component, index) => (
-                        <div className="edit"
-                             onClick={() => onSelectEditComponent(component)}
-                             key={index}
-                        >
-                            <Component component={component}/>
-                        </div>
-                    ))}
-                </Stack>
-
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="components">
+                        {(provided) => (
+                            <div {...provided.droppableProps} ref={provided.innerRef}>
+                                {portfolioState.components.map((component, index) => (
+                                    <Draggable key={component._id} draggableId={component._id} index={index}>
+                                        {(provided) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                className="edit"
+                                                onClick={() => onSelectEditComponent(component)}
+                                            >
+                                                <Component component={component}/>
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
             </AppShell.Main>
 
             <ConfirmModal opened={openedBackModal} text="You have unsaved changes. Want to continue?"
                           close={closeBackModal} onOk={() => navigate("/home")}/>
-
         </AppShell>
+    );
+}
+
+
+interface ColumnProps {
+    components: ComponentType[];
+}
+
+function Column({components}: ColumnProps) {
+    return (
+        <div>
+            {components.map((component) => (
+                <Component component={component}/>
+            ))}
+        </div>
     )
+
 }
