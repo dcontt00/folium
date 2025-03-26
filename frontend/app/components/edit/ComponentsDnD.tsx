@@ -2,6 +2,8 @@ import {DragDropContext, Draggable, Droppable, type DropResult} from "@hello-pan
 import Component from "~/components/portfolioComponents/Component";
 import type {ComponentType} from "../../../../common/interfaces/interfaces";
 import type Portfolio from "../../../../common/interfaces/portfolio";
+import {IconEdit, IconMenu2} from "@tabler/icons-react";
+import {ActionIcon} from "@mantine/core";
 
 
 interface Props {
@@ -26,9 +28,12 @@ export default function ComponentsDnD({onSelectEditComponent, portfolioState, se
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
                                         className="edit"
-                                        onClick={() => onSelectEditComponent(component)}
                                     >
+                                        <IconMenu2 className="icon"/>
                                         <Component component={component}/>
+                                        <ActionIcon className="icon" onClick={() => onSelectEditComponent(component)}>
+                                            <IconEdit/>
+                                        </ActionIcon>
                                     </div>
                                 )}
                             </Draggable>

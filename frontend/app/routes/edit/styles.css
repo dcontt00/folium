@@ -1,8 +1,20 @@
 
 .edit {
     padding: 1em;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+
+}
+
+.edit .icon {
+    visibility: hidden;
 }
 
 .edit:hover {
-    background: #00B7FF;
+    background: #222B45;
+}
+
+.edit:hover .icon {
+    visibility: visible;
 }
