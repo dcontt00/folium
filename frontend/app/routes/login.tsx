@@ -1,5 +1,5 @@
 import type {Route} from "./+types/home";
-import {AppShell, Button, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
+import {AppShell, Button, Container, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
 import {useForm} from '@mantine/form';
 import axios from "axios";
 import {useNavigate} from "react-router";
@@ -29,6 +29,7 @@ export default function Login() {
 
         validate: {
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+            password: (value) => (value.length >= 1 ? null : 'Password is required'),
         },
     });
 
@@ -36,12 +37,12 @@ export default function Login() {
     return (
         <form onSubmit={form.onSubmit(async (values) => {
             await axios.post('http://localhost:3000/login', values, {withCredentials: true})
-                .then((response) => {
-                    console.log(response);
-                    navigate('/home');
+                .then(async (response) => {
+                    await navigate('/home');
                 })
                 .catch((error) => {
-                    console.log(error);
+                    form.setFieldError('password', 'Invalid email or password');
+                    form.setFieldValue('password', '');
                 })
         })}
         >
@@ -49,23 +50,27 @@ export default function Login() {
                 padding="md"
             >
                 <AppShell.Main>
-                    <Stack>
-                        <Title order={3}>Login</Title>
-                        <TextInput
-                            withAsterisk
-                            label="Email"
-                            placeholder="your@email.com"
-                            key={form.key('email')}
-                            {...form.getInputProps('email')}
-                        />
-                        <PasswordInput
-                            withAsterisk
-                            label="Password"
-                            key={form.key('password')}
-                            {...form.getInputProps('password')}
-                        />
-                        <Button type="submit">Submit</Button>
-                    </Stack>
+                    <Container size="xs">
+                        <Stack>
+                            <Title order={3}>Login</Title>
+
+                            <TextInput
+                                withAsterisk
+                                label="Email"
+                                placeholder="your@email.com"
+                                key={form.key('email')}
+                                {...form.getInputProps('email')}
+                            />
+                            <PasswordInput
+                                withAsterisk
+                                label="Password"
+                                key={form.key('password')}
+                                {...form.getInputProps('password')}
+                            />
+                            <Button type="submit"
+                                    disabled={!form.isDirty("email") || !form.isDirty("password")}>Submit</Button>
+                        </Stack>
+                    </Container>
                 </AppShell.Main>
             </AppShell>
         </form>
