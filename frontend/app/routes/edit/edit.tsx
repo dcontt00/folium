@@ -9,12 +9,12 @@ import {data, useNavigate} from "react-router";
 import type {Route} from "../+types";
 import EditComponentSection from "~/components/edit/EditComponentSection";
 import ConfirmModal from "~/components/ConfirmModal";
-import Component from "~/components/portfolioComponents/Component";
 import "./styles.css";
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
 import SettingsSection from "~/components/edit/editComponents/SettingsSection";
 import HeaderButtons from "~/components/edit/HeaderButtons";
-import {DragDropContext, Draggable, Droppable, type DropResult} from "@hello-pangea/dnd";
+import {type DropResult} from "@hello-pangea/dnd";
+import ComponentsDnD from "~/components/edit/ComponentsDnD";
 
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
     const portfolio: Portfolio = await axios.get(`http://localhost:3000/portfolio/${params.url}`, {withCredentials: true})
@@ -160,30 +160,8 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 />
             </AppShell.Aside>
             <AppShell.Main>
-                <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable droppableId="components">
-                        {(provided) => (
-                            <div {...provided.droppableProps} ref={provided.innerRef}>
-                                {portfolioState.components.map((component, index) => (
-                                    <Draggable key={component._id} draggableId={component._id} index={index}>
-                                        {(provided) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                className="edit"
-                                                onClick={() => onSelectEditComponent(component)}
-                                            >
-                                                <Component component={component}/>
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                ))}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
+                <ComponentsDnD onSelectEditComponent={onSelectEditComponent} portfolioState={portfolioState}
+                               setPortfolioState={setPortfolioState} onDragEnd={onDragEnd}/>
             </AppShell.Main>
 
             <ConfirmModal opened={openedBackModal} text="You have unsaved changes. Want to continue?"
@@ -193,17 +171,3 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 }
 
 
-interface ColumnProps {
-    components: ComponentType[];
-}
-
-function Column({components}: ColumnProps) {
-    return (
-        <div>
-            {components.map((component) => (
-                <Component component={component}/>
-            ))}
-        </div>
-    )
-
-}
