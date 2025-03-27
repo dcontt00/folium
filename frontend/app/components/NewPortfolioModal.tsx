@@ -1,7 +1,8 @@
-import {Button, Fieldset, Group, Modal, Stack, TextInput} from '@mantine/core';
+import {Button, Group, Modal, Stack, TextInput} from '@mantine/core';
 import {useForm} from '@mantine/form';
 import axios from 'axios';
 import {useNavigate} from "react-router";
+import {IconCancel, IconDeviceFloppy} from "@tabler/icons-react";
 
 interface Props {
     opened: boolean;
@@ -25,7 +26,6 @@ export default function NewPortfolioModal({opened, close}: Props) {
     });
 
     async function onSubmit(values: any) {
-        console.log(values);
         await axios.post('http://localhost:3000/portfolio', values, {withCredentials: true}).then(result => {
             console.log(result)
             navigate("/edit/" + values.url)
@@ -40,35 +40,33 @@ export default function NewPortfolioModal({opened, close}: Props) {
 
     return (
         <Modal opened={opened} onClose={close} title="New Portfolio">
-            <Stack>
-                <form onSubmit={form.onSubmit((values) => onSubmit(values))}>
-                    <Fieldset>
-                        <TextInput
-                            withAsterisk
-                            label="Title"
-                            placeholder="Your portfolio"
-                            key={form.key('title')}
-                            {...form.getInputProps('title')}
-                        />
-                        <TextInput
-                            withAsterisk
-                            label="Url"
-                            placeholder="your-portfolio"
-                            key={form.key('url')}
-                            {...form.getInputProps('url')}
-                        />
-                        <TextInput
-                            label="Description"
-                            key={form.key('description')}
-                            {...form.getInputProps('description')}
-                        />
-                    </Fieldset>
+            <form onSubmit={form.onSubmit((values) => onSubmit(values))}>
+                <Stack gap="md">
+                    <TextInput
+                        withAsterisk
+                        label="Title"
+                        placeholder="Your portfolio"
+                        key={form.key('title')}
+                        {...form.getInputProps('title')}
+                    />
+                    <TextInput
+                        withAsterisk
+                        label="Url"
+                        placeholder="your-portfolio"
+                        key={form.key('url')}
+                        {...form.getInputProps('url')}
+                    />
+                    <TextInput
+                        label="Description"
+                        key={form.key('description')}
+                        {...form.getInputProps('description')}
+                    />
                     <Group>
-                        <Button type="submit">Save</Button>
-                        <Button onClick={close}>Cancel</Button>
+                        <Button leftSection={<IconDeviceFloppy/>} type="submit">Save</Button>
+                        <Button variant="light" leftSection={<IconCancel/>} onClick={close}>Cancel</Button>
                     </Group>
-                </form>
-            </Stack>
+                </Stack>
+            </form>
         </Modal>
 
     );

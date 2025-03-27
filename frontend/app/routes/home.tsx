@@ -6,6 +6,7 @@ import PortfolioCard from "~/components/PortfolioCard";
 import Logo from "~/Logo.svg";
 import NewPortfolioModal from "~/components/NewPortfolioModal";
 import {data, useFetcher} from "react-router";
+import {IconCirclePlus} from "@tabler/icons-react";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -92,7 +93,8 @@ export default function Home({loaderData}: Route.ComponentProps) {
                         <Avatar src={Logo} radius="xs"/>
                         <Text>Folium</Text>
                         <Group>
-                            <Button onClick={openNewPortfolioModal}>New Portfolio</Button>
+                            <Button leftSection={<IconCirclePlus/>} onClick={openNewPortfolioModal}>New
+                                Portfolio</Button>
                             <Avatar/>
                         </Group>
                     </Group>
@@ -103,7 +105,8 @@ export default function Home({loaderData}: Route.ComponentProps) {
                         {portfolios.length === 0 ? (
                             <>
                                 <Text>This seems empty</Text>
-                                <Button onClick={openNewPortfolioModal}>Create new portfolio</Button>
+                                <Button leftSection={<IconCirclePlus/>} onClick={openNewPortfolioModal}>Create new
+                                    portfolio</Button>
                             </>
                         ) : (
                             <SimpleGrid
