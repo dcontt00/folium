@@ -1,8 +1,13 @@
 import express from "express";
-import {buttonComponentModel, portfolioModel, textComponentModel} from "../models/models";
+import {
+    buttonComponentModel,
+    componentModel,
+    imageComponentModel,
+    portfolioModel,
+    textComponentModel
+} from "../models/models";
 import {authenticate} from "../middleware/auth";
 import ApiError from "../interfaces/ApiError";
-import imageComponentModel from "../models/portfolioComponents/imageComponentModel";
 
 
 const router = express.Router();
@@ -147,11 +152,9 @@ router.get("/:url", authenticate, async (req, res) => {
 
 router.put("/:url", authenticate, async (req, res) => {
     const components: any[] = [];
-
+    const removedComponents: any[] = [];
     try {
         const user = req.user;
-        console.log(req.body);
-
         if (!user) {
             throw new ApiError(404, "User not found", "User not found");
         }
@@ -164,50 +167,111 @@ router.put("/:url", authenticate, async (req, res) => {
 
         if (req.body.components) {
             for (const component of req.body.components) {
+                const exists = portfolio.components.find((c: any) => c._id.toString() === component._id);
                 switch (component.__t) {
                     case "TextComponent":
                         if (!component.text) {
                             throw new ApiError(400, "Text is required for text component", "Text is required for text component");
                         }
-                        await textComponentModel.create({
-                            type: component.type,
-                            index: component.index,
-                            text: component.text,
-                            portfolio_id: portfolio._id
-                        }).then((textComponent) => {
-                            components.push(textComponent._id)
-                        })
 
+                        if (exists) {
+                            await textComponentModel.findOneAndUpdate(
+                                {_id: component._id},
+                                {type: component.type, index: component.index, text: component.text},
+                                {new: true}
+                            ).then((textComponent) => {
+                                if (textComponent == null) {
+                                    return
+                                }
+                                components.push(textComponent._id.toString());
+                            })
+                        } else {
+
+
+                            await textComponentModel.create({
+                                type: component.type,
+                                index: component.index,
+                                text: component.text,
+                                portfolio_id: portfolio._id
+                            }).then((textComponent) => {
+                                components.push(textComponent._id.toString());
+                            })
+
+                        }
                         break;
                     case "ButtonComponent":
                         if (!component.text || !component.url) {
                             throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
                         }
-                        await buttonComponentModel.create({
-                            color: component.color,
-                            index: component.index,
-                            text: component.text,
-                            url: component.url,
-                            portfolio_id: portfolio._id
-                        }).then((buttonComponent) => {
-                            components.push(buttonComponent._id)
-                        })
+
+                        if (exists) {
+                            console.log("Button exists")
+                            await buttonComponentModel.findOneAndUpdate(
+                                {_id: component._id},
+                                {
+                                    color: component.color,
+                                    index: component.index,
+                                    text: component.text,
+                                    url: component.url
+                                },
+                                {new: true}
+                            ).then((buttonComponent) => {
+                                if (buttonComponent == null) {
+                                    return
+                                }
+                                components.push(buttonComponent._id.toString());
+                            })
+                        } else {
+                            console.log("Button not exists")
+                            await buttonComponentModel.create({
+                                color: component.color,
+                                index: component.index,
+                                text: component.text,
+                                url: component.url,
+                                portfolio_id: portfolio._id
+                            }).then((buttonComponent) => {
+                                components.push(buttonComponent._id)
+                            })
+                        }
                         break;
                     case "ImageComponent":
                         if (!component.url) {
                             throw new ApiError(400, "URL is required for image component", "URL is required for image component");
                         }
-                        await imageComponentModel.create({
-                            portfolio_id: portfolio._id,
-                            index: component.index,
-                            url: component.url,
-                        }).then((imageComponent) => {
-                            components.push(imageComponent._id)
-                        })
+                        if (exists) {
+                            await imageComponentModel.findOneAndUpdate(
+                                {_id: component._id},
+                                {index: component.index, url: component.url},
+                                {new: true}
+                            ).then((imageComponent) => {
+                                if (imageComponent == null) {
+                                    return
+                                }
+                                components.push(imageComponent._id.toString());
+                            })
+                        } else {
+                            await imageComponentModel.create({
+                                portfolio_id: portfolio._id,
+                                index: component.index,
+                                url: component.url,
+                            }).then((imageComponent) => {
+                                components.push(imageComponent._id)
+                            })
+                        }
                         break;
                 }
             }
         }
+
+        // Remove components
+        const existingComponentIds = portfolio.components.map((component: any) => component._id.toString());
+        const newComponentIds = req.body.components.map((component: any) => component._id);
+        removedComponents.push(...existingComponentIds.filter(id => !newComponentIds.includes(id)));
+        await componentModel.deleteMany({_id: {$in: removedComponents}}).then((result) => {
+            console.log(result)
+        }).catch((err: any) => {
+            console.log(err)
+        })
 
         await portfolioModel.findOneAndUpdate(
             {url: req.params.url, user: user.id},
@@ -260,6 +324,13 @@ router.delete("/:url", authenticate, async (req, res) => {
         if (!portfolio) {
             throw new ApiError(404, "Portfolio not found", "Portfolio not found");
         }
+
+        const components = portfolio.components.map((component: any) => component._id);
+        await componentModel.deleteMany({_id: {$in: components}}).then((result) => {
+            console.log(result)
+        }).catch((err: any) => {
+            console.log(err)
+        })
 
         await portfolioModel.deleteOne({url: req.params.url}).then(() => {
             res.status(200).json({

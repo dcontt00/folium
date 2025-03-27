@@ -83,6 +83,8 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         newPortfolio.description = description;
         await axios.put(`http://localhost:3000/portfolio/${newPortfolio.url}`, newPortfolio, {withCredentials: true}).then((response) => {
             console.log(response);
+            const updatedPortfolio = response.data.data;
+            setPortfolioState(updatedPortfolio);
         }).catch((error) => {
             console.log(error);
         });
