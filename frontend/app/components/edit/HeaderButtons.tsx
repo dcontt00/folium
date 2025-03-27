@@ -9,21 +9,40 @@ interface Props {
     toggleOpenedSettings: () => void;
     unsaved: boolean;
     portfolio: any;
+    onPreview: () => void;
 }
 
-export default function HeaderButtons({onSave, onBack, toggleOpenedSettings, unsaved, portfolio}: Props) {
+export default function HeaderButtons({onSave, onBack, toggleOpenedSettings, unsaved, portfolio, onPreview}: Props) {
     const navigate = useNavigate();
 
     return (
         <>
             <Group h="100%" px="md" visibleFrom="sm">
                 <Avatar src={Logo} radius="xs"/>
-                <Button leftSection={<IconArrowLeft/>} onClick={onBack}>Go Back</Button>
-                <Button leftSection={<IconDeviceFloppy/>} onClick={onSave}
-                        variant={unsaved ? "outline" : "filled"}>Save</Button>
-                <Button leftSection={<IconDeviceDesktop/>}
-                        onClick={() => navigate(`/preview/${portfolio.url}`)}>Preview</Button>
-                <Button leftSection={<IconSettings/>} onClick={toggleOpenedSettings}>Settings</Button>
+                <Button
+                    leftSection={<IconArrowLeft/>}
+                    onClick={onBack}
+                >
+                    Back
+                </Button>
+                <Button
+                    leftSection={<IconDeviceFloppy/>}
+                    onClick={onSave}
+                    variant={unsaved ? "outline" : "filled"}
+                >
+                    Save
+                </Button>
+                <Button
+                    leftSection={<IconDeviceDesktop/>}
+                    onClick={onPreview}
+                >
+                    Preview
+                </Button>
+                <Button
+                    leftSection={<IconSettings/>}
+                    onClick={toggleOpenedSettings}
+                >
+                    Settings</Button>
             </Group>
             <Group h="100%" px="md" hiddenFrom="sm">
                 <Avatar src={Logo} radius="xs"/>

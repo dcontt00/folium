@@ -1,6 +1,6 @@
-import {Alert, AppShell, Button, Stack} from "@mantine/core";
+import {ActionIcon, Alert, AppShell, Button, Stack} from "@mantine/core";
 import axios, {type AxiosResponse} from "axios";
-import {IconInfoCircle} from "@tabler/icons-react";
+import {IconInfoCircle, IconX} from "@tabler/icons-react";
 
 import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
 import {useState} from "react";
@@ -47,6 +47,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const [unsaved, setUnsaved] = useState(false);
     const navigate = useNavigate();
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
+    const [previewEnabled, setPreviewEnabled] = useState(false);
 
     function onEditComponent(component: ComponentType) {
         setEditComponent(component);
@@ -121,19 +122,32 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 
     return (
         <AppShell
-            header={{height: 60}}
-            aside={{width: 300, breakpoint: "sm", collapsed: {mobile: !openedSettings, desktop: !openedSettings}}}
-            navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !openedEditComponent}}}
+            header={{height: 60, collapsed: previewEnabled}}
+            aside={{
+                width: 300,
+                breakpoint: "sm",
+                collapsed: {mobile: !openedSettings || previewEnabled, desktop: !openedSettings || previewEnabled}
+            }}
+            navbar={{
+                width: 300,
+                breakpoint: 'sm',
+                collapsed: {mobile: !openedEditComponent || previewEnabled, desktop: previewEnabled}
+            }}
             padding="md"
         >
             <AppShell.Header>
-                <HeaderButtons onBack={onBack} onSave={onSave} toggleOpenedSettings={toggleOpenedSettings}
-                               unsaved={unsaved} portfolio={portfolio}/>
+                <HeaderButtons
+                    onBack={onBack}
+                    onSave={onSave}
+                    onPreview={() => setPreviewEnabled(true)}
+                    toggleOpenedSettings={toggleOpenedSettings}
+                    unsaved={unsaved}
+                    portfolio={portfolio}
+                />
             </AppShell.Header>
             <AppShell.Navbar>
                 <Stack p="sm">
                     <AddComponentMenu portfolio={portfolio} onAddComponent={onAddComponent}/>
-
                     {editComponent ? (
                             <EditComponentSection
                                 component={editComponent}
@@ -159,6 +173,11 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 />
             </AppShell.Aside>
             <AppShell.Main>
+                {previewEnabled && (
+                    <ActionIcon onClick={() => setPreviewEnabled(false)}>
+                        <IconX/>
+                    </ActionIcon>
+                )}
                 <ComponentsDnD
                     onSelectEditComponent={onSelectEditComponent}
                     portfolioState={portfolioState}
