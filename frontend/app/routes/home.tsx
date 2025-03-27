@@ -7,6 +7,7 @@ import Logo from "~/Logo.svg";
 import NewPortfolioModal from "~/components/NewPortfolioModal";
 import {data, useFetcher} from "react-router";
 import {IconCirclePlus} from "@tabler/icons-react";
+import UserMenu from "~/components/UserMenu";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -95,7 +96,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
                         <Group>
                             <Button leftSection={<IconCirclePlus/>} onClick={openNewPortfolioModal}>New
                                 Portfolio</Button>
-                            <Avatar/>
+                            <UserMenu/>
                         </Group>
                     </Group>
                 </AppShell.Header>

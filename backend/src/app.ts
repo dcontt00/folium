@@ -9,6 +9,7 @@ import registerRouter from "./routes/register"
 import loginRouter from "./routes/login"
 import portfolioRouter from "./routes/portfolio"
 import imagesRouter from "./routes/images"
+import logoutRouter from "./routes/logout"
 import fileUpload from "express-fileupload";
 
 
@@ -30,6 +31,7 @@ app.use('/', indexRouter);
 app.use('/user', userRoute);
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
+app.use("/logout", logoutRouter);
 app.use("/portfolio", portfolioRouter);
 app.use("/images", imagesRouter);
 
