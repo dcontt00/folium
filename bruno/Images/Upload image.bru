@@ -1,0 +1,27 @@
+meta {
+  name: Upload image
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:3000/images
+  body: multipartForm
+  auth: none
+}
+
+body:json {
+  {
+    "description": "Portfolio about test",
+    "url": "test-portfolio",
+    "title":"test Portfolio"
+  }
+}
+
+body:multipart-form {
+  upload: @file(/home/dany/Pictures/Screenshots/test.png)
+}
+
+body:file {
+  file: @file(/home/dany/Pictures/Screenshots/Screenshot From 2025-03-27 11-03-18.png) @contentType(image/png)
+}
