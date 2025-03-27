@@ -1,5 +1,5 @@
 import type {Route} from "./+types/home";
-import {AppShell, Avatar, Burger, Button, Flex, Group, Stack, Text, Title} from "@mantine/core";
+import {AppShell, Avatar, Burger, Button, Card, Group, SimpleGrid, Skeleton, Stack, Text, Title} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import axios, {type AxiosResponse} from "axios";
 import PortfolioCard from "~/components/PortfolioCard";
@@ -35,7 +35,38 @@ export async function clientLoader({params}: Route.ClientLoaderArgs) {
 
 // HydrateFallback is rendered while the client loader is running
 export function HydrateFallback() {
-    return <div>Loading...</div>;
+    return (
+        <AppShell
+            header={{height: 60}}
+            padding="md"
+        >
+            <AppShell.Header>
+                <Group h="100%" px="md" justify="space-between">
+                    <Burger hiddenFrom="sm" size="sm"/>
+                    <Avatar src={Logo} radius="xs"/>
+                    <Text>Folium</Text>
+                    <Group>
+                        <Button>New Portfolio</Button>
+                        <Avatar/>
+                    </Group>
+                </Group>
+            </AppShell.Header>
+            <AppShell.Main>
+                <Stack align="center">
+                    <Title order={2}>My portfolios</Title>
+
+                    <SimpleGrid cols={{base: 1, sm: 2, lg: 3}}
+                                spacing={{base: 10, sm: 'xl'}}
+                                verticalSpacing={{base: 'md', sm: 'xl'}}>
+                        {[1, 2, 3, 4, 5, 6].map((index) => (
+                            <CardSkeleton key={index}/>
+                        ))
+                        }
+                    </SimpleGrid>
+                </Stack>
+            </AppShell.Main>
+        </AppShell>
+    );
 }
 
 export default function Home({loaderData}: Route.ComponentProps) {
@@ -47,10 +78,6 @@ export default function Home({loaderData}: Route.ComponentProps) {
         await fetcher.load("/home")
     }
 
-    async function deletePortfolio(portfolioUrl: string) {
-        await axios.delete(`http://localhost:3000/portfolio/${portfolioUrl}`, {withCredentials: true});
-        await fetcher.load("/home")
-    }
 
     const portfolios: Array<Portfolio> = fetcher.data || loaderData;
     return (
@@ -71,14 +98,20 @@ export default function Home({loaderData}: Route.ComponentProps) {
                     </Group>
                 </AppShell.Header>
                 <AppShell.Main>
-                    <Stack>
+                    <Stack align="center">
                         <Title order={2}>My portfolios</Title>
-
-                        <Flex
-                            gap="md"
-                        >
-                            {
-                                portfolios.map((portfolio: Portfolio, index) => (
+                        {portfolios.length === 0 ? (
+                            <>
+                                <Text>This seems empty</Text>
+                                <Button onClick={openNewPortfolioModal}>Create new portfolio</Button>
+                            </>
+                        ) : (
+                            <SimpleGrid
+                                cols={{base: 1, sm: 2, lg: 3}}
+                                spacing={{base: 10, sm: 'xl'}}
+                                verticalSpacing={{base: 'md', sm: 'xl'}}
+                            >
+                                {portfolios.map((portfolio: Portfolio, index) => (
                                     <PortfolioCard
                                         key={index}
                                         title={portfolio.title}
@@ -86,9 +119,9 @@ export default function Home({loaderData}: Route.ComponentProps) {
                                         url={portfolio.url}
                                         onDelete={() => handleDelete()}
                                     />
-                                ))
-                            }
-                        </Flex>
+                                ))}
+                            </SimpleGrid>
+                        )}
                     </Stack>
                 </AppShell.Main>
             </AppShell>
@@ -97,3 +130,27 @@ export default function Home({loaderData}: Route.ComponentProps) {
     );
 }
 
+
+function CardSkeleton() {
+    return (
+        <Card
+            shadow="sm"
+            padding="xl"
+            component="a"
+            target="_blank"
+        >
+            <Card.Section>
+                <Skeleton height={160} width={400}/>
+            </Card.Section>
+            <Stack style={{marginTop: '16px'}}>
+                <Skeleton height={20}/>
+                <Skeleton height={20}/>
+                <Group justify="space-between" grow>
+                    <Skeleton height={40}/>
+                    <Skeleton height={40}/>
+                    <Skeleton height={40}/>
+                </Group>
+            </Stack>
+        </Card>
+    )
+}
