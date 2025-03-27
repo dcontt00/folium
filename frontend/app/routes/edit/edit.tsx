@@ -108,6 +108,8 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     }
 
     function onDragEnd(result: DropResult) {
+
+        //TODO: Improve this
         console.log(result);
         if (!result.destination) {
             return;
@@ -116,6 +118,10 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         const newComponents = Array.from(portfolioState.components);
         const [movedComponent] = newComponents.splice(result.source.index, 1);
         newComponents.splice(result.destination.index, 0, movedComponent);
+
+        for (let i = 0; i < newComponents.length; i++) {
+            newComponents[i].index = i;
+        }
 
         const newPortfolio = {...portfolioState, components: newComponents};
         setPortfolioState(newPortfolio);
