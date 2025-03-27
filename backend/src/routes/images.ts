@@ -48,14 +48,13 @@ router.post("/", authenticate, async (req, res) => {
 
 });
 
-router.get('/:filename', authenticate, (req, res) => {
+router.get('/:userId/:filename', authenticate, (req, res) => {
     const user = req.user;
     if (!user) {
         throw new Error("User not found");
     }
-    const uploadFolder = path.join(__dirname, "../../images/", user.id)
-    const fileName = req.params.filename;
-    const filePath = path.join(uploadFolder, fileName);
+    const {userId, filename} = req.params;
+    const filePath = path.join(__dirname, "../../images", userId, filename);
 
     res.sendFile(filePath, (err) => {
         if (err) {
