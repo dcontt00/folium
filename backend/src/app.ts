@@ -8,6 +8,9 @@ import userRoute from "./routes/user"
 import registerRouter from "./routes/register"
 import loginRouter from "./routes/login"
 import portfolioRouter from "./routes/portfolio"
+import imagesRouter from "./routes/images"
+import fileUpload from "express-fileupload";
+
 
 import connectDB from "./db";
 import {errorHandler} from "./middleware/error";
@@ -15,11 +18,11 @@ import {errorHandler} from "./middleware/error";
 
 const app: Express = express();
 const port = 3000
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'public')));
 connectDB();
 
@@ -28,6 +31,7 @@ app.use('/user', userRoute);
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 app.use("/portfolio", portfolioRouter);
+app.use("/images", imagesRouter);
 
 app.use(errorHandler)
 
