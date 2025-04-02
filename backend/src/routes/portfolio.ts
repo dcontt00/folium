@@ -197,7 +197,12 @@ router.put("/:url", authenticate, async (req, res) => {
             {url: req.params.url, user: user.id},
             {...req.body, components: components},
             {new: true}
-        ).populate("components").then((portfolio) => {
+        ).populate({
+            path: "components",
+            populate: {
+                path: "components",
+            }
+        }).then((portfolio) => {
             res.status(200).json({
                 status: 200,
                 success: true,
@@ -370,6 +375,27 @@ async function editComponent(component: any): Promise<any> {
                     index: component.index,
                     url: component.url
                 },
+                {new: true}
+            ).then(updatedComponent => {
+                return updatedComponent
+            })
+
+        case "ContainerComponent":
+            const containerComponents: Array<any> = [];
+            for (const containerComponent of component.components) {
+                if (containerComponent._id != null) {
+                    await editComponent(containerComponent).then((component) => {
+                        containerComponents.push(component._id);
+                    })
+                } else {
+                    await createComponent(containerComponent, containerComponent.portfolio_id).then((component) => {
+                        containerComponents.push(component._id);
+                    })
+                }
+            }
+            return await containerComponentModel.findOneAndUpdate(
+                {_id: component._id},
+                {index: component.index, components: containerComponents},
                 {new: true}
             ).then(updatedComponent => {
                 return updatedComponent
