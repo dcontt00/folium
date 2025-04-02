@@ -11,9 +11,16 @@ interface Props {
     portfolioState: Portfolio;
     onDragEnd: (result: DropResult) => void;
     onRemoveComponent: (component: ComponentType) => void;
+    onEditComponent: (component: ComponentType) => void;
 }
 
-export default function ComponentsDnD({onSelectEditComponent, portfolioState, onDragEnd, onRemoveComponent}: Props) {
+export default function ComponentsDnD({
+                                          onSelectEditComponent,
+                                          portfolioState,
+                                          onDragEnd,
+                                          onRemoveComponent,
+                                          onEditComponent
+                                      }: Props) {
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -30,7 +37,8 @@ export default function ComponentsDnD({onSelectEditComponent, portfolioState, on
                                         className="edit"
                                     >
                                         <IconMenu2 className="icon"/>
-                                        <Component component={component}/>
+                                        <Component component={component} onSelectEditComponent={onSelectEditComponent}
+                                                   onEditComponent={onEditComponent}/>
                                         <ActionIcon className="icon" onClick={() => onSelectEditComponent(component)}>
                                             <IconEdit/>
                                         </ActionIcon>

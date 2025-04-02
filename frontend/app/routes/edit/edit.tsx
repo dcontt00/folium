@@ -49,8 +49,12 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
     const [previewEnabled, setPreviewEnabled] = useState(false);
 
+    /*  useEffect(() => {
+          console.log(portfolioState)
+      }, [portfolioState]);*/
+
     function onEditComponent(component: ComponentType) {
-        setEditComponent(component);
+        //setEditComponent(component);
 
         const index = portfolioState.components.findIndex((c) => c._id === component._id);
         const newPortfolio = {...portfolioState};
@@ -191,6 +195,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     portfolioState={portfolioState}
                     onRemoveComponent={onRemoveComponent}
                     onDragEnd={onDragEnd}
+                    onEditComponent={onEditComponent}
                 />
             </AppShell.Main>
 

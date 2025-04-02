@@ -13,9 +13,11 @@ import ContainerComponent from "~/components/portfolioComponents/ContainerCompon
 
 interface Props {
     component: ComponentType;
+    onEditComponent: (component: ComponentType) => void;
+    onSelectEditComponent: (component: ComponentType) => void;
 }
 
-export default function Component({component}: Props) {
+export default function Component({component, onEditComponent, onSelectEditComponent}: Props) {
     function renderComponent(component: ComponentType) {
 
         switch (component.__t) {
@@ -33,7 +35,8 @@ export default function Component({component}: Props) {
 
             case "ContainerComponent":
                 const containerComponent = component as ContainerComponentType;
-                return <ContainerComponent containerComponent={containerComponent}/>
+                return <ContainerComponent onSelectEditComponent={onSelectEditComponent}
+                                           onEditComponent={onEditComponent} containerComponent={containerComponent}/>
             default:
                 console.log(component)
                 return <div>Component not found</div>

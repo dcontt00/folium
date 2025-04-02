@@ -2,14 +2,16 @@ import type {ComponentType, ContainerComponentType} from "~/interfaces/interface
 import Component from "~/components/portfolioComponents/Component";
 import {DragDropContext, Draggable, Droppable, type DropResult} from "@hello-pangea/dnd";
 import {IconEdit, IconMenu2, IconTrash} from "@tabler/icons-react";
-import {ActionIcon} from "@mantine/core";
+import {ActionIcon, Button} from "@mantine/core";
 import {useState} from "react";
 
 interface Props {
-    containerComponent: ContainerComponentType
+    containerComponent: ContainerComponentType,
+    onEditComponent: (component: ComponentType) => void;
+    onSelectEditComponent: (component: ComponentType) => void;
 }
 
-export default function ContainerComponent({containerComponent}: Props) {
+export default function ContainerComponent({containerComponent, onEditComponent, onSelectEditComponent}: Props) {
 
     const [containerState, setContainerState] = useState(containerComponent);
 
@@ -27,7 +29,9 @@ export default function ContainerComponent({containerComponent}: Props) {
         }
 
         const newContainer = {...containerState, components: newComponents};
+        console.log(newContainer);
         setContainerState(newContainer);
+        onEditComponent(newContainer)
     };
 
     return (
@@ -47,8 +51,10 @@ export default function ContainerComponent({containerComponent}: Props) {
                                             className="containerComponent"
                                         >
                                             <IconMenu2 className="icon"/>
-                                            <Component component={component}/>
-                                            <ActionIcon className="icon">
+                                            <Component component={component} onEditComponent={onEditComponent}
+                                                       onSelectEditComponent={onSelectEditComponent}/>
+                                            <ActionIcon className="icon"
+                                                        onClick={() => onSelectEditComponent(component)}>
                                                 <IconEdit/>
                                             </ActionIcon>
                                             <ActionIcon color="red" className="icon">
@@ -63,6 +69,7 @@ export default function ContainerComponent({containerComponent}: Props) {
                     )}
                 </Droppable>
             </DragDropContext>
+            <Button className="containerComponent icon">Add</Button>
         </div>
     )
 }
