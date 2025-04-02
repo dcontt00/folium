@@ -4,6 +4,7 @@ import {DragDropContext, Draggable, Droppable, type DropResult} from "@hello-pan
 import {IconEdit, IconMenu2, IconTrash} from "@tabler/icons-react";
 import {ActionIcon, Button} from "@mantine/core";
 import {useState} from "react";
+import AddComponentMenu from "~/components/edit/AddComponentMenu";
 
 interface Props {
     containerComponent: ContainerComponentType,
@@ -34,6 +35,13 @@ export default function ContainerComponent({containerComponent, onEditComponent,
         onEditComponent(newContainer)
     };
 
+    function onAddComponent(component: ComponentType) {
+        const newComponents = [...containerState.components, component];
+        const newContainer = {...containerState, components: newComponents};
+        setContainerState(newContainer);
+        onEditComponent(newContainer);
+    }
+
     return (
         <div style={{display: 'flex', flexDirection: 'row', gap: 20, alignItems: 'center'}}>
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -42,7 +50,7 @@ export default function ContainerComponent({containerComponent, onEditComponent,
                         <div {...provided.droppableProps} ref={provided.innerRef}
                              style={{display: 'flex', flexDirection: 'row'}}>
                             {containerState.components.map((component: ComponentType, index: number) => (
-                                <Draggable key={component._id} draggableId={component._id} index={index}>
+                                <Draggable key={component._id} draggableId={index.toString()} index={index}>
                                     {(provided) => (
                                         <div
                                             ref={provided.innerRef}
@@ -70,6 +78,9 @@ export default function ContainerComponent({containerComponent, onEditComponent,
                 </Droppable>
             </DragDropContext>
             <Button className="containerComponent icon">Add</Button>
+            <AddComponentMenu portfolio_id={containerComponent.portfolio_id}
+                              portfolioComponentsLength={containerComponent.components.length}
+                              onAddComponent={onAddComponent}/>
         </div>
     )
 }

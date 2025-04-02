@@ -28,7 +28,7 @@ export default function ComponentsDnD({
                 {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                         {portfolioState.components.map((component, index) => (
-                            <Draggable key={component._id} draggableId={component._id} index={index}>
+                            <Draggable key={component._id} draggableId={index.toString()} index={index}>
                                 {(provided) => (
                                     <div
                                         ref={provided.innerRef}

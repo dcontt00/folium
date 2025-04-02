@@ -1,27 +1,22 @@
 import {Button, Menu} from "@mantine/core";
 import {IconHandClick, IconPhoto, IconTextCaption} from "@tabler/icons-react";
-import type {
-    ButtonComponentType,
-    ComponentType,
-    ImageComponentType,
-    Portfolio,
-    TextComponentType
-} from "~/interfaces/interfaces";
+import type {ButtonComponentType, ComponentType, ImageComponentType, TextComponentType} from "~/interfaces/interfaces";
 import {TextStyle, TextType} from "~/interfaces/textComponent";
 
 
 interface Props {
-    portfolio: Portfolio;
+    portfolio_id: string;
+    portfolioComponentsLength: number;
     onAddComponent: (component: ComponentType) => void;
 }
 
-export default function AddComponentMenu({portfolio, onAddComponent}: Props) {
+export default function AddComponentMenu({onAddComponent, portfolio_id, portfolioComponentsLength}: Props) {
 
     function onAddTextComponent() {
         const newComponent: TextComponentType = {
-            _id: Date.now().toString(),
-            index: portfolio.components.length - 1,
-            portfolio_id: portfolio._id,
+            _id: null,
+            index: portfolioComponentsLength - 1,
+            portfolio_id: portfolio_id,
             __t: "TextComponent",
             text: "Hello World",
             type: TextType.TEXT,
@@ -32,9 +27,9 @@ export default function AddComponentMenu({portfolio, onAddComponent}: Props) {
 
     function onAddButtonComponent() {
         const newComponent: ButtonComponentType = {
-            _id: Date.now().toString(),
-            index: portfolio.components.length - 1,
-            portfolio_id: portfolio._id,
+            _id: null,
+            index: portfolioComponentsLength - 1,
+            portfolio_id: portfolio_id,
             __t: "ButtonComponent",
             text: "Button",
             url: "/",
@@ -45,9 +40,9 @@ export default function AddComponentMenu({portfolio, onAddComponent}: Props) {
 
     function onAddImageComponent() {
         const newComponent: ImageComponentType = {
-            _id: Date.now().toString(),
-            index: portfolio.components.length - 1,
-            portfolio_id: portfolio._id,
+            _id: null,
+            index: portfolioComponentsLength - 1,
+            portfolio_id: portfolio_id,
             __t: "ImageComponent",
             url: "https://via.placeholder.com/150",
         }

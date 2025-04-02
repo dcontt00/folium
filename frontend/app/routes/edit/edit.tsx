@@ -3,7 +3,7 @@ import axios, {type AxiosResponse} from "axios";
 import {IconInfoCircle, IconX} from "@tabler/icons-react";
 
 import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import {data, useNavigate} from "react-router";
 import type {Route} from "../+types";
@@ -49,9 +49,9 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
     const [previewEnabled, setPreviewEnabled] = useState(false);
 
-    /*  useEffect(() => {
+    useEffect(() => {
           console.log(portfolioState)
-      }, [portfolioState]);*/
+    }, [portfolioState]);
 
     function onEditComponent(component: ComponentType) {
         //setEditComponent(component);
@@ -159,7 +159,11 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             </AppShell.Header>
             <AppShell.Navbar>
                 <Stack p="sm">
-                    <AddComponentMenu portfolio={portfolio} onAddComponent={onAddComponent}/>
+                    <AddComponentMenu
+                        portfolio_id={portfolio._id}
+                        portfolioComponentsLength={portfolio.components.length}
+                        onAddComponent={onAddComponent}
+                    />
                     {editComponent ? (
                             <EditComponentSection
                                 component={editComponent}
