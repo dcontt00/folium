@@ -1,9 +1,17 @@
 
+.container {
+    gap: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
 .edit {
     padding: 1em;
     display: flex;
     align-items: center;
     gap: 1em;
+    background: #181e30;
+
 
 }
 
@@ -24,6 +32,7 @@
     display: flex;
     align-items: center;
     gap: 1em;
+    background: #212942;
 }
 
 .containerComponent .icon {

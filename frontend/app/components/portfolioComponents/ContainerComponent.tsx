@@ -1,7 +1,7 @@
 import type {ComponentType, ContainerComponentType} from "~/interfaces/interfaces"
 import Component from "~/components/portfolioComponents/Component";
 import {DragDropContext, Draggable, Droppable, type DropResult} from "@hello-pangea/dnd";
-import {IconMenu2, IconTrash} from "@tabler/icons-react";
+import {IconEdit, IconMenu2, IconTrash} from "@tabler/icons-react";
 import {ActionIcon} from "@mantine/core";
 import {useState} from "react";
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
@@ -62,7 +62,7 @@ export default function ContainerComponent({containerComponent, onEditComponent,
                 <Droppable droppableId="containerComponents" direction="horizontal">
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef}
-                             style={{display: 'flex', flexDirection: 'row'}}>
+                             style={{display: 'flex', flexDirection: 'row', gap: "1em"}}>
                             {containerState.components.map((component: ComponentType, index: number) => (
                                 <Draggable key={component._id} draggableId={index.toString()} index={index}>
                                     {(provided) => (
@@ -75,6 +75,10 @@ export default function ContainerComponent({containerComponent, onEditComponent,
                                             <IconMenu2 className="icon"/>
                                             <Component component={component} onEditComponent={onEditComponent}
                                                        onSelectEditComponent={onSelectEditComponent}/>
+                                            <ActionIcon className="icon"
+                                                        onClick={() => onSelectEditComponent(component)}>
+                                                <IconEdit/>
+                                            </ActionIcon>
                                             <ActionIcon color="red" className="icon"
                                                         onClick={() => onRemoveComponent(component)}>
                                                 <IconTrash/>
@@ -93,6 +97,8 @@ export default function ContainerComponent({containerComponent, onEditComponent,
                 portfolioComponentsLength={containerComponent.components.length}
                 onAddComponent={onAddComponent}
                 allowContainerComponent={false}
+                largeButton={false}
+                className="icon"
             />
         </div>
     )

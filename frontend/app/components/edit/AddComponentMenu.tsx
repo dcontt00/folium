@@ -1,5 +1,5 @@
-import {Button, Menu} from "@mantine/core";
-import {IconContainer, IconHandClick, IconPhoto, IconTextCaption} from "@tabler/icons-react";
+import {ActionIcon, Button, Menu} from "@mantine/core";
+import {IconContainer, IconHandClick, IconPhoto, IconPlus, IconTextCaption} from "@tabler/icons-react";
 import type {
     ButtonComponentType,
     ComponentType,
@@ -14,14 +14,18 @@ interface Props {
     portfolio_id: string;
     portfolioComponentsLength: number;
     onAddComponent: (component: ComponentType) => void;
-    allowContainerComponent: boolean
+    allowContainerComponent?: boolean,
+    largeButton?: boolean,
+    className?: string
 }
 
 export default function AddComponentMenu({
                                              onAddComponent,
                                              portfolio_id,
                                              portfolioComponentsLength,
-                                             allowContainerComponent
+                                             allowContainerComponent = true,
+                                             largeButton = true,
+                                             className = ""
                                          }: Props) {
 
     function onAddTextComponent() {
@@ -75,7 +79,12 @@ export default function AddComponentMenu({
     return (
         <Menu shadow="md" width={200}>
             <Menu.Target>
-                <Button>Add Component</Button>
+                {largeButton ?
+                    <Button className={className} leftSection={<IconPlus/>}>Add Component</Button>
+                    : <ActionIcon className={className}>
+                        <IconPlus/>
+                    </ActionIcon>
+                }
             </Menu.Target>
             <Menu.Dropdown>
                 <Menu.Item onClick={onAddTextComponent} leftSection={<IconTextCaption/>}>

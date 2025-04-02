@@ -26,7 +26,7 @@ export default function ComponentsDnD({
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="components">
                 {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                    <div {...provided.droppableProps} ref={provided.innerRef} className="container">
                         {portfolioState.components.map((component, index) => (
                             <Draggable key={component._id} draggableId={index.toString()} index={index}>
                                 {(provided) => (
@@ -36,12 +36,17 @@ export default function ComponentsDnD({
                                         {...provided.dragHandleProps}
                                         className="edit"
                                     >
-                                        <IconMenu2 className="icon"/>
+                                        <IconMenu2 className="222B45FFicon"/>
                                         <Component component={component} onSelectEditComponent={onSelectEditComponent}
                                                    onEditComponent={onEditComponent}/>
-                                        <ActionIcon className="icon" onClick={() => onSelectEditComponent(component)}>
-                                            <IconEdit/>
-                                        </ActionIcon>
+
+                                        {component.__t != "ContainerComponent" && (
+
+                                            <ActionIcon className="icon"
+                                                        onClick={() => onSelectEditComponent(component)}>
+                                                <IconEdit/>
+                                            </ActionIcon>
+                                        )}
                                         <ActionIcon color="red" className="icon"
                                                     onClick={() => onRemoveComponent(component)}>
                                             <IconTrash/>
