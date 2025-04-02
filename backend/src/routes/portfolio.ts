@@ -8,6 +8,7 @@ import {
 } from "../models/models";
 import {authenticate} from "../middleware/auth";
 import ApiError from "../interfaces/ApiError";
+import mongoose from "mongoose";
 
 
 const router = express.Router();
@@ -153,6 +154,8 @@ router.get("/:url", authenticate, async (req, res) => {
 router.put("/:url", authenticate, async (req, res) => {
     const components: any[] = [];
     const removedComponents: any[] = [];
+    const existingComponents: any[] = [];
+    const newComponentsIds: any[] = [];
     try {
         const user = req.user;
         if (!user) {
@@ -167,111 +170,35 @@ router.put("/:url", authenticate, async (req, res) => {
 
         if (req.body.components) {
             for (const component of req.body.components) {
-                const exists = portfolio.components.find((c: any) => c._id.toString() === component._id);
-                switch (component.__t) {
-                    case "TextComponent":
-                        if (!component.text) {
-                            throw new ApiError(400, "Text is required for text component", "Text is required for text component");
-                        }
+                if (component._id != null) {
+                    console.log("Component exists")
+                    console.log("\n")
 
-                        if (exists) {
-                            await textComponentModel.findOneAndUpdate(
-                                {_id: component._id},
-                                {type: component.type, index: component.index, text: component.text},
-                                {new: true}
-                            ).then((textComponent) => {
-                                if (textComponent == null) {
-                                    return
-                                }
-                                components.push(textComponent._id.toString());
-                            })
-                        } else {
-
-
-                            await textComponentModel.create({
-                                type: component.type,
-                                index: component.index,
-                                text: component.text,
-                                portfolio_id: portfolio._id
-                            }).then((textComponent) => {
-                                components.push(textComponent._id.toString());
-                            })
-
-                        }
-                        break;
-                    case "ButtonComponent":
-                        if (!component.text || !component.url) {
-                            throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
-                        }
-
-                        if (exists) {
-                            console.log("Button exists")
-                            await buttonComponentModel.findOneAndUpdate(
-                                {_id: component._id},
-                                {
-                                    color: component.color,
-                                    index: component.index,
-                                    text: component.text,
-                                    url: component.url
-                                },
-                                {new: true}
-                            ).then((buttonComponent) => {
-                                if (buttonComponent == null) {
-                                    return
-                                }
-                                components.push(buttonComponent._id.toString());
-                            })
-                        } else {
-                            console.log("Button not exists")
-                            await buttonComponentModel.create({
-                                color: component.color,
-                                index: component.index,
-                                text: component.text,
-                                url: component.url,
-                                portfolio_id: portfolio._id
-                            }).then((buttonComponent) => {
-                                components.push(buttonComponent._id)
-                            })
-                        }
-                        break;
-                    case "ImageComponent":
-                        if (!component.url) {
-                            throw new ApiError(400, "URL is required for image component", "URL is required for image component");
-                        }
-                        if (exists) {
-                            await imageComponentModel.findOneAndUpdate(
-                                {_id: component._id},
-                                {index: component.index, url: component.url},
-                                {new: true}
-                            ).then((imageComponent) => {
-                                if (imageComponent == null) {
-                                    return
-                                }
-                                components.push(imageComponent._id.toString());
-                            })
-                        } else {
-                            await imageComponentModel.create({
-                                portfolio_id: portfolio._id,
-                                index: component.index,
-                                url: component.url,
-                            }).then((imageComponent) => {
-                                components.push(imageComponent._id)
-                            })
-                        }
-                        break;
+                    await editComponent(component).then(updatedComponent => {
+                        console.log(updatedComponent)
+                        components.push(updatedComponent._id);
+                        existingComponents.push(updatedComponent._id);
+                    })
+                } else {
+                    console.log("Component not exists")
+                    await createComponent(component, portfolio._id).then((component) => {
+                        components.push(component._id);
+                        newComponentsIds.push(component._id);
+                    });
+                    console.log("\n")
                 }
             }
         }
+        console.log(components)
 
         // Remove components
-        const existingComponentIds = portfolio.components.map((component: any) => component._id.toString());
-        const newComponentIds = req.body.components.map((component: any) => component._id);
-        removedComponents.push(...existingComponentIds.filter(id => !newComponentIds.includes(id)));
+        /*removedComponents.push(...existingComponents.filter(id => !newComponentsIds.includes(id)));
         await componentModel.deleteMany({_id: {$in: removedComponents}}).then((result) => {
             console.log(result)
         }).catch((err: any) => {
             console.log(err)
-        })
+        })*/
+
 
         await portfolioModel.findOneAndUpdate(
             {url: req.params.url, user: user.id},
@@ -284,6 +211,7 @@ router.put("/:url", authenticate, async (req, res) => {
                 data: portfolio,
             });
         })
+        await removeOrphanComponents();
 
     } catch (err: any) {
         // Remove created portfolioComponents if anything goes wrong
@@ -357,3 +285,124 @@ router.delete("/:url", authenticate, async (req, res) => {
 })
 
 export default router;
+
+async function createComponent(component: any, portfolio_id: mongoose.Types.ObjectId): Promise<any> {
+    switch (component.__t) {
+        case "TextComponent":
+            if (!component.text) {
+                throw new ApiError(400, "Text is required for text component", "Text is required for text component");
+            }
+
+
+            return await textComponentModel.create({
+                type: component.type,
+                index: component.index,
+                text: component.text,
+                portfolio_id: portfolio_id
+            })
+
+        case "ButtonComponent":
+            if (!component.text || !component.url) {
+                throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
+            }
+            return await buttonComponentModel.create({
+                color: component.color,
+                index: component.index,
+                text: component.text,
+                url: component.url,
+                portfolio_id: portfolio_id
+            })
+        case "ImageComponent":
+            if (!component.url) {
+                throw new ApiError(400, "URL is required for image component", "URL is required for image component");
+            }
+
+            return await imageComponentModel.create({
+                portfolio_id: portfolio_id,
+                index: component.index,
+                url: component.url,
+            })
+    }
+}
+
+async function editComponent(component: any): Promise<any> {
+    switch (component.__t) {
+        case "TextComponent":
+            if (!component.text) {
+                throw new ApiError(400, "Text is required for text component", "Text is required for text component");
+            }
+
+            return await textComponentModel.findOneAndUpdate(
+                {_id: component._id},
+                {type: component.type, index: component.index, text: component.text},
+                {new: true}
+            ).then(updatedComponent => {
+                    return updatedComponent
+                }
+            );
+
+        case "ButtonComponent":
+            if (!component.text || !component.url) {
+                throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
+            }
+
+            return await buttonComponentModel.findOneAndUpdate(
+                {_id: component._id},
+                {
+                    type: component.type,
+                    index: component.index,
+                    text: component.text,
+                    color: component.color,
+                    url: component.url
+                },
+                {new: true}
+            ).then(updatedComponent => {
+                return updatedComponent
+            })
+
+
+        case "ImageComponent":
+            if (!component.url) {
+                throw new ApiError(400, "URL is required for image component", "URL is required for image component");
+            }
+
+            return await imageComponentModel.findOneAndUpdate(
+                {_id: component._id},
+                {
+                    type: component.type,
+                    index: component.index,
+                    url: component.url
+                },
+                {new: true}
+            ).then(updatedComponent => {
+                return updatedComponent
+            })
+    }
+}
+
+async function removeOrphanComponents() {
+    try {
+        // Step 1: Get all component IDs that are referenced in any portfolio
+        const portfolios = await portfolioModel.find({}, {components: 1});
+        const referencedComponentIds = new Set<string>();
+        portfolios.forEach(portfolio => {
+            portfolio.components.forEach((componentId: mongoose.Types.ObjectId) => {
+                referencedComponentIds.add(componentId.toString());
+            });
+        });
+
+        // Step 2: Get all component IDs from the components collection
+        const allComponents = await componentModel.find({}, {_id: 1});
+        const allComponentIds = allComponents.map(component => component._id.toString());
+
+        // Step 3: Find the difference between these two sets of IDs
+        const orphanComponentIds = allComponentIds.filter(id => !referencedComponentIds.has(id));
+        console.log(orphanComponentIds);
+
+        // Step 4: Remove orphan components
+        await componentModel.deleteMany({_id: {$in: orphanComponentIds}});
+
+    } catch (e) {
+        console.error(e);
+    }
+}
