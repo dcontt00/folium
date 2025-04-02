@@ -253,12 +253,7 @@ router.delete("/:url", authenticate, async (req, res) => {
             throw new ApiError(404, "Portfolio not found", "Portfolio not found");
         }
 
-        const components = portfolio.components.map((component: any) => component._id);
-        await componentModel.deleteMany({_id: {$in: components}}).then((result) => {
-            console.log(result)
-        }).catch((err: any) => {
-            console.log(err)
-        })
+
 
         await portfolioModel.deleteOne({url: req.params.url}).then(() => {
             res.status(200).json({
@@ -266,6 +261,8 @@ router.delete("/:url", authenticate, async (req, res) => {
                 success: true,
             });
         })
+
+        await removeOrphanComponents()
 
     } catch (err: any) {
         if (err instanceof ApiError) {
