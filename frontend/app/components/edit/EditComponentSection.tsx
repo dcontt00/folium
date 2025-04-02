@@ -1,14 +1,7 @@
-import type {
-    ButtonComponentType,
-    ComponentType,
-    ContainerComponentType,
-    ImageComponentType,
-    TextComponentType
-} from "~/interfaces/interfaces";
+import type {ButtonComponentType, ComponentType, ImageComponentType, TextComponentType} from "~/interfaces/interfaces";
 import EditTextComponent from "~/components/edit/editComponents/EditTextComponent";
 import EditButtonComponent from "~/components/edit/editComponents/EditButtonComponent";
 import EditImageComponent from "~/components/edit/editComponents/EditImageComponent";
-import EditContainerComponent from "~/components/edit/editComponents/EditContainerComponent";
 
 
 interface Props {
@@ -31,10 +24,6 @@ export default function EditComponentSection({component, onEditComponent}: Props
             case "ImageComponent":
                 const imageComponent = component as ImageComponentType;
                 return <EditImageComponent component={imageComponent} onEditComponent={onEditComponent}/>
-            case "ContainerComponent":
-                const containerComponent = component as ContainerComponentType;
-                return <EditContainerComponent containerComponent={containerComponent}
-                                               onEditComponent={onEditComponent}/>
             default:
                 return <div>Component not found</div>
         }
