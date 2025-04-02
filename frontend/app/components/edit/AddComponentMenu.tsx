@@ -1,6 +1,12 @@
 import {Button, Menu} from "@mantine/core";
-import {IconHandClick, IconPhoto, IconTextCaption} from "@tabler/icons-react";
-import type {ButtonComponentType, ComponentType, ImageComponentType, TextComponentType} from "~/interfaces/interfaces";
+import {IconContainer, IconHandClick, IconPhoto, IconTextCaption} from "@tabler/icons-react";
+import type {
+    ButtonComponentType,
+    ComponentType,
+    ContainerComponentType,
+    ImageComponentType,
+    TextComponentType
+} from "~/interfaces/interfaces";
 import {TextStyle, TextType} from "~/interfaces/textComponent";
 
 
@@ -8,9 +14,15 @@ interface Props {
     portfolio_id: string;
     portfolioComponentsLength: number;
     onAddComponent: (component: ComponentType) => void;
+    allowContainerComponent: boolean
 }
 
-export default function AddComponentMenu({onAddComponent, portfolio_id, portfolioComponentsLength}: Props) {
+export default function AddComponentMenu({
+                                             onAddComponent,
+                                             portfolio_id,
+                                             portfolioComponentsLength,
+                                             allowContainerComponent
+                                         }: Props) {
 
     function onAddTextComponent() {
         const newComponent: TextComponentType = {
@@ -49,6 +61,17 @@ export default function AddComponentMenu({onAddComponent, portfolio_id, portfoli
         onAddComponent(newComponent);
     }
 
+    function onAddContainerComponent() {
+        const newComponent: ContainerComponentType = {
+            _id: null,
+            index: portfolioComponentsLength - 1,
+            portfolio_id: portfolio_id,
+            __t: "ContainerComponent",
+            components: [],
+        }
+        onAddComponent(newComponent);
+    }
+
     return (
         <Menu shadow="md" width={200}>
             <Menu.Target>
@@ -64,6 +87,12 @@ export default function AddComponentMenu({onAddComponent, portfolio_id, portfoli
                 <Menu.Item onClick={onAddImageComponent} leftSection={<IconPhoto/>}>
                     Image
                 </Menu.Item>
+                {
+                    allowContainerComponent &&
+                    <Menu.Item onClick={onAddContainerComponent} leftSection={<IconContainer/>}>
+                        Container
+                    </Menu.Item>
+                }
             </Menu.Dropdown>
         </Menu>
 

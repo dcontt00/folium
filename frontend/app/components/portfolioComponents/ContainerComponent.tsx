@@ -78,9 +78,12 @@ export default function ContainerComponent({containerComponent, onEditComponent,
                 </Droppable>
             </DragDropContext>
             <Button className="containerComponent icon">Add</Button>
-            <AddComponentMenu portfolio_id={containerComponent.portfolio_id}
-                              portfolioComponentsLength={containerComponent.components.length}
-                              onAddComponent={onAddComponent}/>
+            <AddComponentMenu
+                portfolio_id={containerComponent.portfolio_id}
+                portfolioComponentsLength={containerComponent.components.length}
+                onAddComponent={onAddComponent}
+                allowContainerComponent={false}
+            />
         </div>
     )
 }

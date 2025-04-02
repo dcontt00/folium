@@ -163,6 +163,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                         portfolio_id={portfolio._id}
                         portfolioComponentsLength={portfolio.components.length}
                         onAddComponent={onAddComponent}
+                        allowContainerComponent={true}
                     />
                     {editComponent ? (
                             <EditComponentSection
