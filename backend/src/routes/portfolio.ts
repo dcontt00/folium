@@ -2,6 +2,7 @@ import express from "express";
 import {
     buttonComponentModel,
     componentModel,
+    containerComponentModel,
     imageComponentModel,
     portfolioModel,
     textComponentModel
@@ -121,17 +122,24 @@ router.get("/:url", authenticate, async (req, res) => {
             throw new ApiError(404, "User not found", "User not found");
         }
 
-        await portfolioModel.findOne({url: req.params.url, user: user.id}).populate("components").then((portfolio) => {
-            if (!portfolio) {
-                throw new ApiError(404, "Portfolio not found", "Portfolio not found");
-            }
+        await portfolioModel.findOne({url: req.params.url, user: user.id})
+            .populate({
+                path: "components",
+                populate: {
+                    path: "components",
+                }
+            })
+            .then((portfolio) => {
+                if (!portfolio) {
+                    throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+                }
 
-            res.status(200).json({
-                status: 200,
-                success: true,
-                data: portfolio,
+                res.status(200).json({
+                    status: 200,
+                    success: true,
+                    data: portfolio,
+                });
             });
-        });
 
     } catch (err: any) {
         if (err instanceof ApiError) {
@@ -171,34 +179,19 @@ router.put("/:url", authenticate, async (req, res) => {
         if (req.body.components) {
             for (const component of req.body.components) {
                 if (component._id != null) {
-                    console.log("Component exists")
-                    console.log("\n")
-
                     await editComponent(component).then(updatedComponent => {
                         console.log(updatedComponent)
                         components.push(updatedComponent._id);
                         existingComponents.push(updatedComponent._id);
                     })
                 } else {
-                    console.log("Component not exists")
                     await createComponent(component, portfolio._id).then((component) => {
                         components.push(component._id);
                         newComponentsIds.push(component._id);
                     });
-                    console.log("\n")
                 }
             }
         }
-        console.log(components)
-
-        // Remove components
-        /*removedComponents.push(...existingComponents.filter(id => !newComponentsIds.includes(id)));
-        await componentModel.deleteMany({_id: {$in: removedComponents}}).then((result) => {
-            console.log(result)
-        }).catch((err: any) => {
-            console.log(err)
-        })*/
-
 
         await portfolioModel.findOneAndUpdate(
             {url: req.params.url, user: user.id},
@@ -211,7 +204,7 @@ router.put("/:url", authenticate, async (req, res) => {
                 data: portfolio,
             });
         })
-        await removeOrphanComponents();
+        //await removeOrphanComponents();
 
     } catch (err: any) {
         // Remove created portfolioComponents if anything goes wrong
@@ -244,16 +237,11 @@ router.delete("/:url", authenticate, async (req, res) => {
             throw new Error("User not found");
         }
 
-        console.log("URL: " + req.params.url)
-        console.log("User id: " + user.id)
-
         const portfolio = await portfolioModel.findOne({url: req.params.url});
 
         if (!portfolio) {
             throw new ApiError(404, "Portfolio not found", "Portfolio not found");
         }
-
-
 
         await portfolioModel.deleteOne({url: req.params.url}).then(() => {
             res.status(200).json({
@@ -319,6 +307,18 @@ async function createComponent(component: any, portfolio_id: mongoose.Types.Obje
                 index: component.index,
                 url: component.url,
             })
+        case "ContainerComponent":
+            const containerComponents: Array<any> = [];
+            for (const containerComponent of component.components) {
+                await createComponent(containerComponent, portfolio_id).then((component) => {
+                    containerComponents.push(component._id);
+                })
+            }
+            return await containerComponentModel.create({
+                portfolio_id: portfolio_id,
+                index: component.index,
+                components: containerComponents,
+            })
     }
 }
 
@@ -378,6 +378,7 @@ async function editComponent(component: any): Promise<any> {
 }
 
 async function removeOrphanComponents() {
+    // TODO: Do not remove components that are referenced in ContainerComponents
     try {
         // Step 1: Get all component IDs that are referenced in any portfolio
         const portfolios = await portfolioModel.find({}, {components: 1});

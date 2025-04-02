@@ -6,6 +6,7 @@ import buttonComponentModel from "./portfolioComponents/buttonComponentModel";
 import textComponentModel from "./portfolioComponents/textComponentModel";
 import imageComponentModel from "./portfolioComponents/imageComponentModel";
 import componentModel from "./portfolioComponents/componentModel";
+import containerComponentModel from "./portfolioComponents/containerComponentModel";
 
 const userModel = mongoose.model('User', UserSchema);
 const portfolioModel = mongoose.model('Portfolio', PortfolioSchema);
@@ -21,5 +22,6 @@ export {
     textComponentModel,
     buttonComponentModel,
     imageComponentModel,
-    componentModel
+    componentModel,
+    containerComponentModel,
 };
