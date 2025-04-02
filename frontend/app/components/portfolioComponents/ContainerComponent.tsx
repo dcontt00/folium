@@ -69,10 +69,12 @@ export default function ContainerComponent({containerComponent, onEditComponent,
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
+
                                             className="containerComponent"
                                         >
+                                            <div {...provided.dragHandleProps}>
                                             <IconMenu2 className="icon"/>
+                                            </div>
                                             <Component component={component} onEditComponent={onEditComponent}
                                                        onSelectEditComponent={onSelectEditComponent}/>
                                             <ActionIcon className="icon"

@@ -33,10 +33,11 @@ export default function ComponentsDnD({
                                     <div
                                         ref={provided.innerRef}
                                         {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
                                         className="edit"
                                     >
-                                        <IconMenu2 className="222B45FFicon"/>
+                                        <div {...provided.dragHandleProps}>
+                                            <IconMenu2 className="icon"/>
+                                        </div>
                                         <Component component={component} onSelectEditComponent={onSelectEditComponent}
                                                    onEditComponent={onEditComponent}/>
 
