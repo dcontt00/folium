@@ -3,6 +3,7 @@ import {AppShell, Button, Container, PasswordInput, Stack, TextInput, Title} fro
 import {isEmail, isNotEmpty, useForm} from '@mantine/form';
 import axios from "axios";
 import {useNavigate} from "react-router";
+import config from "~/config";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -67,7 +68,7 @@ export default function Register() {
 
     return (
         <form onSubmit={form.onSubmit(async (values) => {
-            await axios.post('http://localhost:3000/register', values, {withCredentials: true})
+            await axios.post(`${config.BACKEND_URL}/register`, values, {withCredentials: true})
                 .then((response) => {
                     console.log(response);
                     navigate('/login');

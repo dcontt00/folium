@@ -3,6 +3,7 @@ import {AppShell, Button, Container, PasswordInput, Stack, TextInput, Title} fro
 import {useForm} from '@mantine/form';
 import axios from "axios";
 import {useNavigate} from "react-router";
+import config from "~/config";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -36,19 +37,16 @@ export default function Login() {
 
     return (
         <form onSubmit={form.onSubmit(async (values) => {
-            await axios.post('http://localhost:3000/login', values, {withCredentials: true})
+            await axios.post(`${config.BACKEND_URL}/login`, values, {withCredentials: true})
                 .then(async (response) => {
                     await navigate('/home');
                 })
                 .catch((error) => {
                     form.setFieldError('password', 'Invalid email or password');
-                    form.setFieldValue('password', '');
                 })
         })}
         >
-            <AppShell
-                padding="md"
-            >
+            <AppShell padding="md">
                 <AppShell.Main>
                     <Container size="xs">
                         <Stack>

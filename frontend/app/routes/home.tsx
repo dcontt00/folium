@@ -8,6 +8,7 @@ import NewPortfolioModal from "~/components/NewPortfolioModal";
 import {data, useFetcher} from "react-router";
 import {IconCirclePlus} from "@tabler/icons-react";
 import UserMenu from "~/components/UserMenu";
+import config from "~/config";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -23,7 +24,7 @@ interface Portfolio {
 }
 
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
-    const response: Array<Portfolio> = await axios.get(`http://localhost:3000/portfolio`, {withCredentials: true})
+    const response: Array<Portfolio> = await axios.get(`${config.BACKEND_URL}/portfolio`, {withCredentials: true})
         .then((response: AxiosResponse) => {
             return response.data.data;
         })

@@ -3,6 +3,7 @@ import {Button, FileButton, Stack, TextInput} from "@mantine/core";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {IconUpload} from "@tabler/icons-react";
+import config from "~/config";
 
 interface Props {
     component: ImageComponentType;
@@ -54,16 +55,15 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
         formData.append("upload", file);
 
         try {
-            const response = await axios.post("http://localhost:3000/images", formData, {
+            const response = await axios.post(`${config.BACKEND_URL}/images`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
                 withCredentials: true,
             });
 
-            const url = `http://localhost:3000${response.data.url}`;
+            const url = `${config.BACKEND_URL}${response.data.url}`;
             setUrl(url);
-            console.log(url);
             component.url = url;
             onEditComponent(component);
         } catch (error) {

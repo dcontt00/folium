@@ -3,6 +3,7 @@ import {isNotEmpty, matches, useForm} from '@mantine/form';
 import axios from 'axios';
 import {useNavigate} from "react-router";
 import {IconCancel, IconFilePlus} from "@tabler/icons-react";
+import config from "~/config";
 
 interface Props {
     opened: boolean;
@@ -28,7 +29,7 @@ export default function NewPortfolioModal({opened, close}: Props) {
     });
 
     async function onSubmit(values: any) {
-        await axios.post('http://localhost:3000/portfolio', values, {withCredentials: true}).then(result => {
+        await axios.post(`${config.BACKEND_URL}/portfolio`, values, {withCredentials: true}).then(result => {
             console.log(result)
             navigate("/edit/" + values.url)
         }).catch(err => {
