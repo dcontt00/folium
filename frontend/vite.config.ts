@@ -8,5 +8,6 @@ export default defineConfig({
     plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
     define: {
         'import.meta.env.BACKEND_URL': JSON.stringify(process.env.BACKEND_URL)
-    }
+    },
+
 });

@@ -8,13 +8,13 @@ import config from "../utils/config";
 export const authenticate = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            let token: string = req.cookies.jwt;
-
-
-            if (!token) {
+            const authHeader = req.headers.authorization;
+            if (!authHeader || !authHeader.startsWith('Bearer ')) {
                 res.status(401);
                 throw new AuthenticationError("Not authorized, token not found");
             }
+
+            const token = authHeader.split(' ')[1];
 
             const decoded = jwt.verify(token, config.JWT_SECRET) as JwtPayload;
 

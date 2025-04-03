@@ -1,15 +1,13 @@
 import {Avatar, Menu} from "@mantine/core";
 import {IconLogout, IconSettings, IconUserCircle,} from "@tabler/icons-react";
 import {useNavigate} from "react-router";
-import axios from "axios";
-import config from "~/config";
 
 
 export default function UserMenu() {
     const navigate = useNavigate();
 
     async function onLogout() {
-        await axios.get(`${config.BACKEND_URL}/logout`, {withCredentials: false});
+        localStorage.removeItem("token");
         await navigate("/")
     }
 

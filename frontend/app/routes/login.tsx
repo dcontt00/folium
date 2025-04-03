@@ -1,9 +1,8 @@
 import type {Route} from "./+types/home";
 import {AppShell, Button, Container, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
 import {useForm} from '@mantine/form';
-import axios from "axios";
 import {useNavigate} from "react-router";
-import config from "~/config";
+import axiosInstance from "~/axiosInstance";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -37,8 +36,9 @@ export default function Login() {
 
     return (
         <form onSubmit={form.onSubmit(async (values) => {
-            await axios.post(`${config.BACKEND_URL}/login`, values, {withCredentials: true})
+            await axiosInstance.post(`/login`, values)
                 .then(async (response) => {
+                    localStorage.setItem("token", response.data.token);
                     await navigate('/home');
                 })
                 .catch((error) => {

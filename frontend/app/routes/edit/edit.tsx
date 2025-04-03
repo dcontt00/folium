@@ -1,5 +1,5 @@
 import {ActionIcon, Alert, AppShell, Button, Stack} from "@mantine/core";
-import axios, {type AxiosResponse} from "axios";
+import {type AxiosResponse} from "axios";
 import {IconInfoCircle, IconX} from "@tabler/icons-react";
 
 import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
@@ -15,10 +15,10 @@ import SettingsSection from "~/components/edit/editComponents/SettingsSection";
 import HeaderButtons from "~/components/edit/HeaderButtons";
 import {type DropResult} from "@hello-pangea/dnd";
 import ComponentsDnD from "~/components/edit/ComponentsDnD";
-import config from "~/config";
+import axiosInstance from "~/axiosInstance";
 
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
-    const portfolio: Portfolio = await axios.get(`${config.BACKEND_URL}/portfolio/${params.url}`, {withCredentials: true})
+    const portfolio: Portfolio = await axiosInstance.get(`/portfolio/${params.url}`)
         .then((response: AxiosResponse) => {
             return response.data.data;
         }).catch((error) => {
@@ -86,7 +86,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         const newPortfolio = {...portfolioState};
         newPortfolio.title = title;
         newPortfolio.description = description;
-        await axios.put(`${config.BACKEND_URL}/portfolio/${newPortfolio.url}`, newPortfolio, {withCredentials: true}).then((response) => {
+        await axiosInstance.put(`/portfolio/${newPortfolio.url}`, newPortfolio).then((response) => {
             console.log(response);
             const updatedPortfolio = response.data.data;
             setPortfolioState(updatedPortfolio);

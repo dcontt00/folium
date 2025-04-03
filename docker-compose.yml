@@ -24,7 +24,5 @@ services:
     build:
       context: ./frontend
       dockerfile: frontend.dockerfile
-    environment:
-      - BACKEND_URL=http://backend:3000
     ports:
       - "8080:3000"

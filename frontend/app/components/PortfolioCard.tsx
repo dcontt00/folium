@@ -4,7 +4,6 @@ import {useNavigate} from "react-router";
 import {useDisclosure} from "@mantine/hooks";
 import ConfirmModal from "~/components/ConfirmModal";
 import axios from "axios";
-import config from "~/config";
 
 interface PortfolioCardProps {
     title: string;
@@ -18,7 +17,7 @@ export default function PortfolioCard({title, description, url, onDelete}: Portf
     const [opened, {open, close}] = useDisclosure();
 
     async function deletePortfolio(portfolioUrl: string) {
-        await axios.delete(`${config.BACKEND_URL}/portfolio/${portfolioUrl}`, {withCredentials: true});
+        await axios.delete(`/portfolio/${portfolioUrl}`);
         await onDelete();
         close();
     }

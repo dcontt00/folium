@@ -38,16 +38,11 @@ router.post("/", async (req: Request, res: Response) => {
                     }
                 );
 
-                // Set the token in a cookie
-                res.cookie("jwt", token, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-                    maxAge: 24 * 60 * 60 * 1000, // 1 day
-                });
 
                 res.status(200).json({
                     status: 200,
                     success: true,
+                    token: token,
                     message: "Login success",
                 });
             } else {

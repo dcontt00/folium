@@ -1,9 +1,8 @@
 import {Button, Group, Modal, Stack, TextInput} from '@mantine/core';
 import {isNotEmpty, matches, useForm} from '@mantine/form';
-import axios from 'axios';
 import {useNavigate} from "react-router";
 import {IconCancel, IconFilePlus} from "@tabler/icons-react";
-import config from "~/config";
+import axiosInstance from "~/axiosInstance";
 
 interface Props {
     opened: boolean;
@@ -29,7 +28,7 @@ export default function NewPortfolioModal({opened, close}: Props) {
     });
 
     async function onSubmit(values: any) {
-        await axios.post(`${config.BACKEND_URL}/portfolio`, values, {withCredentials: true}).then(result => {
+        await axiosInstance.post(`/portfolio`, values).then(result => {
             console.log(result)
             navigate("/edit/" + values.url)
         }).catch(err => {
