@@ -1,8 +1,8 @@
 import {Button, Group, Modal, Stack, TextInput} from '@mantine/core';
-import {useForm} from '@mantine/form';
+import {isNotEmpty, matches, useForm} from '@mantine/form';
 import axios from 'axios';
 import {useNavigate} from "react-router";
-import {IconCancel, IconDeviceFloppy} from "@tabler/icons-react";
+import {IconCancel, IconFilePlus} from "@tabler/icons-react";
 
 interface Props {
     opened: boolean;
@@ -19,9 +19,11 @@ export default function NewPortfolioModal({opened, close}: Props) {
             url: "",
             description: '',
         },
+        validateInputOnChange: true,
 
         validate: {
-            url: (value: string) => (/[a-zA-Z0-9\-\/]*$/.test(value) ? null : 'Invalid URL'),
+            title: isNotEmpty("Title required"),
+            url: matches(/^\/[a-zA-Z0-9\-]+$/, 'Invalid URL, must start with "/" and contain only letters, numbers and "-"'),
         },
     });
 
@@ -62,7 +64,8 @@ export default function NewPortfolioModal({opened, close}: Props) {
                         {...form.getInputProps('description')}
                     />
                     <Group>
-                        <Button leftSection={<IconDeviceFloppy/>} type="submit">Save</Button>
+                        <Button leftSection={<IconFilePlus/>} type="submit"
+                                disabled={!form.isValid()}>Create</Button>
                         <Button variant="light" leftSection={<IconCancel/>} onClick={close}>Cancel</Button>
                     </Group>
                 </Stack>
