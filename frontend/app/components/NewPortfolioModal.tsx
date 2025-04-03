@@ -23,7 +23,7 @@ export default function NewPortfolioModal({opened, close}: Props) {
 
         validate: {
             title: isNotEmpty("Title required"),
-            url: matches(/^\/[a-zA-Z0-9\-]+$/, 'Invalid URL, must start with "/" and contain only letters, numbers and "-"'),
+            url: matches(/[a-zA-Z0-9\-]+$/, 'Invalid URL, must start with "/" and contain only letters, numbers and "-"'),
         },
     });
 
