@@ -22,7 +22,6 @@ export default function PortfolioCard({title, description, url, onDelete}: Portf
         close();
     }
 
-
     return (
         <Card
             shadow="sm"
@@ -50,7 +49,7 @@ export default function PortfolioCard({title, description, url, onDelete}: Portf
                     <Button
                         variant="default"
                         leftSection={<IconExternalLink size={14}/>}
-                        onClick={() => navigate(url)}
+                        onClick={() => navigate(`/portfolio/${url}`)}
                     >
                         Visit
                     </Button>
