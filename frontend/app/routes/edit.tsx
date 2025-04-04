@@ -6,16 +6,16 @@ import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
 import {useEffect, useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import {data, useNavigate} from "react-router";
-import type {Route} from "../+types";
+import type {Route} from "../../.react-router/types/app/routes";
 import EditComponentSection from "~/components/edit/EditComponentSection";
 import ConfirmModal from "~/components/ConfirmModal";
-import "./styles.css";
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
 import SettingsSection from "~/components/edit/editComponents/SettingsSection";
 import HeaderButtons from "~/components/edit/HeaderButtons";
 import {type DropResult} from "@hello-pangea/dnd";
 import ComponentsDnD from "~/components/edit/ComponentsDnD";
 import axiosInstance from "~/axiosInstance";
+import ComponentsSection from "~/components/ComponentsSection";
 
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
     const portfolio: Portfolio = await axiosInstance.get(`/portfolio/${params.url}`)
@@ -51,7 +51,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const [previewEnabled, setPreviewEnabled] = useState(false);
 
     useEffect(() => {
-          console.log(portfolioState)
+        console.log(portfolioState)
     }, [portfolioState]);
 
     function onEditComponent(component: ComponentType) {
@@ -191,18 +191,22 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 />
             </AppShell.Aside>
             <AppShell.Main>
-                {previewEnabled && (
-                    <ActionIcon onClick={() => setPreviewEnabled(false)}>
-                        <IconX/>
-                    </ActionIcon>
-                )}
-                <ComponentsDnD
-                    onSelectEditComponent={onSelectEditComponent}
-                    portfolioState={portfolioState}
-                    onRemoveComponent={onRemoveComponent}
-                    onDragEnd={onDragEnd}
-                    onEditComponent={onEditComponent}
-                />
+                {previewEnabled ?
+                    <>
+                        <ActionIcon onClick={() => setPreviewEnabled(false)}>
+                            <IconX/>
+                        </ActionIcon>
+                        <ComponentsSection components={portfolioState.components}/>
+                    </>
+                    :
+                    <ComponentsDnD
+                        onSelectEditComponent={onSelectEditComponent}
+                        portfolioState={portfolioState}
+                        onRemoveComponent={onRemoveComponent}
+                        onDragEnd={onDragEnd}
+                        onEditComponent={onEditComponent}
+                    />
+                }
             </AppShell.Main>
 
             <ConfirmModal opened={openedBackModal} text="You have unsaved changes. Want to continue?"

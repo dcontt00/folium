@@ -13,3 +13,52 @@ body {
     color-scheme: dark;
   }
 }
+
+
+.container {
+  gap: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.edit {
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  background: #181e30;
+
+
+}
+
+.edit .icon {
+  visibility: hidden;
+}
+
+.edit:hover {
+  background: #222B45;
+}
+
+.edit:hover .icon {
+  visibility: visible;
+}
+
+.containerComponent {
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  background: #212942;
+}
+
+.containerComponent .icon {
+  visibility: hidden;
+}
+
+.containerComponent:hover {
+  background: #3c4c7b;
+}
+
+.containerComponent:hover .icon {
+  visibility: visible;
+}

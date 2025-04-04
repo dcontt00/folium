@@ -1,5 +1,5 @@
 import {DragDropContext, Draggable, Droppable, type DropResult} from "@hello-pangea/dnd";
-import Component from "~/components/portfolioComponents/Component";
+import EditComponent from "~/components/portfolioComponents/EditComponent";
 import type {ComponentType} from "~/interfaces/interfaces";
 import type Portfolio from "~/interfaces/portfolio";
 import {IconEdit, IconMenu2, IconTrash} from "@tabler/icons-react";
@@ -38,8 +38,9 @@ export default function ComponentsDnD({
                                         <div {...provided.dragHandleProps}>
                                             <IconMenu2 className="icon"/>
                                         </div>
-                                        <Component component={component} onSelectEditComponent={onSelectEditComponent}
-                                                   onEditComponent={onEditComponent}/>
+                                        <EditComponent component={component}
+                                                       onSelectEditComponent={onSelectEditComponent}
+                                                       onEditComponent={onEditComponent}/>
 
                                         {component.__t != "ContainerComponent" && (
 

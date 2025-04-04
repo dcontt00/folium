@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import componentModel from "./componentModel";
 
-const textComponentModel = componentModel.discriminator("ContainerComponent", new mongoose.Schema(
+const textComponentModel = componentModel.discriminator("EditContainerComponent", new mongoose.Schema(
     {
         components: [
             {

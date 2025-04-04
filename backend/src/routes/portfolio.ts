@@ -312,7 +312,7 @@ async function createComponent(component: any, portfolio_id: mongoose.Types.Obje
                 index: component.index,
                 url: component.url,
             })
-        case "ContainerComponent":
+        case "EditContainerComponent":
             const containerComponents: Array<any> = [];
             for (const containerComponent of component.components) {
                 await createComponent(containerComponent, portfolio_id).then((component) => {
@@ -382,7 +382,7 @@ async function editComponent(component: any): Promise<any> {
                 return updatedComponent
             })
 
-        case "ContainerComponent":
+        case "EditContainerComponent":
             const containerComponents: Array<any> = [];
             for (const containerComponent of component.components) {
                 if (containerComponent._id != null) {

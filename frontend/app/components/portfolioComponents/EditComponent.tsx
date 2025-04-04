@@ -8,13 +8,16 @@ import type {
 import TextComponent from "~/components/portfolioComponents/TextComponent";
 import ButtonComponent from "~/components/portfolioComponents/ButtonComponent";
 import ImageComponent from "~/components/portfolioComponents/ImageComponent";
-import ContainerComponent from "~/components/portfolioComponents/ContainerComponent";
+import EditContainerComponent from "~/components/edit/editComponents/EditContainerComponent";
+
 
 interface Props {
     component: ComponentType;
+    onEditComponent: (component: ComponentType) => void;
+    onSelectEditComponent: (component: ComponentType) => void;
 }
 
-export default function Component({component}: Props) {
+export default function EditComponent({component, onEditComponent, onSelectEditComponent}: Props) {
     function renderComponent(component: ComponentType) {
 
         switch (component.__t) {
@@ -32,9 +35,11 @@ export default function Component({component}: Props) {
 
             case "ContainerComponent":
                 const containerComponent = component as ContainerComponentType;
-                return <ContainerComponent containerComponent={containerComponent}/>
+                return <EditContainerComponent onSelectEditComponent={onSelectEditComponent}
+                                               onEditComponent={onEditComponent}
+                                               containerComponent={containerComponent}/>
             default:
-                console.log(component)
+                console.log(component.__t)
                 return <div>Component not found</div>
         }
     }
