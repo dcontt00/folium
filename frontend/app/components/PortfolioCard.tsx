@@ -3,7 +3,7 @@ import {IconEdit, IconExternalLink, IconTrash} from "@tabler/icons-react";
 import {useNavigate} from "react-router";
 import {useDisclosure} from "@mantine/hooks";
 import ConfirmModal from "~/components/ConfirmModal";
-import axios from "axios";
+import axiosInstance from "~/axiosInstance";
 
 interface PortfolioCardProps {
     title: string;
@@ -17,7 +17,7 @@ export default function PortfolioCard({title, description, url, onDelete}: Portf
     const [opened, {open, close}] = useDisclosure();
 
     async function deletePortfolio(portfolioUrl: string) {
-        await axios.delete(`/portfolio/${portfolioUrl}`);
+        await axiosInstance.delete(`/portfolio/${portfolioUrl}`);
         await onDelete();
         close();
     }
