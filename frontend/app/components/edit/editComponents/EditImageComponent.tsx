@@ -13,10 +13,14 @@ interface Props {
 export default function EditTextComponent({component, onEditComponent}: Props) {
     const [url, setUrl] = useState(component.url);
     const [file, setFile] = useState<File | null>(null);
+    const [caption, setCaption] = useState(component.caption);
+    const [overlayText, setOverlayText] = useState(component.overlayText);
 
     // Needed when selecting a different component
     useEffect(() => {
         setUrl(component.url);
+        setCaption(component.caption)
+        setOverlayText(component.overlayText)
     }, [component]);
 
     useEffect(() => {
@@ -40,11 +44,21 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
         onEditComponent(component);
     }
 
-    function onFileChange(event: any) {
-        console.log(event.target.files[0]);
-        setFile(event.target.files[0]);
+    function onOverlayTextChange(event: any) {
+        setOverlayText(event.target.value);
+
+        // Change the text of the component
+        component.overlayText = event.target.value;
+        onEditComponent(component);
     }
 
+    function onCaptionChange(event: any) {
+        setCaption(event.target.value);
+
+        // Change the text of the component
+        component.caption = event.target.value;
+        onEditComponent(component);
+    }
 
     async function onUploadImage() {
         if (!file) {
@@ -81,6 +95,18 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
             <FileButton onChange={setFile} accept="image/png,image/jpeg">
                 {(props) => <Button leftSection={<IconUpload/>} {...props}>Upload image</Button>}
             </FileButton>
+            <TextInput
+                label="Caption"
+                description="This text will appear below the image"
+                value={caption || ""}
+                onChange={(event) => onCaptionChange(event)}
+            />
+            <TextInput
+                label="Overlay text"
+                description="This text will appear on top of the image"
+                value={overlayText || ""}
+                onChange={(event) => onOverlayTextChange(event)}
+            />
         </Stack>
     );
 }

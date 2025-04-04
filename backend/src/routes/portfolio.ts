@@ -373,7 +373,9 @@ async function editComponent(component: any): Promise<any> {
                 {
                     type: component.type,
                     index: component.index,
-                    url: component.url
+                    url: component.url,
+                    caption: component.caption,
+                    overlayText: component.overlayText
                 },
                 {new: true}
             ).then(updatedComponent => {

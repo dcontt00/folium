@@ -7,6 +7,12 @@ const imageComponentModel = componentModel.discriminator("ImageComponent", new m
             type: String,
             required: true,
         },
+        caption: {
+            type: String,
+        },
+        overlayText: {
+            type: String,
+        }
     },
     {timestamps: true}
 ));

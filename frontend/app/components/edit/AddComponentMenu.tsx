@@ -61,6 +61,8 @@ export default function AddComponentMenu({
             portfolio_id: portfolio_id,
             __t: "ImageComponent",
             url: "https://via.placeholder.com/150",
+            overlayText: null,
+            caption: null,
         }
         onAddComponent(newComponent);
     }
