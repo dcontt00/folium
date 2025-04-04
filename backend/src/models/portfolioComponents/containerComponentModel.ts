@@ -1,7 +1,14 @@
 import mongoose from "mongoose";
 import componentModel from "./componentModel";
 
-const textComponentModel = componentModel.discriminator("EditContainerComponent", new mongoose.Schema(
+
+interface IContainerComponent extends Document {
+    index: number;
+    components: mongoose.Types.ObjectId[];
+    portfolio_id: mongoose.Types.ObjectId;
+}
+
+const containerComponentModel = componentModel.discriminator<IContainerComponent>("ContainerComponent", new mongoose.Schema(
     {
         components: [
             {
@@ -13,4 +20,4 @@ const textComponentModel = componentModel.discriminator("EditContainerComponent"
     {timestamps: true}
 ));
 
-export default textComponentModel;
+export default containerComponentModel;

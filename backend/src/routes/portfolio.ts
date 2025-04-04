@@ -41,13 +41,13 @@ router.post("/", authenticate, async (req, res) => {
             index: 0,
             text: "Welcome to your new portfolio",
             type: "h1",
-            portfolio_id: newPortfolio._id
+            parent_id: newPortfolio._id
         })
 
         const textComponent = await textComponentModel.create({
             index: 1,
             text: "You can add portfolioComponents from left menu",
-            portfolio_id: newPortfolio._id
+            parent_id: newPortfolio._id
         })
 
         await portfolioModel.findOneAndUpdate(
@@ -180,7 +180,6 @@ router.put("/:url", authenticate, async (req, res) => {
             for (const component of req.body.components) {
                 if (component._id != null) {
                     await editComponent(component).then(updatedComponent => {
-                        console.log(updatedComponent)
                         components.push(updatedComponent._id);
                         existingComponents.push(updatedComponent._id);
                     })
@@ -209,13 +208,10 @@ router.put("/:url", authenticate, async (req, res) => {
                 data: portfolio,
             });
         })
-        //await removeOrphanComponents();
+        await removeOrphanComponents();
 
     } catch (err: any) {
-        // Remove created portfolioComponents if anything goes wrong
-        for (const component of components) {
-            await textComponentModel.findByIdAndDelete(component._id)
-        }
+        console.log(err)
 
         if (err instanceof ApiError) {
             res.status(err.status).json({
@@ -276,7 +272,7 @@ router.delete("/:url", authenticate, async (req, res) => {
 
 export default router;
 
-async function createComponent(component: any, portfolio_id: mongoose.Types.ObjectId): Promise<any> {
+async function createComponent(component: any, parent_id: mongoose.Types.ObjectId): Promise<any> {
     switch (component.__t) {
         case "TextComponent":
             if (!component.text) {
@@ -288,7 +284,7 @@ async function createComponent(component: any, portfolio_id: mongoose.Types.Obje
                 type: component.type,
                 index: component.index,
                 text: component.text,
-                portfolio_id: portfolio_id
+                parent_id: parent_id
             })
 
         case "ButtonComponent":
@@ -300,7 +296,7 @@ async function createComponent(component: any, portfolio_id: mongoose.Types.Obje
                 index: component.index,
                 text: component.text,
                 url: component.url,
-                portfolio_id: portfolio_id
+                parent_id: parent_id
             })
         case "ImageComponent":
             if (!component.url) {
@@ -308,19 +304,19 @@ async function createComponent(component: any, portfolio_id: mongoose.Types.Obje
             }
 
             return await imageComponentModel.create({
-                portfolio_id: portfolio_id,
+                parent_id: parent_id,
                 index: component.index,
                 url: component.url,
             })
-        case "EditContainerComponent":
+        case "ContainerComponent":
             const containerComponents: Array<any> = [];
             for (const containerComponent of component.components) {
-                await createComponent(containerComponent, portfolio_id).then((component) => {
+                await createComponent(containerComponent, parent_id).then((component) => {
                     containerComponents.push(component._id);
                 })
             }
             return await containerComponentModel.create({
-                portfolio_id: portfolio_id,
+                parent_id: parent_id,
                 index: component.index,
                 components: containerComponents,
             })
@@ -382,7 +378,7 @@ async function editComponent(component: any): Promise<any> {
                 return updatedComponent
             })
 
-        case "EditContainerComponent":
+        case "ContainerComponent":
             const containerComponents: Array<any> = [];
             for (const containerComponent of component.components) {
                 if (containerComponent._id != null) {
@@ -390,7 +386,7 @@ async function editComponent(component: any): Promise<any> {
                         containerComponents.push(component._id);
                     })
                 } else {
-                    await createComponent(containerComponent, containerComponent.portfolio_id).then((component) => {
+                    await createComponent(containerComponent, containerComponent.parent_id).then((component) => {
                         containerComponents.push(component._id);
                     })
                 }
@@ -408,7 +404,7 @@ async function editComponent(component: any): Promise<any> {
 async function removeOrphanComponents() {
     // TODO: Do not remove components that are referenced in ContainerComponents
     try {
-        // Step 1: Get all component IDs that are referenced in any portfolio
+        // Step 1: Get all component IDs that are referenced in any portfolio or containerComponent
         const portfolios = await portfolioModel.find({}, {components: 1});
         const referencedComponentIds = new Set<string>();
         portfolios.forEach(portfolio => {
@@ -417,13 +413,22 @@ async function removeOrphanComponents() {
             });
         });
 
+        const containerComponents = await containerComponentModel.find({}, {components: 1});
+        containerComponents.forEach(container => {
+            container.components.forEach((componentId: mongoose.Types.ObjectId) => {
+                referencedComponentIds.add(componentId.toString());
+            });
+        });
+
+
         // Step 2: Get all component IDs from the components collection
         const allComponents = await componentModel.find({}, {_id: 1});
         const allComponentIds = allComponents.map(component => component._id.toString());
 
         // Step 3: Find the difference between these two sets of IDs
         const orphanComponentIds = allComponentIds.filter(id => !referencedComponentIds.has(id));
-        console.log(orphanComponentIds);
+        console.log("Orphan component IDs:", orphanComponentIds);
+        console.log("Referenced component IDs:", referencedComponentIds);
 
         // Step 4: Remove orphan components
         await componentModel.deleteMany({_id: {$in: orphanComponentIds}});
