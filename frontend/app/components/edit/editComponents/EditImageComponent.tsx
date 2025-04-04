@@ -1,5 +1,5 @@
 import type {ImageComponentType} from "~/interfaces/interfaces";
-import {Button, FileButton, Stack, TextInput} from "@mantine/core";
+import {Button, FileButton, Slider, Stack, Text, TextInput} from "@mantine/core";
 import {useEffect, useState} from "react";
 import {IconUpload} from "@tabler/icons-react";
 import config from "~/config";
@@ -15,12 +15,16 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
     const [file, setFile] = useState<File | null>(null);
     const [caption, setCaption] = useState(component.caption);
     const [overlayText, setOverlayText] = useState(component.overlayText);
+    const [overlayTransparency, setOverlayTransparency] = useState(component.overlayTransparency);
+    const [width, setWidth] = useState(component.width);
 
     // Needed when selecting a different component
     useEffect(() => {
         setUrl(component.url);
         setCaption(component.caption)
         setOverlayText(component.overlayText)
+        setOverlayTransparency(component.overlayTransparency)
+        setWidth(component.width);
     }, [component]);
 
     useEffect(() => {
@@ -36,11 +40,19 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
 
     }, [file]);
 
-    function onUrlChange(event: any) {
-        setUrl(event.target.value);
+    function onWidthChange(value: number) {
+        setWidth(value);
 
         // Change the text of the component
-        component.url = event.target.value;
+        component.width = value;
+        onEditComponent(component);
+    }
+
+    function onOverlayTransparencyChange(value: number) {
+        setOverlayTransparency(value);
+
+        // Change the text of the component
+        component.overlayTransparency = value;
         onEditComponent(component);
     }
 
@@ -86,15 +98,26 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
 
 
     return (
-        <Stack>
-            <TextInput
-                label="Url"
-                value={url}
-                onChange={(event) => onUrlChange(event)}
-            />
+        <Stack gap="md">
             <FileButton onChange={setFile} accept="image/png,image/jpeg">
                 {(props) => <Button leftSection={<IconUpload/>} {...props}>Upload image</Button>}
             </FileButton>
+
+            <div>
+                <Text>Width</Text>
+                <Slider
+                    color="blue"
+                    min={0} max={1} step={0.01} defaultValue={0.5}
+                    label={(value) => `${Math.round(value * 100)} %`}
+                    value={width} onChange={onWidthChange}
+                    marks={[
+                        {value: 0.2, label: '20%'},
+                        {value: 0.5, label: '50%'},
+                        {value: 0.8, label: '80%'},
+                    ]}
+                />
+            </div>
+
             <TextInput
                 label="Caption"
                 description="This text will appear below the image"
@@ -107,6 +130,20 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
                 value={overlayText || ""}
                 onChange={(event) => onOverlayTextChange(event)}
             />
+
+            {overlayText && (
+                <div>
+                    <Text>Overlay Transparency</Text>
+                    <Slider
+                        color="blue"
+                        min={0} max={1} step={0.01} defaultValue={0.5}
+                        label={(value) => `${Math.round(value * 100)} %`}
+                        value={overlayTransparency} onChange={onOverlayTransparencyChange}
+                    />
+                </div>
+            )}
+
+
         </Stack>
     );
 }

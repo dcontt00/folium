@@ -11,6 +11,7 @@ export default function ImageComponent({imageComponent}: Props) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            width: `${imageComponent.width * 100}%`,
             justifyContent: 'center',
             paddingBottom: '0.5rem',
             backgroundColor: '#2d3748',
@@ -29,7 +30,7 @@ export default function ImageComponent({imageComponent}: Props) {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)'
+                        backgroundColor: `rgba(0, 0, 0, ${imageComponent.overlayTransparency} )`,
                     }}>
                         <span style={{color: 'white', fontSize: '1.125rem'}}>{imageComponent.overlayText}</span>
                     </div>

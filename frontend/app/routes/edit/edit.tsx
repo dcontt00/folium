@@ -159,7 +159,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 />
             </AppShell.Header>
             <AppShell.Navbar>
-                <Stack p="sm">
+                <Stack p="sm" gap="md">
                     <AddComponentMenu
                         portfolio_id={portfolio._id}
                         portfolioComponentsLength={portfolio.components.length}
