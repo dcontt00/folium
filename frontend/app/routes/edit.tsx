@@ -161,7 +161,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             <AppShell.Navbar>
                 <Stack p="sm" gap="md">
                     <AddComponentMenu
-                        portfolio_id={portfolio._id}
+                        parent_id={portfolio._id}
                         portfolioComponentsLength={portfolio.components.length}
                         onAddComponent={onAddComponent}
                         allowContainerComponent={true}

@@ -6,7 +6,7 @@ const ComponentSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.Int32,
             required: true,
         },
-        portfolio_id: {
+        parent_id: { // Indicates the portfolio or container component this component belongs to
             type: mongoose.Schema.Types.ObjectId,
             required: true,
         },

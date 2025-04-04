@@ -95,7 +95,7 @@ export default function EditContainerComponent({containerComponent, onEditCompon
                 </Droppable>
             </DragDropContext>
             <AddComponentMenu
-                portfolio_id={containerComponent.portfolio_id}
+                parent_id={containerComponent.parent_id}
                 portfolioComponentsLength={containerComponent.components.length}
                 onAddComponent={onAddComponent}
                 allowContainerComponent={false}

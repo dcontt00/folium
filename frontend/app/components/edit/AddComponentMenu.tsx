@@ -11,7 +11,7 @@ import {TextStyle, TextType} from "~/interfaces/textComponent";
 
 
 interface Props {
-    portfolio_id: string;
+    parent_id: string;
     portfolioComponentsLength: number;
     onAddComponent: (component: ComponentType) => void;
     allowContainerComponent?: boolean,
@@ -21,7 +21,7 @@ interface Props {
 
 export default function AddComponentMenu({
                                              onAddComponent,
-                                             portfolio_id,
+                                             parent_id,
                                              portfolioComponentsLength,
                                              allowContainerComponent = true,
                                              largeButton = true,
@@ -32,7 +32,7 @@ export default function AddComponentMenu({
         const newComponent: TextComponentType = {
             _id: null,
             index: portfolioComponentsLength - 1,
-            portfolio_id: portfolio_id,
+            parent_id: parent_id,
             __t: "TextComponent",
             text: "Hello World",
             type: TextType.TEXT,
@@ -45,7 +45,7 @@ export default function AddComponentMenu({
         const newComponent: ButtonComponentType = {
             _id: null,
             index: portfolioComponentsLength - 1,
-            portfolio_id: portfolio_id,
+            parent_id: parent_id,
             __t: "ButtonComponent",
             text: "Button",
             url: "/",
@@ -58,11 +58,13 @@ export default function AddComponentMenu({
         const newComponent: ImageComponentType = {
             _id: null,
             index: portfolioComponentsLength - 1,
-            portfolio_id: portfolio_id,
+            parent_id: parent_id,
             __t: "ImageComponent",
             url: "https://via.placeholder.com/150",
             overlayText: null,
             caption: null,
+            overlayTransparency: 0,
+            width: 1
         }
         onAddComponent(newComponent);
     }
@@ -71,7 +73,7 @@ export default function AddComponentMenu({
         const newComponent: ContainerComponentType = {
             _id: null,
             index: portfolioComponentsLength - 1,
-            portfolio_id: portfolio_id,
+            parent_id: parent_id,
             __t: "ContainerComponent",
             components: [],
         }
