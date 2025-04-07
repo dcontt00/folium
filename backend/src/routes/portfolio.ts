@@ -5,7 +5,8 @@ import {
     containerComponentModel,
     imageComponentModel,
     portfolioModel,
-    textComponentModel
+    textComponentModel,
+    versionModel
 } from "../models/models";
 import {authenticate} from "../middleware/auth";
 import ApiError from "../interfaces/ApiError";
@@ -204,6 +205,18 @@ router.put("/:url", authenticate, async (req, res) => {
                 data: portfolio,
             });
         })
+
+        await versionModel.create(
+            {
+                portfolioId: portfolio._id,
+                data: req.body,
+                changes: "Initial version",
+            }
+        ).then(() => {
+            console.log("Version created")
+        }).catch((err => {
+            console.log("Error creating version", err)
+        }))
         await removeOrphanComponents();
 
     } catch (err: any) {
