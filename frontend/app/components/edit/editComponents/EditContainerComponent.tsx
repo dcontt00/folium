@@ -69,19 +69,18 @@ export default function EditContainerComponent({containerComponent, onEditCompon
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-
                                             className="dnd-container"
                                         >
-                                            <div {...provided.dragHandleProps}>
-                                                <IconMenu2 className="icon"/>
+                                            <div {...provided.dragHandleProps} className="container-icon">
+                                                <IconMenu2/>
                                             </div>
                                             <EditComponent component={component} onEditComponent={onEditComponent}
                                                            onSelectEditComponent={onSelectEditComponent}/>
-                                            <ActionIcon className="icon"
+                                            <ActionIcon className="container-icon"
                                                         onClick={() => onSelectEditComponent(component)}>
                                                 <IconEdit/>
                                             </ActionIcon>
-                                            <ActionIcon color="red" className="icon"
+                                            <ActionIcon color="red" className="container-icon"
                                                         onClick={() => onRemoveComponent(component)}>
                                                 <IconTrash/>
                                             </ActionIcon>

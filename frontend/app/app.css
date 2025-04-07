@@ -1,75 +1,77 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+    @apply bg-white dark:bg-gray-950;
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+    @media (prefers-color-scheme: dark) {
+        color-scheme: dark;
+    }
 }
 
 
 /* Edit portfolio */
 .dnd-droppable {
-  gap: 1em;
-  display: flex;
-  flex-direction: column;
+    gap: 1em;
+    display: flex;
+    flex-direction: column;
 }
 
 .dnd-draggable {
-  padding: 1em;
-  display: flex;
-  align-items: center;
-  gap: 1em;
-  background: #181e30;
+    padding: 1em;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    background: #181e30;
 }
 
 .dnd-draggable .icon {
-  display: none;
+    display: none;
 }
 
 .dnd-draggable:hover {
-  background: #222B45;
+    background: #222B45;
 }
 
 .dnd-draggable:hover .icon {
-  display: block;
+    display: block;
 }
 
 .dnd-container {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    gap: 1em;
 }
 
 .dnd-container:hover {
-  background: #313e63;
+    padding: 1em;
+    background: #313e63;
 }
 
-.dnd-container .icon {
-  display: none;
+.dnd-container .container-icon {
+    display: none;
 }
 
-.dnd-container:hover .icon {
-  display: block;
+.dnd-container:hover .container-icon {
+    display: block;
 }
 
 
 /* View portfolio */
 
 .containerComponent {
-  padding: 1em;
-  display: flex;
-  align-items: center;
-  gap: 1em;
+    padding: 1em;
+    display: flex;
+    align-items: center;
+    gap: 1em;
 }
 
 .containerComponent .icon {
-  visibility: hidden;
+    visibility: hidden;
 }
 
