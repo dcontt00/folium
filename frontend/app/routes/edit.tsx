@@ -6,7 +6,6 @@ import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
 import {useEffect, useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import {data, useNavigate} from "react-router";
-import type {Route} from "../../.react-router/types/app/routes";
 import EditComponentSection from "~/components/edit/EditComponentSection";
 import ConfirmModal from "~/components/ConfirmModal";
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
@@ -16,6 +15,7 @@ import {type DropResult} from "@hello-pangea/dnd";
 import ComponentsDnD from "~/components/edit/ComponentsDnD";
 import axiosInstance from "~/axiosInstance";
 import ComponentsSection from "~/components/ComponentsSection";
+import type {Route} from "./+types";
 
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
     const portfolio: Portfolio = await axiosInstance.get(`/portfolio/${params.url}`)

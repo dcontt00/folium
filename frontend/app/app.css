@@ -48,17 +48,9 @@ body {
   display: flex;
   align-items: center;
   gap: 1em;
-  background: #212942;
 }
 
 .containerComponent .icon {
   visibility: hidden;
 }
 
-.containerComponent:hover {
-  background: #3c4c7b;
-}
-
-.containerComponent:hover .icon {
-  visibility: visible;
-}
