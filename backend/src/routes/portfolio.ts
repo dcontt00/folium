@@ -184,9 +184,10 @@ router.put("/:url", authenticate, async (req, res) => {
                         existingComponents.push(updatedComponent._id);
                     })
                 } else {
-                    await createComponent(component, portfolio._id).then((component) => {
-                        components.push(component._id);
-                        newComponentsIds.push(component._id);
+                    await createComponent(component, portfolio._id).then((c) => {
+                        console.log("Updated", c)
+                        components.push(c._id);
+                        newComponentsIds.push(c._id);
                     });
                 }
             }
@@ -278,8 +279,6 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
             if (!component.text) {
                 throw new ApiError(400, "Text is required for text component", "Text is required for text component");
             }
-
-
             return await textComponentModel.create({
                 type: component.type,
                 index: component.index,
@@ -310,16 +309,30 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
             })
         case "ContainerComponent":
             const containerComponents: Array<any> = [];
-            for (const containerComponent of component.components) {
-                await createComponent(containerComponent, parent_id).then((component) => {
-                    containerComponents.push(component._id);
-                })
-            }
-            return await containerComponentModel.create({
+
+            // Create container component
+            const containerComponent = await containerComponentModel.create({
                 parent_id: parent_id,
                 index: component.index,
-                components: containerComponents,
             })
+
+
+            // Create each component of container assigning the containerComponent as parent
+            for (const comp of component.components) {
+                await createComponent(comp, containerComponent._id).then((c) => {
+                    containerComponents.push(c._id);
+                })
+            }
+
+            // Update the containerComponent with the created components
+            return await containerComponentModel.findOneAndUpdate(
+                {_id: containerComponent._id},
+                {components: containerComponents},
+                {new: true}
+            ).then(updatedComponent => {
+                return updatedComponent
+            })
+
     }
 }
 
