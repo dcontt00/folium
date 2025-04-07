@@ -11,14 +11,11 @@ export default function ImageComponent({imageComponent}: Props) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            width: `${imageComponent.width * 100}%`,
             justifyContent: 'center',
-            paddingBottom: '0.5rem',
             backgroundColor: '#2d3748',
-            borderRadius: '0.5rem',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+            width: `${imageComponent.width * 100}%`
         }}>
-            <div style={{position: 'relative'}}>
+            <div style={{position: 'relative', width: '100%'}}>
                 <img style={{width: '100%'}} src={imageComponent.url} alt={imageComponent.url}/>
                 {imageComponent.overlayText && (
                     <div style={{

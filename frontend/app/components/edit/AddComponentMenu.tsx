@@ -60,7 +60,7 @@ export default function AddComponentMenu({
             index: portfolioComponentsLength - 1,
             parent_id: parent_id,
             __t: "ImageComponent",
-            url: "https://via.placeholder.com/150",
+            url: "/placeholder.jpg",
             overlayText: null,
             caption: null,
             overlayTransparency: 0,

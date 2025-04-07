@@ -3,7 +3,7 @@ import {type AxiosResponse} from "axios";
 import {IconInfoCircle, IconX} from "@tabler/icons-react";
 
 import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import {data, useNavigate} from "react-router";
 import EditComponentSection from "~/components/edit/EditComponentSection";
@@ -49,10 +49,6 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const navigate = useNavigate();
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
     const [previewEnabled, setPreviewEnabled] = useState(false);
-
-    useEffect(() => {
-        console.log(portfolioState)
-    }, [portfolioState]);
 
     function onEditComponent(component: ComponentType) {
         //setEditComponent(component);

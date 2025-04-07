@@ -1,10 +1,10 @@
 import {data} from "react-router";
 import ComponentsSection from "~/components/ComponentsSection";
-import type {Route} from "~/routes";
 import type {Portfolio} from "~/interfaces/interfaces";
 import axiosInstance from "~/axiosInstance";
 import type {AxiosResponse} from "axios";
 import {Center, Loader} from "@mantine/core";
+import type {Route} from "../../.react-router/types/app/routes/+types";
 
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
 
