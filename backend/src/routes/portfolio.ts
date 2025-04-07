@@ -161,9 +161,6 @@ router.get("/:url", authenticate, async (req, res) => {
 
 router.put("/:url", authenticate, async (req, res) => {
     const components: any[] = [];
-    const removedComponents: any[] = [];
-    const existingComponents: any[] = [];
-    const newComponentsIds: any[] = [];
     try {
         const user = req.user;
         if (!user) {
@@ -181,13 +178,11 @@ router.put("/:url", authenticate, async (req, res) => {
                 if (component._id != null) {
                     await editComponent(component).then(updatedComponent => {
                         components.push(updatedComponent._id);
-                        existingComponents.push(updatedComponent._id);
                     })
                 } else {
                     await createComponent(component, portfolio._id).then((c) => {
                         console.log("Updated", c)
                         components.push(c._id);
-                        newComponentsIds.push(c._id);
                     });
                 }
             }
