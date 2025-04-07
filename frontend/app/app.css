@@ -15,33 +15,52 @@ body {
 }
 
 
-.container {
+/* Edit portfolio */
+.dnd-droppable {
   gap: 1em;
   display: flex;
   flex-direction: column;
 }
 
-.edit {
+.dnd-draggable {
   padding: 1em;
   display: flex;
   align-items: center;
   gap: 1em;
   background: #181e30;
-
-
 }
 
-.edit .icon {
-  visibility: hidden;
+.dnd-draggable .icon {
+  display: none;
 }
 
-.edit:hover {
+.dnd-draggable:hover {
   background: #222B45;
 }
 
-.edit:hover .icon {
-  visibility: visible;
+.dnd-draggable:hover .icon {
+  display: block;
 }
+
+.dnd-container {
+  display: flex;
+  align-items: center;
+}
+
+.dnd-container:hover {
+  background: #313e63;
+}
+
+.dnd-container .icon {
+  display: none;
+}
+
+.dnd-container:hover .icon {
+  display: block;
+}
+
+
+/* View portfolio */
 
 .containerComponent {
   padding: 1em;

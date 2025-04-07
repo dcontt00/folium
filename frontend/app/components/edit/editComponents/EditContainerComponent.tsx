@@ -70,7 +70,7 @@ export default function EditContainerComponent({containerComponent, onEditCompon
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
 
-                                            className="containerComponent"
+                                            className="dnd-container"
                                         >
                                             <div {...provided.dragHandleProps}>
                                                 <IconMenu2 className="icon"/>

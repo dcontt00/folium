@@ -26,14 +26,14 @@ export default function ComponentsDnD({
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="components">
                 {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef} className="container">
+                    <div {...provided.droppableProps} ref={provided.innerRef} className="dnd-droppable">
                         {portfolioState.components.map((component, index) => (
                             <Draggable key={component._id} draggableId={index.toString()} index={index}>
                                 {(provided) => (
                                     <div
                                         ref={provided.innerRef}
                                         {...provided.draggableProps}
-                                        className="edit"
+                                        className="dnd-draggable"
                                     >
                                         <div {...provided.dragHandleProps}>
                                             <IconMenu2 className="icon"/>
