@@ -16,6 +16,7 @@ import ComponentsDnD from "~/components/edit/ComponentsDnD";
 import axiosInstance from "~/axiosInstance";
 import ComponentsSection from "~/components/ComponentsSection";
 import type {Route} from "./+types";
+import History from "~/components/edit/History";
 
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
     const portfolio: Portfolio = await axiosInstance.get(`/portfolio/${params.url}`)
@@ -185,6 +186,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     setDescription={setDescription}
                     setUnsaved={setUnsaved}
                 />
+                <History portfolioId={portfolioState._id}/>
             </AppShell.Aside>
             <AppShell.Main>
                 {previewEnabled ?
