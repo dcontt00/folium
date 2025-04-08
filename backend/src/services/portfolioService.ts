@@ -1,6 +1,7 @@
-import {Portfolio} from "../interfaces/portfolio";
+import Portfolio from "../interfaces/portfolio";
 import {portfolioModel, versionModel} from "../models/models";
-
+import Component from "../interfaces/component";
+import {ChangeType, IChange} from "../interfaces/IChange";
 
 // Create portfolio
 async function createPortfolio(
@@ -15,43 +16,99 @@ async function createPortfolio(
     })
 }
 
-async function getVersionDifferences(portfolioId: string) {
-    const versions = await versionModel.find({portfolioId}).sort({createdAt: 1});
 
-    const differences = [];
-    for (let i = 1; i < versions.length; i++) {
-        const prevVersion = versions[i - 1];
-        const currentVersion = versions[i];
-        const diff = getDifferences(prevVersion.data, currentVersion.data);
-        differences.push({from: prevVersion._id, to: currentVersion._id, diff});
+async function getPortfolioChanges(portfolio: Portfolio): Promise<IChange[]> {
+    const changes: IChange[] = [];
+
+
+    // Fetch the previous version of the portfolio
+    const previousVersion = await versionModel
+        .findOne({portfolioId: portfolio._id})
+        .sort({createdAt: -1}) // Assuming versions are timestamped
+        .lean();
+
+    console.log(previousVersion);
+
+    if (!previousVersion) {
+        throw new Error(`No previous version found for portfolio ID ${portfolio._id}.`);
     }
 
-    return differences;
+    const currentComponents = portfolio.components || [];
+    // @ts-ignore
+    const previousComponents: Component[] = previousVersion.components || [];
+
+    // Map components by their IDs for easier comparison
+    const currentComponentsMap = new Map(
+        currentComponents.map((component) => [component._id.toString(), component])
+    );
+    const previousComponentsMap = new Map(
+        previousComponents.map((component: Component) => [component._id.toString(), component])
+    );
+
+    // Detect changes and removals
+    for (const [id, prevComponent] of previousComponentsMap.entries()) {
+        const currentComponent = currentComponentsMap.get(id);
+
+        if (!currentComponent) {
+            // Component was removed
+            changes.push({
+                type: ChangeType.REMOVE,
+                message: `Component ${id} was removed.`,
+            });
+        } else {
+            // Compare fields to detect changes
+            for (const key of Object.keys(prevComponent)) {
+                if (key === "_id") continue; // Skip _id comparison
+
+                // @ts-ignore
+                console.log(prevComponent[key], currentComponent[key])
+                console.log("\n")
+                // @ts-ignore
+                if (prevComponent[key] !== currentComponent[key] && currentComponent[key] !== undefined) {
+                    changes.push({
+                        type: ChangeType.UPDATE,
+                        // @ts-ignore
+                        message: `Component ${id} changed its ${key} from "${prevComponent[key]}" to "${currentComponent[key]}".`,
+                    });
+                }
+            }
+        }
+    }
+
+    // Detect additions
+    for (const [id, currComponent] of currentComponentsMap.entries()) {
+        if (!previousComponentsMap.has(id)) {
+            changes.push({
+                type: ChangeType.ADD,
+                message: `Component ${id} was added.`,
+            });
+        }
+    }
+
+    return changes;
 }
 
-function getDifferences(obj1: any, obj2: any): any {
-    const diff: any = {};
+async function createVersion(
+    portfolio: Portfolio,
+) {
 
-    // Check for modified or deleted keys
-    for (const key in obj1) {
-        if (!(key in obj2)) {
-            diff[key] = {status: "deleted", old: obj1[key], new: null};
-        } else if (obj1[key] !== obj2[key]) {
-            diff[key] = {status: "modified", old: obj1[key], new: obj2[key]};
-        }
-    }
-
-    // Check for added keys
-    for (const key in obj2) {
-        if (!(key in obj1)) {
-            diff[key] = {status: "added", old: null, new: obj2[key]};
-        }
-    }
-
-    return diff;
+    const changes = await getPortfolioChanges(portfolio)
+    console.log("Changes: ", changes)
+    const populatedComponents = JSON.parse(JSON.stringify(portfolio.components));
+    return await versionModel.create({
+        portfolioId: portfolio._id,
+        changes: changes,
+        components: populatedComponents,
+        title: portfolio.title,
+        description: portfolio.description,
+        url: portfolio.url,
+    }).then((version) => {
+        return version;
+    })
 }
 
 export {
     createPortfolio,
-    getVersionDifferences,
+    getPortfolioChanges,
+    createVersion
 }

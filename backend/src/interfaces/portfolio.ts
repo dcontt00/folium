@@ -1,6 +1,10 @@
-export interface Portfolio {
-    url: string
-    title: string,
-    description: string,
-    user: string
+import Component from "./component"
+import mongoose from "mongoose";
+
+export default interface Portfolio {
+    _id: mongoose.Types.ObjectId;
+    title: string;
+    description: string;
+    url: string;
+    components: Component[];
 }

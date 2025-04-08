@@ -11,6 +11,8 @@ import {
 import {authenticate} from "../middleware/auth";
 import ApiError from "../interfaces/ApiError";
 import mongoose from "mongoose";
+import {createVersion} from "../services/portfolioService";
+import Component from "../interfaces/component";
 
 
 const router = express.Router();
@@ -55,12 +57,31 @@ router.post("/", authenticate, async (req, res) => {
             {url: newPortfolio.url, user: user.id},
             {...req.body, components: [titleComponent._id, textComponent._id]},
             {new: true}
-        ).populate("components").then((portfolio) => {
+        ).populate("components").then(async (portfolio) => {
             res.status(200).json({
                 status: 200,
                 success: true,
                 data: portfolio,
             });
+
+            if (portfolio == null) {
+                throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+            }
+
+            await versionModel.create(
+                {
+                    portfolioId: portfolio._id,
+                    changes: "Initial version",
+                    components: portfolio.components,
+                    title: portfolio.title,
+                    description: portfolio.description,
+                    url: portfolio.url,
+                }
+            ).then(() => {
+                console.log("Version created")
+            }).catch((err => {
+                console.log("Error creating version", err)
+            }))
         })
 
     } catch (err: any) {
@@ -211,12 +232,12 @@ router.put("/:url", authenticate, async (req, res) => {
             for (const component of req.body.components) {
                 if (component._id != null) {
                     await editComponent(component).then(updatedComponent => {
-                        components.push(updatedComponent._id);
+                        components.push(updatedComponent);
                     })
                 } else {
                     await createComponent(component, portfolio._id).then((c) => {
                         console.log("Updated", c)
-                        components.push(c._id);
+                        components.push(c);
                     });
                 }
             }
@@ -242,20 +263,7 @@ router.put("/:url", authenticate, async (req, res) => {
                 throw new ApiError(404, "Portfolio not found", "Portfolio not found");
             }
 
-            await versionModel.create(
-                {
-                    portfolioId: portfolio._id,
-                    changes: "Initial version",
-                    components: portfolio.components,
-                    title: portfolio.title,
-                    description: portfolio.description,
-                    url: portfolio.url,
-                }
-            ).then(() => {
-                console.log("Version created")
-            }).catch((err => {
-                console.log("Error creating version", err)
-            }))
+            await createVersion(portfolio)
         })
         await removeOrphanComponents();
 
@@ -466,11 +474,11 @@ async function removeOrphanComponents() {
     // TODO: Do not remove components that are referenced in ContainerComponents
     try {
         // Step 1: Get all component IDs that are referenced in any portfolio or containerComponent
-        const portfolios = await portfolioModel.find({}, {components: 1});
+        const portfolios = await portfolioModel.find({}, {components: 1}).populate("components");
         const referencedComponentIds = new Set<string>();
         portfolios.forEach(portfolio => {
-            portfolio.components.forEach((componentId: mongoose.Types.ObjectId) => {
-                referencedComponentIds.add(componentId.toString());
+            portfolio.components.forEach((component: Component) => {
+                referencedComponentIds.add(component._id.toString());
             });
         });
 
