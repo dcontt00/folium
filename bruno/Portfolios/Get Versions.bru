@@ -1,0 +1,15 @@
+meta {
+  name: Get Versions
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:3000/portfolio/:_id/versions
+  body: none
+  auth: inherit
+}
+
+params:path {
+  _id: 67f4d83a59066df3dfff41e1
+}

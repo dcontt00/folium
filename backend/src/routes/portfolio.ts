@@ -115,6 +115,39 @@ router.get("/", authenticate, async (req, res) => {
     }
 });
 
+router.get("/:_id/versions", authenticate, async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user) {
+            throw new ApiError(404, "User not found", "User not found");
+        }
+
+        await versionModel.find({portfolioId: req.params._id}).then((versions) => {
+            res.status(200).json({
+                status: 200,
+                success: true,
+                data: versions,
+            });
+        });
+
+    } catch (err: any) {
+        if (err instanceof ApiError) {
+            res.status(err.status).json({
+                status: err.status,
+                success: false,
+                message: err.message,
+            });
+        } else {
+            res.status(400).json({
+                status: 400,
+                success: false,
+                message: err.message,
+            });
+        }
+    }
+})
+
 router.get("/:url", authenticate, async (req, res) => {
     try {
         const user = req.user;
@@ -198,25 +231,32 @@ router.put("/:url", authenticate, async (req, res) => {
             populate: {
                 path: "components",
             }
-        }).then((portfolio) => {
+        }).then(async (portfolio) => {
             res.status(200).json({
                 status: 200,
                 success: true,
                 data: portfolio,
             });
-        })
 
-        await versionModel.create(
-            {
-                portfolioId: portfolio._id,
-                data: req.body,
-                changes: "Initial version",
+            if (portfolio == null) {
+                throw new ApiError(404, "Portfolio not found", "Portfolio not found");
             }
-        ).then(() => {
-            console.log("Version created")
-        }).catch((err => {
-            console.log("Error creating version", err)
-        }))
+
+            await versionModel.create(
+                {
+                    portfolioId: portfolio._id,
+                    changes: "Initial version",
+                    components: portfolio.components,
+                    title: portfolio.title,
+                    description: portfolio.description,
+                    url: portfolio.url,
+                }
+            ).then(() => {
+                console.log("Version created")
+            }).catch((err => {
+                console.log("Error creating version", err)
+            }))
+        })
         await removeOrphanComponents();
 
     } catch (err: any) {

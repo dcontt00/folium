@@ -15,6 +15,10 @@ interface IVersion extends Document {
     data: any;
     createdAt: Date;
     changes: string;
+    components: mongoose.Types.ObjectId[];
+    title: string;
+    description: string;
+    url: string;
 }
 const userModel = mongoose.model('User', UserSchema);
 const portfolioModel = mongoose.model('Portfolio', PortfolioSchema);
