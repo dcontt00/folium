@@ -16,7 +16,7 @@ import ComponentsDnD from "~/components/edit/ComponentsDnD";
 import axiosInstance from "~/axiosInstance";
 import ComponentsSection from "~/components/ComponentsSection";
 import type {Route} from "./+types";
-import History from "~/components/edit/History";
+import HistoryModal from "~/components/edit/HistoryModal";
 
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
     const portfolio: Portfolio = await axiosInstance.get(`/portfolio/${params.url}`)
@@ -39,17 +39,24 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     }
 
     const portfolio: Portfolio = loaderData;
-    const [portfolioState, setPortfolioState] = useState(portfolio);
 
+    // State for the portfolio
+    const [portfolioState, setPortfolioState] = useState(portfolio);
     const [description, setDescription] = useState(portfolioState.description);
     const [title, setTitle] = useState(portfolioState.title);
+
+    // State for components that can be shown or hidden
     const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
     const [openedSettings, {toggle: toggleOpenedSettings}] = useDisclosure(false);
     const [openedBackModal, {open: openBackModal, close: closeBackModal}] = useDisclosure(false);
+    const [openedHistoryModal, {open: openHistoryModal, close: closeHistoryModal}] = useDisclosure(false);
+
+    // State for the edit features
     const [unsaved, setUnsaved] = useState(false);
-    const navigate = useNavigate();
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
     const [previewEnabled, setPreviewEnabled] = useState(false);
+
+    const navigate = useNavigate();
 
     function onEditComponent(component: ComponentType) {
         //setEditComponent(component);
@@ -186,7 +193,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                     setDescription={setDescription}
                     setUnsaved={setUnsaved}
                 />
-                <History portfolioId={portfolioState._id}/>
+                <Button onClick={openHistoryModal}>Open history</Button>
             </AppShell.Aside>
             <AppShell.Main>
                 {previewEnabled ?
@@ -209,6 +216,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 
             <ConfirmModal opened={openedBackModal} text="You have unsaved changes. Want to continue?"
                           close={closeBackModal} onOk={() => navigate("/home")}/>
+            <HistoryModal portfolioId={portfolioState._id} opened={openedHistoryModal} onClose={closeHistoryModal}/>
         </AppShell>
     );
 }
