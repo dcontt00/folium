@@ -196,15 +196,17 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 </Stack>
             </AppShell.Navbar>
             <AppShell.Aside>
-                <SettingsSection
-                    toggleOpenedSettings={toggleOpenedSettings}
-                    title={title}
-                    setTitle={setTitle}
-                    description={description}
-                    setDescription={setDescription}
-                    setUnsaved={setUnsaved}
-                />
-                <Button onClick={openHistoryModal}>Open history</Button>
+                <Stack p="sm">
+                    <SettingsSection
+                        toggleOpenedSettings={toggleOpenedSettings}
+                        title={title}
+                        setTitle={setTitle}
+                        description={description}
+                        setDescription={setDescription}
+                        setUnsaved={setUnsaved}
+                    />
+                    <Button onClick={openHistoryModal}>Open history</Button>
+                </Stack>
             </AppShell.Aside>
             <AppShell.Main>
                 {previewEnabled ?

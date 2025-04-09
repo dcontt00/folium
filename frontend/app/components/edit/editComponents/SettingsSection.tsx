@@ -1,4 +1,4 @@
-import {Button, Stack, Textarea, TextInput, Title} from "@mantine/core";
+import {Button, Textarea, TextInput, Title} from "@mantine/core";
 
 
 interface Props {
@@ -21,7 +21,7 @@ export default function SettingsSection({
 
 
     return (
-        <Stack p="sm">
+        <>
             <Title order={3}>Settings</Title>
             <TextInput
                 label="Title"
@@ -40,6 +40,6 @@ export default function SettingsSection({
                 }}
             />
             <Button hiddenFrom="sm" onClick={toggleOpenedSettings}>Close</Button>
-        </Stack>
+        </>
     )
 }

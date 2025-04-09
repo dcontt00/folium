@@ -1,8 +1,8 @@
-import {Button, Group, List, Modal, Stack, Text, ThemeIcon, Timeline, Title} from "@mantine/core";
+import {Button, Group, List, Modal, Stack, Text, ThemeIcon, Timeline} from "@mantine/core";
 import {useEffect, useState} from "react";
 import config from "~/config";
 import axiosInstance from "~/axiosInstance";
-import {IconEdit, IconPlus, IconTrash} from "@tabler/icons-react";
+import {IconClipboard, IconEdit, IconPlus, IconTrash} from "@tabler/icons-react";
 import type IVersion from "~/interfaces/IVersion";
 import type {IChange} from "~/interfaces/IChange";
 
@@ -18,52 +18,53 @@ export default function HistoryModal({portfolioId, opened, onClose}: Props) {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
 
+    async function fetchHistory() {
+        try {
+            const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/${portfolioId}/versions`);
+            console.log(response.data.data);
+            setData(response.data.data);
+        } catch (err: any) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
-        async function fetchHistory() {
-            try {
-                const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/${portfolioId}/versions`);
-                console.log(response.data.data);
-                setData(response.data.data);
-            } catch (err: any) {
-                setError(err);
-            } finally {
-                setLoading(false);
-            }
+        if (opened) {
+            fetchHistory();
         }
 
-        fetchHistory();
-    }, [portfolioId]);
+    }, [opened]);
 
     return (
-        <Modal size="xl" opened={opened} onClose={onClose}>
-
+        <Modal size="xl" opened={opened} onClose={onClose} title="History">
             <Stack p="sm">
-                <Title order={3}>History</Title>
                 {loading && <div>Loading...</div>}
                 {error && <div>Error: {error.message}</div>}
-
                 <Timeline active={1} bulletSize={24} lineWidth={2}>
                     {data && data.map((version: IVersion) => (
-                        <Timeline.Item title="Change">
-                            <Text size="xs" mt={4}>{version.createdAt}</Text>
-                            <List>
-                                {version.changes.map((change: IChange) => (
-                                    <List.Item
-                                        icon={
-                                            <ChangeIcon change={change}/>
-                                        }
-                                    >
-                                        <Text c="dimmed">
-                                            {change.message}
-                                        </Text>
-                                    </List.Item>
-                                ))}
-                            </List>
+                        <Timeline.Item title={version.relativeCreatedAt}>
+                            <Stack style={{paddingTop: 10}}>
+                                <List>
+                                    {version.changes.map((change: IChange) => (
+                                        <List.Item
+                                            icon={
+                                                <ChangeIcon change={change}/>
+                                            }
+                                        >
+                                            <Text c="dimmed">
+                                                {change.message}
+                                            </Text>
+                                        </List.Item>
+                                    ))}
+                                </List>
 
-                            <Group>
-                                <Button size="compact-md">Restore to this</Button>
-                                <Button size="compact-md">Preview</Button>
-                            </Group>
+                                <Group>
+                                    <Button size="compact-md">Restore to this</Button>
+                                    <Button size="compact-md">Preview</Button>
+                                </Group>
+                            </Stack>
 
                         </Timeline.Item>
                     ))}
@@ -80,6 +81,12 @@ interface IChangeIconProps {
 
 function ChangeIcon({change}: IChangeIconProps) {
     switch (change.type) {
+        case "NEW_PORTFOLIO":
+            return (
+                <ThemeIcon color="orange" size={24} radius="xl">
+                    <IconClipboard size={16}/>
+                </ThemeIcon>
+            );
         case "ADD":
             return (
                 <ThemeIcon color="blue" size={24} radius="xl">

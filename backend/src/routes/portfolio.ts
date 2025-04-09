@@ -13,6 +13,7 @@ import ApiError from "../interfaces/ApiError";
 import mongoose from "mongoose";
 import {createVersion} from "../services/portfolioService";
 import Component from "../interfaces/component";
+import {ChangeType} from "../interfaces/IChange";
 
 
 const router = express.Router();
@@ -71,7 +72,7 @@ router.post("/", authenticate, async (req, res) => {
             await versionModel.create(
                 {
                     portfolioId: portfolio._id,
-                    changes: "Initial version",
+                    changes: {type: ChangeType.NEW_PORTFOLIO, message: "Created Portfolio"},
                     components: portfolio.components,
                     title: portfolio.title,
                     description: portfolio.description,
@@ -144,7 +145,10 @@ router.get("/:_id/versions", authenticate, async (req, res) => {
             throw new ApiError(404, "User not found", "User not found");
         }
 
-        await versionModel.find({portfolioId: req.params._id}).then((versions) => {
+        await versionModel
+            .find({portfolioId: req.params._id})
+            .sort({createdAt: -1})
+            .then((versions) => {
             res.status(200).json({
                 status: 200,
                 success: true,

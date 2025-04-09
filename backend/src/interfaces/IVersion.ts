@@ -5,6 +5,7 @@ export default interface IVersion extends Document {
     portfolioId: string;
     data: any;
     createdAt: Date;
+    relativeCreatedAt: string
     changes: IChange[];
     components: Component[];
     title: string;

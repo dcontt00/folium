@@ -58,7 +58,7 @@ async function getPortfolioChanges(portfolio: Portfolio): Promise<IChange[]> {
         } else {
             // Compare fields to detect changes
             for (const key of Object.keys(prevComponent)) {
-                if (key === "_id") continue; // Skip _id comparison
+                if (key === "_id" || key === "createdAt") continue; // Skip _id comparison
 
                 // @ts-ignore
                 console.log(prevComponent[key], currentComponent[key])

@@ -10,4 +10,5 @@ export default interface IVersion extends Document {
     title: string;
     description: string;
     url: string;
+    relativeCreatedAt: string;
 }
