@@ -308,6 +308,8 @@ router.delete("/:url", authenticate, async (req, res) => {
             });
         })
 
+        await versionModel.deleteMany({portfolioId: portfolio._id})
+
         await removeOrphanComponents()
 
     } catch (err: any) {
