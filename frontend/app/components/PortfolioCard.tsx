@@ -2,8 +2,8 @@ import {Button, Card, Group, Image, Stack, Text} from "@mantine/core";
 import {IconEdit, IconExternalLink, IconTrash} from "@tabler/icons-react";
 import {useNavigate} from "react-router";
 import {useDisclosure} from "@mantine/hooks";
-import ConfirmModal from "~/components/ConfirmModal";
 import axiosInstance from "~/axiosInstance";
+import {modals} from "@mantine/modals";
 
 interface PortfolioCardProps {
     title: string;
@@ -21,6 +21,22 @@ export default function PortfolioCard({title, description, url, onDelete}: Portf
         await onDelete();
         close();
     }
+
+    const openModal = () => modals.openConfirmModal({
+        title: 'Delete portfolio',
+        children: (
+            <Text size="sm">
+                Are you sure you want to delete this portfolio?
+            </Text>
+        ),
+        confirmProps: {
+            color: "red",
+            leftSection: <IconTrash/>
+        },
+        labels: {confirm: "Delete", cancel: 'Cancel'},
+        onCancel: () => console.log('Cancel'),
+        onConfirm: () => deletePortfolio(url),
+    });
 
     return (
         <Card
@@ -60,20 +76,14 @@ export default function PortfolioCard({title, description, url, onDelete}: Portf
                         Edit
                     </Button>
                     <Button
-                        variant="danger"
+                        color="red"
                         leftSection={<IconTrash size={14}/>}
-                        onClick={open}
+                        onClick={openModal}
                     >
                         Remove
                     </Button>
                 </Group>
             </Stack>
-            <ConfirmModal
-                text="Are you sure you want to delete this portfolio?"
-                opened={opened}
-                close={close}
-                onOk={() => deletePortfolio(url)}
-            />
         </Card>
     );
 }

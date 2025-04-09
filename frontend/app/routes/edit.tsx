@@ -1,13 +1,11 @@
-import {ActionIcon, Alert, AppShell, Button, Stack} from "@mantine/core";
+import {ActionIcon, Alert, AppShell, Button, Stack, Text} from "@mantine/core";
 import {type AxiosResponse} from "axios";
 import {IconInfoCircle, IconX} from "@tabler/icons-react";
-
 import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
 import {useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import {data, useNavigate} from "react-router";
 import EditComponentSection from "~/components/edit/EditComponentSection";
-import ConfirmModal from "~/components/ConfirmModal";
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
 import SettingsSection from "~/components/edit/editComponents/SettingsSection";
 import HeaderButtons from "~/components/edit/HeaderButtons";
@@ -17,6 +15,7 @@ import axiosInstance from "~/axiosInstance";
 import ComponentsSection from "~/components/ComponentsSection";
 import type {Route} from "./+types";
 import HistoryModal from "~/components/edit/HistoryModal";
+import {modals} from "@mantine/modals";
 
 export async function clientLoader({params}: Route.ClientLoaderArgs) {
     const portfolio: Portfolio = await axiosInstance.get(`/portfolio/${params.url}`)
@@ -38,6 +37,19 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         return <div>Error: Portfolio data not found</div>;
     }
 
+    const openModal = () => modals.openConfirmModal({
+        title: 'Please confirm your action',
+        children: (
+            <Text size="sm">
+                You have unsaved changes. Want to continue?
+            </Text>
+        ),
+        confirmProps: {},
+        labels: {confirm: "Continue", cancel: 'Cancel'},
+        onCancel: () => console.log('Cancel'),
+        onConfirm: () => navigate("/home"),
+    });
+
     const portfolio: Portfolio = loaderData;
 
     // State for the portfolio
@@ -48,7 +60,6 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     // State for components that can be shown or hidden
     const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
     const [openedSettings, {toggle: toggleOpenedSettings}] = useDisclosure(false);
-    const [openedBackModal, {open: openBackModal, close: closeBackModal}] = useDisclosure(false);
     const [openedHistoryModal, {open: openHistoryModal, close: closeHistoryModal}] = useDisclosure(false);
 
     // State for the edit features
@@ -102,7 +113,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 
     function onBack() {
         if (unsaved) {
-            openBackModal();
+            openModal();
         } else {
             navigate("/home");
         }
@@ -214,8 +225,6 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 }
             </AppShell.Main>
 
-            <ConfirmModal opened={openedBackModal} text="You have unsaved changes. Want to continue?"
-                          close={closeBackModal} onOk={() => navigate("/home")}/>
             <HistoryModal portfolioId={portfolioState._id} opened={openedHistoryModal} onClose={closeHistoryModal}/>
         </AppShell>
     );
