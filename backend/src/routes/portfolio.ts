@@ -171,8 +171,7 @@ router.get("/:_id/versions", authenticate, async (req, res) => {
             });
         }
     }
-})
-
+});
 router.get("/:url", authenticate, async (req, res) => {
     try {
         const user = req.user;
@@ -226,7 +225,14 @@ router.put("/:url", authenticate, async (req, res) => {
             throw new ApiError(404, "User not found", "User not found");
         }
 
-        const portfolio = await portfolioModel.findOne({url: req.params.url, user: user.id}).populate("components");
+        const portfolio = await portfolioModel
+            .findOne({url: req.params.url, user: user.id})
+            .populate({
+                path: "components",
+                populate: {
+                    path: "components",
+                }
+            });
 
         if (!portfolio) {
             throw new ApiError(404, "Portfolio not found", "Portfolio not found");
@@ -483,7 +489,6 @@ async function editComponent(component: any): Promise<any> {
 }
 
 async function removeOrphanComponents() {
-    // TODO: Do not remove components that are referenced in ContainerComponents
     try {
         // Step 1: Get all component IDs that are referenced in any portfolio or containerComponent
         const portfolios = await portfolioModel.find({}, {components: 1}).populate("components");
@@ -491,13 +496,6 @@ async function removeOrphanComponents() {
         portfolios.forEach(portfolio => {
             portfolio.components.forEach((component: Component) => {
                 referencedComponentIds.add(component._id.toString());
-            });
-        });
-
-        const containerComponents = await containerComponentModel.find({}, {components: 1});
-        containerComponents.forEach(container => {
-            container.components.forEach((componentId: mongoose.Types.ObjectId) => {
-                referencedComponentIds.add(componentId.toString());
             });
         });
 

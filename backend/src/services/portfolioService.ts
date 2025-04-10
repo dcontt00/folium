@@ -37,18 +37,28 @@ function getComponentUpdatesAndRemovals(previousComponents: Component[], current
                 // Manage container components
 
 
-                continue;
+                // @ts-ignore
+                const containerComponentAdditions = getComponentAdditions(prevComponent.components, currentComponent.components)
 
+                // @ts-ignore
+                const containerComponentUpdatesAndRemovals = getComponentUpdatesAndRemovals(prevComponent.components, currentComponent.components);
+
+                const allContainerChanges = [...containerComponentAdditions, ...containerComponentUpdatesAndRemovals]
+                changes.push({
+                    type: ChangeType.UPDATE,
+                    message: `Changes to ContainerComponent ${currentComponent.componentId}: ${allContainerChanges.map((change) => change.message).join("\n")}`
+                })
+
+                continue;
             }
 
             // Compare fields to detect changes
             const allKeys = Object.keys(prevComponent.toObject());
-            const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew", "__t"];
+            const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew", "__t", "parent_id"];
             const keys = allKeys.filter(key => !keysToRemove.includes(key));
 
             for (const key of keys) {
                 // @ts-ignore
-                console.log(key, prevComponent[key], currentComponent[key])
 
                 // @ts-ignore
                 if (prevComponent[key]?.toString() !== currentComponent[key]?.toString() && currentComponent[key] !== undefined) {
@@ -69,19 +79,23 @@ function getComponentAdditions(previousComponents: Component[], currentComponent
 
     for (const currentComponent of currentComponents) {
         if (!previousComponents.find((component) => component.componentId === currentComponent.componentId)) {
-            if (currentComponent.__t === "ContainerComponent") {
+            // Check if a ContainerComponent with children was added
+            // @ts-ignore
+            if (currentComponent.__t === "ContainerComponent" && currentComponent.components.length != 0) {
                 // @ts-ignore
-                const containerComponentChanges = getComponentChanges([], currentComponent.components)
+                const containerComponentChanges = getComponentAdditions([], currentComponent.components)
                 const containerComponentChangesMessages = containerComponentChanges.map((change) => change.message).join(", ")
                 changes.push({
                     type: ChangeType.ADD,
                     message: `ContainerComponent ${currentComponent.componentId} was added: ${containerComponentChangesMessages}`
                 })
+            } else {
+
+                changes.push({
+                    type: ChangeType.ADD,
+                    message: `Component ${currentComponent.componentId} was added.`,
+                });
             }
-            changes.push({
-                type: ChangeType.ADD,
-                message: `Component ${currentComponent.componentId} was added.`,
-            });
         }
     }
     return changes;
