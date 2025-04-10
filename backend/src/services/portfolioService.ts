@@ -17,6 +17,94 @@ async function createPortfolio(
 }
 
 
+function getComponentUpdatesAndRemovals() {
+
+}
+
+function getComponentChanges(previousComponents: Component[], currentComponents: Component[]): IChange[] {
+    const changes: IChange[] = [];
+    // Map components by their ComponentIds for easier comparison
+
+
+    if (previousComponents.length === 0) {
+        changes.push({
+            type: ChangeType.ADD,
+            message: `ContainerComponent added some components`,
+        });
+
+        return changes;
+    }
+
+
+    // Detect changes and removals
+    for (const prevComponent of previousComponents) {
+        const currentComponent = currentComponents.find(
+            (component) => component.componentId === prevComponent.componentId
+        );
+
+
+        if (!currentComponent) {
+            // Component was removed
+            changes.push({
+                type: ChangeType.REMOVE,
+                message: `Component ${prevComponent.componentId} was removed.`,
+            });
+        } else {
+            // Compare fields to detect changes
+            const allKeys = Object.keys(prevComponent.toObject());
+            const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew", "__t"];
+            const keys = allKeys.filter(key => !keysToRemove.includes(key));
+
+            for (const key of keys) {
+                // @ts-ignore
+                console.log(key, prevComponent[key], currentComponent[key])
+
+                // @ts-ignore
+                if (prevComponent[key]?.toString() !== currentComponent[key]?.toString() && currentComponent[key] !== undefined) {
+
+                    // TODO: Modify message for container
+                    if (currentComponent.__t === "ContainerComponent") {
+                        // @ts-ignore
+                        const containerComponentChanges = getComponentChanges(prevComponent.components, currentComponent.components)
+                        const containerComponentChangesMessages = containerComponentChanges.map((change) => change.message).join(", ")
+                        changes.push({
+                            type: ChangeType.UPDATE,
+                            message: `ContainerComponent ${currentComponent.componentId} changed: ${containerComponentChangesMessages}`
+                        })
+                    } else {
+                        changes.push({
+                            type: ChangeType.UPDATE,
+                            // @ts-ignore
+                            message: `Component ${currentComponent.componentId} changed its ${key} from "${prevComponent[key]}" to "${currentComponent[key]}".`,
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    // Detect additions
+    for (const currentComponent of currentComponents) {
+        if (previousComponents.find((component) => component.componentId === currentComponent.componentId)) {
+            if (currentComponent.__t === "ContainerComponent") {
+                // @ts-ignore
+                const containerComponentChanges = getComponentChanges([], currComponent.components)
+                const containerComponentChangesMessages = containerComponentChanges.map((change) => change.message).join(", ")
+                changes.push({
+                    type: ChangeType.ADD,
+                    message: `ContainerComponent ${currentComponent.componentId} was added: ${containerComponentChangesMessages}`
+                })
+            }
+            changes.push({
+                type: ChangeType.ADD,
+                message: `Component ${currentComponent.componentId} was added.`,
+            });
+        }
+    }
+    return changes;
+}
+
+
 async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portfolio): Promise<IChange[]> {
     const changes: IChange[] = [];
 
@@ -43,60 +131,9 @@ async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portf
     }
 
 
-    // Check components
-    const currentComponents = newPortfolio.components || [];
-    const previousComponents: Component[] = prevPortfolio.components || [];
+    const componentChanges = getComponentChanges(prevPortfolio.components, newPortfolio.components);
+    changes.push(...componentChanges);
 
-    // Map components by their ComponentIds for easier comparison
-    const currentComponentsMap = new Map(
-        currentComponents.map((component) => [component.componentId, component])
-    );
-    const previousComponentsMap = new Map(
-        previousComponents.map((component: Component) => [component.componentId, component])
-    );
-
-
-    // Detect changes and removals
-    for (const [id, prevComponent] of previousComponentsMap.entries()) {
-        const currentComponent = currentComponentsMap.get(id);
-
-
-        if (!currentComponent) {
-            // Component was removed
-            changes.push({
-                type: ChangeType.REMOVE,
-                message: `Component ${id} was removed.`,
-            });
-        } else {
-            // Compare fields to detect changes
-            const allKeys = Object.keys(prevComponent.toObject());
-            const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew", "__t"];
-            const keys = allKeys.filter(key => !keysToRemove.includes(key));
-
-            for (const key of keys) {
-                // @ts-ignore
-
-                // @ts-ignore
-                if (prevComponent[key]?.toString() !== currentComponent[key]?.toString() && currentComponent[key] !== undefined) {
-                    changes.push({
-                        type: ChangeType.UPDATE,
-                        // @ts-ignore
-                        message: `Component ${id} changed its ${key} from "${prevComponent[key]}" to "${currentComponent[key]}".`,
-                    });
-                }
-            }
-        }
-    }
-
-    // Detect additions
-    for (const [id, currComponent] of currentComponentsMap.entries()) {
-        if (!previousComponentsMap.has(id)) {
-            changes.push({
-                type: ChangeType.ADD,
-                message: `Component ${id} was added.`,
-            });
-        }
-    }
 
     return changes;
 }
