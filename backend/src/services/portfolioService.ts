@@ -17,33 +17,21 @@ async function createPortfolio(
 }
 
 
-async function getPortfolioChanges(portfolio: Portfolio): Promise<IChange[]> {
+async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portfolio): Promise<IChange[]> {
     const changes: IChange[] = [];
 
-
-    // Fetch the previous version of the portfolio
-    const previousVersion = await versionModel
-        .findOne({portfolioId: portfolio._id})
-        .sort({createdAt: -1}) // Assuming versions are timestamped
-        .lean();
-
-    console.log(previousVersion);
-
-    if (!previousVersion) {
-        throw new Error(`No previous version found for portfolio ID ${portfolio._id}.`);
-    }
-
-    const currentComponents = portfolio.components || [];
+    const currentComponents = newPortfolio.components || [];
     // @ts-ignore
-    const previousComponents: Component[] = previousVersion.components || [];
+    const previousComponents: Component[] = prevPortfolio.components || [];
 
-    // Map components by their IDs for easier comparison
+    // Map components by their ComponentIds for easier comparison
     const currentComponentsMap = new Map(
-        currentComponents.map((component) => [component._id.toString(), component])
+        currentComponents.map((component) => [component.componentId, component])
     );
     const previousComponentsMap = new Map(
-        previousComponents.map((component: Component) => [component._id.toString(), component])
+        previousComponents.map((component: Component) => [component.componentId, component])
     );
+
 
     // Detect changes and removals
     for (const [id, prevComponent] of previousComponentsMap.entries()) {
@@ -57,14 +45,15 @@ async function getPortfolioChanges(portfolio: Portfolio): Promise<IChange[]> {
             });
         } else {
             // Compare fields to detect changes
-            for (const key of Object.keys(prevComponent)) {
-                if (key === "_id" || key === "createdAt") continue; // Skip _id comparison
+            const allKeys = Object.keys(prevComponent.toObject());
+            const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew", "__t"];
+            const keys = allKeys.filter(key => !keysToRemove.includes(key));
+
+            for (const key of keys) {
+                // @ts-ignore
 
                 // @ts-ignore
-                console.log(prevComponent[key], currentComponent[key])
-                console.log("\n")
-                // @ts-ignore
-                if (prevComponent[key] !== currentComponent[key] && currentComponent[key] !== undefined) {
+                if (prevComponent[key]?.toString() !== currentComponent[key]?.toString() && currentComponent[key] !== undefined) {
                     changes.push({
                         type: ChangeType.UPDATE,
                         // @ts-ignore
@@ -89,26 +78,49 @@ async function getPortfolioChanges(portfolio: Portfolio): Promise<IChange[]> {
 }
 
 async function createVersion(
-    portfolio: Portfolio,
+    prevPortfolio: Portfolio,
+    newPortfolio: Portfolio,
 ) {
 
-    const changes = await getPortfolioChanges(portfolio)
-    console.log("Changes: ", changes)
-    const populatedComponents = JSON.parse(JSON.stringify(portfolio.components));
+    const changes = await getPortfolioChanges(prevPortfolio, newPortfolio)
     return await versionModel.create({
-        portfolioId: portfolio._id,
+        portfolioId: newPortfolio._id,
         changes: changes,
-        components: populatedComponents,
-        title: portfolio.title,
-        description: portfolio.description,
-        url: portfolio.url,
+        components: newPortfolio.components,
+        title: newPortfolio.title,
+        description: newPortfolio.description,
+        url: newPortfolio.url,
     }).then((version) => {
         return version;
     })
 }
 
+function componentsAreEquals(componentA: any, componentB: any): boolean {
+    if (!componentA || !componentB) {
+        return false; // One of the components is null or undefined
+    }
+
+    // Combine keys from both components
+    const allKeys = new Set([...Object.keys(componentA), ...Object.keys(componentB)]);
+
+    // Keys to not compare
+    const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew"];
+
+    // Filter out the keys to remove
+    const keys = [...allKeys].filter(key => !keysToRemove.includes(key));
+
+    for (const key of keys) {
+        if (componentA[key]?.toString() !== componentB[key]?.toString()) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 export {
     createPortfolio,
     getPortfolioChanges,
-    createVersion
+    createVersion,
+    componentsAreEquals
 }

@@ -11,7 +11,7 @@ import {
 import {authenticate} from "../middleware/auth";
 import ApiError from "../interfaces/ApiError";
 import mongoose from "mongoose";
-import {createVersion} from "../services/portfolioService";
+import {componentsAreEquals, createVersion} from "../services/portfolioService";
 import Component from "../interfaces/component";
 import {ChangeType} from "../interfaces/IChange";
 
@@ -149,12 +149,12 @@ router.get("/:_id/versions", authenticate, async (req, res) => {
             .find({portfolioId: req.params._id})
             .sort({createdAt: -1})
             .then((versions) => {
-            res.status(200).json({
-                status: 200,
-                success: true,
-                data: versions,
+                res.status(200).json({
+                    status: 200,
+                    success: true,
+                    data: versions,
+                });
             });
-        });
 
     } catch (err: any) {
         if (err instanceof ApiError) {
@@ -226,23 +226,25 @@ router.put("/:url", authenticate, async (req, res) => {
             throw new ApiError(404, "User not found", "User not found");
         }
 
-        const portfolio = await portfolioModel.findOne({url: req.params.url, user: user.id});
+        const portfolio = await portfolioModel.findOne({url: req.params.url, user: user.id}).populate("components");
 
         if (!portfolio) {
             throw new ApiError(404, "Portfolio not found", "Portfolio not found");
         }
 
+
         if (req.body.components) {
-            for (const component of req.body.components) {
-                if (component._id != null) {
-                    await editComponent(component).then(updatedComponent => {
-                        components.push(updatedComponent);
-                    })
-                } else {
-                    await createComponent(component, portfolio._id).then((c) => {
-                        console.log("Updated", c)
+            for (const reqComponent of req.body.components) {
+                const portfolioComponent = portfolio.components.find((component: any) => component.componentId === reqComponent.componentId);
+
+                // If portfolioComponent===undefined -> Created new component
+
+                if (!componentsAreEquals(reqComponent, portfolioComponent)) {
+                    await createComponent(reqComponent, portfolio._id).then((c) => {
                         components.push(c);
                     });
+                } else {
+                    components.push(portfolioComponent);
                 }
             }
         }
@@ -256,20 +258,20 @@ router.put("/:url", authenticate, async (req, res) => {
             populate: {
                 path: "components",
             }
-        }).then(async (portfolio) => {
+        }).then(async (updatedPortfolio) => {
             res.status(200).json({
                 status: 200,
                 success: true,
-                data: portfolio,
+                data: updatedPortfolio,
             });
 
-            if (portfolio == null) {
+            if (updatedPortfolio == null) {
                 throw new ApiError(404, "Portfolio not found", "Portfolio not found");
             }
 
-            await createVersion(portfolio)
+            await createVersion(portfolio, updatedPortfolio)
         })
-        await removeOrphanComponents();
+        //await removeOrphanComponents();
 
     } catch (err: any) {
         console.log(err)
@@ -342,6 +344,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
                 throw new ApiError(400, "Text is required for text component", "Text is required for text component");
             }
             return await textComponentModel.create({
+                componentId: component.componentId,
                 type: component.type,
                 index: component.index,
                 text: component.text,
@@ -353,6 +356,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
                 throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
             }
             return await buttonComponentModel.create({
+                componentId: component.componentId,
                 color: component.color,
                 index: component.index,
                 text: component.text,
@@ -365,6 +369,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
             }
 
             return await imageComponentModel.create({
+                componentId: component.componentId,
                 parent_id: parent_id,
                 index: component.index,
                 url: component.url,
@@ -374,6 +379,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
 
             // Create container component
             const containerComponent = await containerComponentModel.create({
+                componentId: component.componentId,
                 parent_id: parent_id,
                 index: component.index,
             })

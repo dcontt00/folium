@@ -31,9 +31,10 @@ export default function AddComponentMenu({
     function onAddTextComponent() {
         const newComponent: TextComponentType = {
             _id: null,
+            __t: "TextComponent",
+            componentId: Math.floor(Math.random() * 1000000),
             index: portfolioComponentsLength - 1,
             parent_id: parent_id,
-            __t: "TextComponent",
             text: "Hello World",
             type: TextType.TEXT,
             style: TextStyle.NORMAL
@@ -44,9 +45,10 @@ export default function AddComponentMenu({
     function onAddButtonComponent() {
         const newComponent: ButtonComponentType = {
             _id: null,
+            __t: "ButtonComponent",
+            componentId: Math.floor(Math.random() * 1000000),
             index: portfolioComponentsLength - 1,
             parent_id: parent_id,
-            __t: "ButtonComponent",
             text: "Button",
             url: "/",
             color: "blue",
@@ -57,9 +59,10 @@ export default function AddComponentMenu({
     function onAddImageComponent() {
         const newComponent: ImageComponentType = {
             _id: null,
+            __t: "ImageComponent",
+            componentId: Math.floor(Math.random() * 1000000),
             index: portfolioComponentsLength - 1,
             parent_id: parent_id,
-            __t: "ImageComponent",
             url: "/placeholder.jpg",
             overlayText: null,
             caption: null,
@@ -72,9 +75,10 @@ export default function AddComponentMenu({
     function onAddContainerComponent() {
         const newComponent: ContainerComponentType = {
             _id: null,
+            __t: "ContainerComponent",
+            componentId: Math.floor(Math.random() * 1000000),
             index: portfolioComponentsLength - 1,
             parent_id: parent_id,
-            __t: "ContainerComponent",
             components: [],
         }
         onAddComponent(newComponent);
