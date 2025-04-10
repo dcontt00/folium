@@ -42,7 +42,7 @@ export default function HistoryModal({portfolioId, opened, onClose}: Props) {
             <Stack p="sm">
                 {loading && <div>Loading...</div>}
                 {error && <div>Error: {error.message}</div>}
-                <Timeline active={1} bulletSize={24} lineWidth={2}>
+                <Timeline active={20} bulletSize={24} lineWidth={2}>
                     {data && data.map((version: IVersion) => (
                         <Timeline.Item title={version.relativeCreatedAt}>
                             <Stack style={{paddingTop: 10}}>

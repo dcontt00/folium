@@ -1,9 +1,9 @@
-import {ActionIcon, Alert, AppShell, Button, Stack, Text} from "@mantine/core";
+import {ActionIcon, Alert, AppShell, Button, Group, Kbd, Stack, Text} from "@mantine/core";
 import {type AxiosResponse} from "axios";
 import {IconInfoCircle, IconX} from "@tabler/icons-react";
 import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
 import {useState} from "react";
-import {useDisclosure} from "@mantine/hooks";
+import {useDisclosure, useHotkeys} from "@mantine/hooks";
 import {data, useNavigate} from "react-router";
 import EditComponentSection from "~/components/edit/EditComponentSection";
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
@@ -62,12 +62,22 @@ export default function Edit({loaderData}: Route.ComponentProps) {
     const [openedSettings, {toggle: toggleOpenedSettings}] = useDisclosure(false);
     const [openedHistoryModal, {open: openHistoryModal, close: closeHistoryModal}] = useDisclosure(false);
 
+
     // State for the edit features
     const [unsaved, setUnsaved] = useState(false);
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
     const [previewEnabled, setPreviewEnabled] = useState(false);
 
+
+    // Navigate
     const navigate = useNavigate();
+
+    // Hotkeys
+    useHotkeys([
+        ['mod+J', () => console.log('Toggle color scheme')],
+        ['ctrl+h', () => openHistoryModal()],
+        ['alt+mod+shift+X', () => console.log('Rick roll')],
+    ]);
 
     function onEditComponent(component: ComponentType) {
         //setEditComponent(component);
@@ -205,7 +215,18 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                         setDescription={setDescription}
                         setUnsaved={setUnsaved}
                     />
-                    <Button onClick={openHistoryModal}>Open history</Button>
+                    <Button onClick={openHistoryModal}>
+                        <Group>
+
+                            <p>
+                                Open history
+
+                            </p>
+                            <div>
+                                <Kbd size="xs">Ctrl</Kbd>+<Kbd size="xs">H</Kbd>
+                            </div>
+                        </Group>
+                    </Button>
                 </Stack>
             </AppShell.Aside>
             <AppShell.Main>
