@@ -20,8 +20,31 @@ async function createPortfolio(
 async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portfolio): Promise<IChange[]> {
     const changes: IChange[] = [];
 
+    // Check portfolio attributes
+    if (prevPortfolio.title !== newPortfolio.title) {
+        changes.push({
+            type: ChangeType.UPDATE,
+            message: `Portfolio title changed from "${prevPortfolio.title}" to "${newPortfolio.title}".`,
+        });
+    }
+
+    if (prevPortfolio.description !== newPortfolio.description) {
+        changes.push({
+            type: ChangeType.UPDATE,
+            message: `Portfolio description changed from "${prevPortfolio.description}" to "${newPortfolio.description}".`,
+        });
+    }
+
+    if (prevPortfolio.url !== newPortfolio.url) {
+        changes.push({
+            type: ChangeType.UPDATE,
+            message: `Portfolio url changed from "${prevPortfolio.url}" to "${newPortfolio.url}".`,
+        });
+    }
+
+
+    // Check components
     const currentComponents = newPortfolio.components || [];
-    // @ts-ignore
     const previousComponents: Component[] = prevPortfolio.components || [];
 
     // Map components by their ComponentIds for easier comparison
@@ -36,6 +59,7 @@ async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portf
     // Detect changes and removals
     for (const [id, prevComponent] of previousComponentsMap.entries()) {
         const currentComponent = currentComponentsMap.get(id);
+
 
         if (!currentComponent) {
             // Component was removed
