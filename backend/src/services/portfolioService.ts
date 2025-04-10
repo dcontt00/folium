@@ -32,6 +32,15 @@ function getComponentUpdatesAndRemovals(previousComponents: Component[], current
                 message: `Component ${prevComponent.componentId} was removed.`,
             });
         } else {
+
+            if (currentComponent.__t === "ContainerComponent") {
+                // Manage container components
+
+
+                continue;
+
+            }
+
             // Compare fields to detect changes
             const allKeys = Object.keys(prevComponent.toObject());
             const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew", "__t"];
@@ -43,23 +52,11 @@ function getComponentUpdatesAndRemovals(previousComponents: Component[], current
 
                 // @ts-ignore
                 if (prevComponent[key]?.toString() !== currentComponent[key]?.toString() && currentComponent[key] !== undefined) {
-
-                    // TODO: Modify message for container
-                    if (currentComponent.__t === "ContainerComponent") {
+                    changes.push({
+                        type: ChangeType.UPDATE,
                         // @ts-ignore
-                        const containerComponentChanges = getComponentChanges(prevComponent.components, currentComponent.components)
-                        const containerComponentChangesMessages = containerComponentChanges.map((change) => change.message).join(", ")
-                        changes.push({
-                            type: ChangeType.UPDATE,
-                            message: `ContainerComponent ${currentComponent.componentId} changed: ${containerComponentChangesMessages}`
-                        })
-                    } else {
-                        changes.push({
-                            type: ChangeType.UPDATE,
-                            // @ts-ignore
-                            message: `Component ${currentComponent.componentId} changed its ${key} from "${prevComponent[key]}" to "${currentComponent[key]}".`,
-                        });
-                    }
+                        message: `Component ${currentComponent.componentId} changed its ${key} from "${prevComponent[key]}" to "${currentComponent[key]}".`,
+                    });
                 }
             }
         }
@@ -67,30 +64,14 @@ function getComponentUpdatesAndRemovals(previousComponents: Component[], current
     return changes;
 }
 
-function getComponentChanges(previousComponents: Component[], currentComponents: Component[]): IChange[] {
+function getComponentAdditions(previousComponents: Component[], currentComponents: Component[]): IChange[] {
     const changes: IChange[] = [];
-    // Map components by their ComponentIds for easier comparison
 
-
-    if (previousComponents.length === 0) {
-        changes.push({
-            type: ChangeType.ADD,
-            message: `ContainerComponent added some components`,
-        });
-
-        return changes;
-    }
-
-    // Detect changes and removals
-    const updateAndRemovalChanges = getComponentUpdatesAndRemovals(previousComponents, currentComponents);
-    changes.push(...updateAndRemovalChanges);
-
-    // Detect additions
     for (const currentComponent of currentComponents) {
-        if (previousComponents.find((component) => component.componentId === currentComponent.componentId)) {
+        if (!previousComponents.find((component) => component.componentId === currentComponent.componentId)) {
             if (currentComponent.__t === "ContainerComponent") {
                 // @ts-ignore
-                const containerComponentChanges = getComponentChanges([], currComponent.components)
+                const containerComponentChanges = getComponentChanges([], currentComponent.components)
                 const containerComponentChangesMessages = containerComponentChanges.map((change) => change.message).join(", ")
                 changes.push({
                     type: ChangeType.ADD,
@@ -103,6 +84,21 @@ function getComponentChanges(previousComponents: Component[], currentComponents:
             });
         }
     }
+    return changes;
+}
+
+
+function getComponentChanges(previousComponents: Component[], currentComponents: Component[]): IChange[] {
+    const changes: IChange[] = [];
+
+    // Detect additions
+    const componentAdditions = getComponentAdditions(previousComponents, currentComponents);
+    changes.push(...componentAdditions);
+
+    // Detect changes and removals
+    const updateAndRemovalChanges = getComponentUpdatesAndRemovals(previousComponents, currentComponents);
+    changes.push(...updateAndRemovalChanges);
+
     return changes;
 }
 
