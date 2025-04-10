@@ -17,26 +17,8 @@ async function createPortfolio(
 }
 
 
-function getComponentUpdatesAndRemovals() {
-
-}
-
-function getComponentChanges(previousComponents: Component[], currentComponents: Component[]): IChange[] {
+function getComponentUpdatesAndRemovals(previousComponents: Component[], currentComponents: Component[]): IChange[] {
     const changes: IChange[] = [];
-    // Map components by their ComponentIds for easier comparison
-
-
-    if (previousComponents.length === 0) {
-        changes.push({
-            type: ChangeType.ADD,
-            message: `ContainerComponent added some components`,
-        });
-
-        return changes;
-    }
-
-
-    // Detect changes and removals
     for (const prevComponent of previousComponents) {
         const currentComponent = currentComponents.find(
             (component) => component.componentId === prevComponent.componentId
@@ -82,6 +64,26 @@ function getComponentChanges(previousComponents: Component[], currentComponents:
             }
         }
     }
+    return changes;
+}
+
+function getComponentChanges(previousComponents: Component[], currentComponents: Component[]): IChange[] {
+    const changes: IChange[] = [];
+    // Map components by their ComponentIds for easier comparison
+
+
+    if (previousComponents.length === 0) {
+        changes.push({
+            type: ChangeType.ADD,
+            message: `ContainerComponent added some components`,
+        });
+
+        return changes;
+    }
+
+    // Detect changes and removals
+    const updateAndRemovalChanges = getComponentUpdatesAndRemovals(previousComponents, currentComponents);
+    changes.push(...updateAndRemovalChanges);
 
     // Detect additions
     for (const currentComponent of currentComponents) {
