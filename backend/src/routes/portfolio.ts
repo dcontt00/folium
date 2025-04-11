@@ -138,11 +138,11 @@ router.get("/", authenticate, async (req, res) => {
     }
 });
 
-router.get("/:_id/versions", authenticate, async (req, res) => {
+router.get("/:portfolioId/versions", authenticate, async (req, res) => {
     try {
 
         await versionModel
-            .find({portfolioId: req.params._id})
+            .find({portfolioId: req.params.portfolioId})
             .sort({createdAt: -1})
             .then((versions) => {
                 console.log(versions)
@@ -170,11 +170,12 @@ router.get("/:_id/versions", authenticate, async (req, res) => {
     }
 });
 
-router.get("/version/:_id", authenticate, async (req, res) => {
+
+router.get("/version/:versionId", authenticate, async (req, res) => {
 
     try {
 
-        const versionId = req.params._id;
+        const versionId = req.params.versionId;
 
         if (!versionId) {
             throw new ApiError(400, "Version ID is required", "Version ID is required");
@@ -188,19 +189,54 @@ router.get("/version/:_id", authenticate, async (req, res) => {
 
         const components = await componentModel.find({_id: {$in: version.components}}).lean();
 
-        const portfolio: Portfolio = {
-            _id: version.portfolioId,
-            title: version.title,
-            description: version.description,
-            url: version.url,
-            components: components,
+        if (req.query.restore == 'true') {
+
+            // Update portfolio
+            await portfolioModel
+                .findOneAndUpdate({
+                    _id: version.portfolioId,
+                }, {
+                    components: components,
+                    title: version.title,
+                    description: version.description,
+                    url: version.url,
+                }, {new: true})
+                .populate({
+                    path: "components",
+                    populate: {
+                        path: "components",
+                    }
+                })
+                .then((portfolio) => {
+                    res.status(200).json({
+                        status: 200,
+                        success: true,
+                        data: portfolio,
+                    });
+                });
+
+            // Delete version newer than the restored version
+            await versionModel.deleteMany({
+                portfolioId: version.portfolioId,
+                createdAt: {$gt: version.createdAt}
+            }).then(() => {
+                console.log("Deleted versions newer than", version.createdAt);
+            })
+        } else {
+            const portfolio: Portfolio = {
+                _id: version.portfolioId,
+                title: version.title,
+                description: version.description,
+                url: version.url,
+                components: components,
+            }
+            res.status(200).json({
+                status: 200,
+                success: true,
+                data: portfolio,
+            });
         }
 
-        res.status(200).json({
-            status: 200,
-            success: true,
-            data: portfolio,
-        });
 
     } catch (e: any) {
         if (e instanceof ApiError) {

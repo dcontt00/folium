@@ -32,7 +32,6 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
     }
 
     async function fetchVersion(versionId: string) {
-        console.log(versionId);
         try {
             const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${versionId}`);
             console.log(response.data.data);
@@ -43,6 +42,18 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
             setLoading(false);
             onClose()
 
+        }
+    }
+
+    async function restoreVersion(versionId: string) {
+        try {
+            const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${versionId}?restore=true`);
+            setPortfolioState(response.data.data);
+        } catch (err: any) {
+            setError(err);
+        } finally {
+            setLoading(false);
+            onClose()
         }
     }
 
@@ -77,7 +88,8 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
                                 </List>
 
                                 <Group>
-                                    <Button size="compact-md">Restore to this</Button>
+                                    <Button size="compact-md" onClick={() => restoreVersion(version._id)}>Restore to
+                                        this</Button>
                                     <Button size="compact-md" onClick={() => fetchVersion(version._id)}>Preview</Button>
                                 </Group>
                             </Stack>
