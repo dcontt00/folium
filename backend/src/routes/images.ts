@@ -2,17 +2,18 @@ import express from "express";
 import {authHandler} from "../middleware/authHandler";
 import path from "path";
 import fs from "node:fs";
+import ApiError from "../interfaces/ApiError";
+import AuthenticationError from "../interfaces/AuthError";
 
 const router = express.Router();
 
 router.post("/", authHandler, async (req, res) => {
     const user = req.user;
     if (!user) {
-        throw new Error("User not found");
+        throw new AuthenticationError("User not found");
     }
     if (req.files == null) {
-        res.status(400).send("Files is null");
-        return
+        throw new ApiError(400, "Files is null");
     }
 
     if (!req.files.upload) {

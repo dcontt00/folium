@@ -66,7 +66,7 @@ router.post("/", authHandler, async (req, res) => {
         });
 
         if (portfolio == null) {
-            throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+            throw new ApiError(404, "Portfolio not found");
         }
 
         await versionModel.create(
@@ -92,7 +92,7 @@ router.get("/", authHandler, async (req, res) => {
     const user = req.user;
 
     if (!user) {
-        throw new ApiError(404, "User not found", "User not found");
+        throw new ApiError(404, "User not found");
     }
 
     await portfolioModel.find({user: user.id}).then((portfolios) => {
@@ -130,13 +130,13 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
     const versionId = req.params.versionId;
 
     if (!versionId) {
-        throw new ApiError(400, "Version ID is required", "Version ID is required");
+        throw new ApiError(400, "Version ID is required");
     }
 
     const version = await versionModel.findById(versionId);
 
     if (version == null) {
-        throw new ApiError(404, "Version not found", "Version not found");
+        throw new ApiError(404, "Version not found");
     }
 
     const components = await componentModel.find({_id: {$in: version.components}}).lean();
@@ -197,7 +197,7 @@ router.get("/:url", authHandler, async (req, res) => {
     const user = req.user;
 
     if (!user) {
-        throw new ApiError(404, "User not found", "User not found");
+        throw new ApiError(404, "User not found");
     }
 
     await portfolioModel.findOne({url: req.params.url, user: user.id})
@@ -209,7 +209,7 @@ router.get("/:url", authHandler, async (req, res) => {
         })
         .then((portfolio) => {
             if (!portfolio) {
-                throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+                throw new ApiError(404, "Portfolio not found");
             }
 
             res.status(200).json({
@@ -226,7 +226,7 @@ router.put("/:url", authHandler, async (req, res) => {
     const components: any[] = [];
     const user = req.user;
     if (!user) {
-        throw new ApiError(404, "User not found", "User not found");
+        throw new ApiError(404, "User not found");
     }
 
     const portfolio = await portfolioModel
@@ -239,7 +239,7 @@ router.put("/:url", authHandler, async (req, res) => {
         });
 
     if (!portfolio) {
-        throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+        throw new ApiError(404, "Portfolio not found");
     }
 
 
@@ -276,7 +276,7 @@ router.put("/:url", authHandler, async (req, res) => {
         });
 
         if (updatedPortfolio == null) {
-            throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+            throw new ApiError(404, "Portfolio not found");
         }
 
         await createVersion(portfolio, updatedPortfolio)
@@ -295,7 +295,7 @@ router.delete("/:url", authHandler, async (req, res) => {
     const portfolio = await portfolioModel.findOne({url: req.params.url});
 
     if (!portfolio) {
-        throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+        throw new ApiError(404, "Portfolio not found");
     }
 
     await portfolioModel.deleteOne({url: req.params.url}).then(() => {
@@ -318,7 +318,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
     switch (component.__t) {
         case "TextComponent":
             if (!component.text) {
-                throw new ApiError(400, "Text is required for text component", "Text is required for text component");
+                throw new ApiError(400, "Text is required for text component");
             }
             return await textComponentModel.create({
                 componentId: component.componentId,
@@ -330,7 +330,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
 
         case "ButtonComponent":
             if (!component.text || !component.url) {
-                throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
+                throw new ApiError(400, "Text and URL are required for button component");
             }
             return await buttonComponentModel.create({
                 componentId: component.componentId,
@@ -342,7 +342,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
             })
         case "ImageComponent":
             if (!component.url) {
-                throw new ApiError(400, "URL is required for image component", "URL is required for image component");
+                throw new ApiError(400, "URL is required for image component");
             }
 
             return await imageComponentModel.create({
@@ -388,7 +388,7 @@ async function editComponent(component: any): Promise<any> {
     switch (component.__t) {
         case "TextComponent":
             if (!component.text) {
-                throw new ApiError(400, "Text is required for text component", "Text is required for text component");
+                throw new ApiError(400, "Text is required for text component");
             }
 
             return await textComponentModel.findOneAndUpdate(
@@ -402,7 +402,7 @@ async function editComponent(component: any): Promise<any> {
 
         case "ButtonComponent":
             if (!component.text || !component.url) {
-                throw new ApiError(400, "Text and URL are required for button component", "Text and URL are required for button component");
+                throw new ApiError(400, "Text and URL are required for button component");
             }
 
             return await buttonComponentModel.findOneAndUpdate(
@@ -422,7 +422,7 @@ async function editComponent(component: any): Promise<any> {
 
         case "ImageComponent":
             if (!component.url) {
-                throw new ApiError(400, "URL is required for image component", "URL is required for image component");
+                throw new ApiError(400, "URL is required for image component");
             }
 
             return await imageComponentModel.findOneAndUpdate(

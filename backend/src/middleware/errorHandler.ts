@@ -16,7 +16,6 @@ const errorHandler = (
         const apiError = err as ApiError;
         res.status(apiError.status).json({
             message: apiError.message,
-            error: apiError.error,
         });
     } else {
         res.status(500).json({
