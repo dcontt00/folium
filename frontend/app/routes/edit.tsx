@@ -117,7 +117,7 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             // Update the editComponent if it exists
             if (editComponent) {
                 const updatedComponent = updatedPortfolio.components.find(
-                    (component) => component.componentId === editComponent.componentId
+                    (component: ComponentType) => component.componentId === editComponent.componentId
                 );
                 setEditComponent(updatedComponent);
             }
@@ -254,7 +254,12 @@ export default function Edit({loaderData}: Route.ComponentProps) {
                 }
             </AppShell.Main>
 
-            <HistoryModal portfolioId={portfolioState._id} opened={openedHistoryModal} onClose={closeHistoryModal}/>
+            <HistoryModal
+                portfolioId={portfolioState._id}
+                opened={openedHistoryModal}
+                onClose={closeHistoryModal}
+                setPortfolioState={setPortfolioState}
+            />
         </AppShell>
     );
 }

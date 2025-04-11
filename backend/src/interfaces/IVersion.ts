@@ -1,8 +1,9 @@
 import {IChange} from "./IChange";
 import Component from "./component";
+import mongoose from "mongoose";
 
 export default interface IVersion extends Document {
-    portfolioId: string;
+    portfolioId: mongoose.Types.ObjectId;
     data: any;
     createdAt: Date;
     relativeCreatedAt: string

@@ -14,6 +14,7 @@ import mongoose from "mongoose";
 import {componentsAreEquals, createVersion} from "../services/portfolioService";
 import Component from "../interfaces/component";
 import {ChangeType} from "../interfaces/IChange";
+import Portfolio from "../interfaces/portfolio";
 
 
 const router = express.Router();
@@ -139,16 +140,12 @@ router.get("/", authenticate, async (req, res) => {
 
 router.get("/:_id/versions", authenticate, async (req, res) => {
     try {
-        const user = req.user;
-
-        if (!user) {
-            throw new ApiError(404, "User not found", "User not found");
-        }
 
         await versionModel
             .find({portfolioId: req.params._id})
             .sort({createdAt: -1})
             .then((versions) => {
+                console.log(versions)
                 res.status(200).json({
                     status: 200,
                     success: true,
@@ -172,6 +169,59 @@ router.get("/:_id/versions", authenticate, async (req, res) => {
         }
     }
 });
+
+router.get("/version/:_id", authenticate, async (req, res) => {
+
+    try {
+
+        const versionId = req.params._id;
+
+        if (!versionId) {
+            throw new ApiError(400, "Version ID is required", "Version ID is required");
+        }
+
+        const version = await versionModel.findById(versionId);
+
+        if (version == null) {
+            throw new ApiError(404, "Version not found", "Version not found");
+        }
+
+        const components = await componentModel.find({_id: {$in: version.components}}).lean();
+
+        const portfolio: Portfolio = {
+            _id: version.portfolioId,
+            title: version.title,
+            description: version.description,
+            url: version.url,
+            components: components,
+        }
+
+        res.status(200).json({
+            status: 200,
+            success: true,
+            data: portfolio,
+        });
+
+    } catch (e: any) {
+        if (e instanceof ApiError) {
+            res.status(e.status).json({
+                status: e.status,
+                success: false,
+                message: e.message,
+            });
+        } else {
+            res.status(400).json({
+                status: 400,
+                success: false,
+                message: e.message,
+            });
+        }
+    }
+
+
+})
+
+
 router.get("/:url", authenticate, async (req, res) => {
     try {
         const user = req.user;

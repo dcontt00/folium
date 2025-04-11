@@ -65,7 +65,7 @@ function getComponentUpdatesAndRemovals(previousComponents: Component[], current
                     changes.push({
                         type: ChangeType.UPDATE,
                         // @ts-ignore
-                        message: `Component ${currentComponent.componentId} changed its ${key} from "${prevComponent[key]}" to "${currentComponent[key]}".`,
+                        message: `${currentComponent.__t} ${currentComponent.componentId} changed its ${key} from "${prevComponent[key]}" to "${currentComponent[key]}".`,
                     });
                 }
             }
@@ -93,7 +93,7 @@ function getComponentAdditions(previousComponents: Component[], currentComponent
 
                 changes.push({
                     type: ChangeType.ADD,
-                    message: `Component ${currentComponent.componentId} was added.`,
+                    message: `${currentComponent.__t} ${currentComponent.componentId} was added.`,
                 });
             }
         }

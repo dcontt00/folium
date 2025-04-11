@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Component from "../../interfaces/component";
 
 const ComponentSchema = new mongoose.Schema(
     {
@@ -19,6 +20,6 @@ const ComponentSchema = new mongoose.Schema(
 );
 
 
-const componentModel = mongoose.model('Component', ComponentSchema);
+const componentModel = mongoose.model<Component>('Component', ComponentSchema);
 
 export default componentModel;

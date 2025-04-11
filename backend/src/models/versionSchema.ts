@@ -5,7 +5,7 @@ import IVersion from "../interfaces/IVersion";
 
 
 const VersionSchema: Schema<IVersion> = new Schema({
-    portfolioId: {type: String, required: true},
+        portfolioId: {type: Schema.Types.ObjectId, required: true},
     createdAt: {type: Date, default: Date.now},
     changes: [
         {

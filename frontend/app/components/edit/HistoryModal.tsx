@@ -11,9 +11,10 @@ interface Props {
     portfolioId: string;
     opened: boolean;
     onClose: () => void;
+    setPortfolioState: (portfolio: any) => void;
 }
 
-export default function HistoryModal({portfolioId, opened, onClose}: Props) {
+export default function HistoryModal({portfolioId, opened, onClose, setPortfolioState}: Props) {
     const [data, setData] = useState<IVersion[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -27,6 +28,21 @@ export default function HistoryModal({portfolioId, opened, onClose}: Props) {
             setError(err);
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function fetchVersion(versionId: string) {
+        console.log(versionId);
+        try {
+            const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${versionId}`);
+            console.log(response.data.data);
+            setPortfolioState(response.data.data);
+        } catch (err: any) {
+            setError(err);
+        } finally {
+            setLoading(false);
+            onClose()
+
         }
     }
 
@@ -62,7 +78,7 @@ export default function HistoryModal({portfolioId, opened, onClose}: Props) {
 
                                 <Group>
                                     <Button size="compact-md">Restore to this</Button>
-                                    <Button size="compact-md">Preview</Button>
+                                    <Button size="compact-md" onClick={() => fetchVersion(version._id)}>Preview</Button>
                                 </Group>
                             </Stack>
 
