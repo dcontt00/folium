@@ -2,10 +2,10 @@ import {NextFunction, Request, Response} from 'express';
 import jwt, {JwtPayload} from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import {userModel} from "../models/models";
-import {AuthenticationError} from "./error";
 import config from "../utils/config";
+import AuthenticationError from '../interfaces/AuthError';
 
-export const authenticate = asyncHandler(
+export const authHandler = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             let token: string = req.cookies.jwt;

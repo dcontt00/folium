@@ -8,7 +8,7 @@ import {
     textComponentModel,
     versionModel
 } from "../models/models";
-import {authenticate} from "../middleware/auth";
+import {authHandler} from "../middleware/authHandler";
 import ApiError from "../interfaces/ApiError";
 import mongoose from "mongoose";
 import {componentsAreEquals, createVersion} from "../services/portfolioService";
@@ -20,253 +20,139 @@ import Portfolio from "../interfaces/portfolio";
 const router = express.Router();
 
 
-router.post("/", authenticate, async (req, res) => {
-    try {
+router.post("/", authHandler, async (req, res) => {
 
-        // Get user from the request
-        const user = req.user;
+    // Get user from the request
+    const user = req.user;
 
-        if (!user) {
-            throw new Error("User not found");
-        }
-
-        if (!req.body.url || !req.body.title) {
-            throw new Error("URL and title are required");
-        }
-
-
-        const newPortfolio = await portfolioModel.create({
-            url: req.body.url,
-            title: req.body.title,
-            description: req.body.description,
-            user: user.id,
-        })
-
-        const titleComponent = await textComponentModel.create({
-            index: 0,
-            text: "Welcome to your new portfolio",
-            type: "h1",
-            parent_id: newPortfolio._id
-        })
-
-        const textComponent = await textComponentModel.create({
-            index: 1,
-            text: "You can add portfolioComponents from left menu",
-            parent_id: newPortfolio._id
-        })
-
-        await portfolioModel.findOneAndUpdate(
-            {url: newPortfolio.url, user: user.id},
-            {...req.body, components: [titleComponent._id, textComponent._id]},
-            {new: true}
-        ).populate("components").then(async (portfolio) => {
-            res.status(200).json({
-                status: 200,
-                success: true,
-                data: portfolio,
-            });
-
-            if (portfolio == null) {
-                throw new ApiError(404, "Portfolio not found", "Portfolio not found");
-            }
-
-            await versionModel.create(
-                {
-                    portfolioId: portfolio._id,
-                    changes: {type: ChangeType.NEW_PORTFOLIO, message: "Created Portfolio"},
-                    components: portfolio.components,
-                    title: portfolio.title,
-                    description: portfolio.description,
-                    url: portfolio.url,
-                }
-            ).then(() => {
-                console.log("Version created")
-            }).catch((err => {
-                console.log("Error creating version", err)
-            }))
-        })
-
-    } catch (err: any) {
-        if (err.code === 11000) {
-            res.status(400).json({
-                status: 400,
-                success: false,
-                message: "URL already exists",
-            });
-        } else {
-            res.status(400).json({
-                status: 400,
-                success: false,
-                message: err.message,
-            });
-        }
-
+    if (!user) {
+        throw new Error("User not found");
     }
+
+    if (!req.body.url || !req.body.title) {
+        throw new Error("URL and title are required");
+    }
+
+
+    const newPortfolio = await portfolioModel.create({
+        url: req.body.url,
+        title: req.body.title,
+        description: req.body.description,
+        user: user.id,
+    })
+
+    const titleComponent = await textComponentModel.create({
+        index: 0,
+        text: "Welcome to your new portfolio",
+        type: "h1",
+        parent_id: newPortfolio._id
+    })
+
+    const textComponent = await textComponentModel.create({
+        index: 1,
+        text: "You can add portfolioComponents from left menu",
+        parent_id: newPortfolio._id
+    })
+
+    await portfolioModel.findOneAndUpdate(
+        {url: newPortfolio.url, user: user.id},
+        {...req.body, components: [titleComponent._id, textComponent._id]},
+        {new: true}
+    ).populate("components").then(async (portfolio) => {
+        res.status(200).json({
+            status: 200,
+            success: true,
+            data: portfolio,
+        });
+
+        if (portfolio == null) {
+            throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+        }
+
+        await versionModel.create(
+            {
+                portfolioId: portfolio._id,
+                changes: {type: ChangeType.NEW_PORTFOLIO, message: "Created Portfolio"},
+                components: portfolio.components,
+                title: portfolio.title,
+                description: portfolio.description,
+                url: portfolio.url,
+            }
+        ).then(() => {
+            console.log("Version created")
+        }).catch((err => {
+            console.log("Error creating version", err)
+        }))
+    })
+
+
 });
 
-router.get("/", authenticate, async (req, res) => {
-    try {
-        const user = req.user;
+router.get("/", authHandler, async (req, res) => {
+    const user = req.user;
 
-        if (!user) {
-            throw new ApiError(404, "User not found", "User not found");
-        }
+    if (!user) {
+        throw new ApiError(404, "User not found", "User not found");
+    }
 
-        await portfolioModel.find({user: user.id}).then((portfolios) => {
+    await portfolioModel.find({user: user.id}).then((portfolios) => {
+        res.status(200).json({
+            status: 200,
+            success: true,
+            data: portfolios,
+        });
+    });
+
+
+});
+
+router.get("/:portfolioId/versions", authHandler, async (req, res) => {
+
+    await versionModel
+        .find({portfolioId: req.params.portfolioId})
+        .sort({createdAt: -1})
+        .then((versions) => {
+            console.log(versions)
             res.status(200).json({
                 status: 200,
                 success: true,
-                data: portfolios,
+                data: versions,
             });
         });
 
 
-    } catch (err: any) {
-        if (err instanceof ApiError) {
-            res.status(err.status).json({
-                status: err.status,
-                success: false,
-                message: err.message,
-            });
-        } else {
-            res.status(400).json({
-                status: 400,
-                success: false,
-                message: err.message,
-            });
-        }
-    }
-});
-
-router.get("/:portfolioId/versions", authenticate, async (req, res) => {
-    try {
-
-        await versionModel
-            .find({portfolioId: req.params.portfolioId})
-            .sort({createdAt: -1})
-            .then((versions) => {
-                console.log(versions)
-                res.status(200).json({
-                    status: 200,
-                    success: true,
-                    data: versions,
-                });
-            });
-
-    } catch (err: any) {
-        if (err instanceof ApiError) {
-            res.status(err.status).json({
-                status: err.status,
-                success: false,
-                message: err.message,
-            });
-        } else {
-            res.status(400).json({
-                status: 400,
-                success: false,
-                message: err.message,
-            });
-        }
-    }
 });
 
 
-router.get("/version/:versionId", authenticate, async (req, res) => {
+router.get("/version/:versionId", authHandler, async (req, res) => {
 
-    try {
 
-        const versionId = req.params.versionId;
+    const versionId = req.params.versionId;
 
-        if (!versionId) {
-            throw new ApiError(400, "Version ID is required", "Version ID is required");
-        }
+    if (!versionId) {
+        throw new ApiError(400, "Version ID is required", "Version ID is required");
+    }
 
-        const version = await versionModel.findById(versionId);
+    const version = await versionModel.findById(versionId);
 
-        if (version == null) {
-            throw new ApiError(404, "Version not found", "Version not found");
-        }
+    if (version == null) {
+        throw new ApiError(404, "Version not found", "Version not found");
+    }
 
-        const components = await componentModel.find({_id: {$in: version.components}}).lean();
+    const components = await componentModel.find({_id: {$in: version.components}}).lean();
 
-        if (req.query.restore == 'true') {
+    if (req.query.restore == 'true') {
 
-            // Update portfolio
-            await portfolioModel
-                .findOneAndUpdate({
-                    _id: version.portfolioId,
-                }, {
-                    components: components,
-                    title: version.title,
-                    description: version.description,
-                    url: version.url,
-                }, {new: true})
-                .populate({
-                    path: "components",
-                    populate: {
-                        path: "components",
-                    }
-                })
-                .then((portfolio) => {
-                    res.status(200).json({
-                        status: 200,
-                        success: true,
-                        data: portfolio,
-                    });
-                });
-
-            // Delete version newer than the restored version
-            await versionModel.deleteMany({
-                portfolioId: version.portfolioId,
-                createdAt: {$gt: version.createdAt}
-            }).then(() => {
-                console.log("Deleted versions newer than", version.createdAt);
-            })
-        } else {
-            const portfolio: Portfolio = {
+        // Update portfolio
+        await portfolioModel
+            .findOneAndUpdate({
                 _id: version.portfolioId,
+            }, {
+                components: components,
                 title: version.title,
                 description: version.description,
                 url: version.url,
-                components: components,
-            }
-            res.status(200).json({
-                status: 200,
-                success: true,
-                data: portfolio,
-            });
-        }
-
-
-    } catch (e: any) {
-        if (e instanceof ApiError) {
-            res.status(e.status).json({
-                status: e.status,
-                success: false,
-                message: e.message,
-            });
-        } else {
-            res.status(400).json({
-                status: 400,
-                success: false,
-                message: e.message,
-            });
-        }
-    }
-
-
-})
-
-
-router.get("/:url", authenticate, async (req, res) => {
-    try {
-        const user = req.user;
-
-        if (!user) {
-            throw new ApiError(404, "User not found", "User not found");
-        }
-
-        await portfolioModel.findOne({url: req.params.url, user: user.id})
+            }, {new: true})
             .populate({
                 path: "components",
                 populate: {
@@ -274,10 +160,6 @@ router.get("/:url", authenticate, async (req, res) => {
                 }
             })
             .then((portfolio) => {
-                if (!portfolio) {
-                    throw new ApiError(404, "Portfolio not found", "Portfolio not found");
-                }
-
                 res.status(200).json({
                     status: 200,
                     success: true,
@@ -285,146 +167,149 @@ router.get("/:url", authenticate, async (req, res) => {
                 });
             });
 
-    } catch (err: any) {
-        if (err instanceof ApiError) {
-            res.status(err.status).json({
-                status: err.status,
-                success: false,
-                message: err.message,
-            });
-        } else {
-            res.status(400).json({
-                status: 400,
-                success: false,
-                message: err.message,
-            });
+        // Delete version newer than the restored version
+        await versionModel.deleteMany({
+            portfolioId: version.portfolioId,
+            createdAt: {$gt: version.createdAt}
+        }).then(() => {
+            console.log("Deleted versions newer than", version.createdAt);
+        })
+    } else {
+        const portfolio: Portfolio = {
+            _id: version.portfolioId,
+            title: version.title,
+            description: version.description,
+            url: version.url,
+            components: components,
         }
+        res.status(200).json({
+            status: 200,
+            success: true,
+            data: portfolio,
+        });
     }
 
-});
 
-router.put("/:url", authenticate, async (req, res) => {
-    const components: any[] = [];
-    try {
-        const user = req.user;
-        if (!user) {
-            throw new ApiError(404, "User not found", "User not found");
-        }
-
-        const portfolio = await portfolioModel
-            .findOne({url: req.params.url, user: user.id})
-            .populate({
-                path: "components",
-                populate: {
-                    path: "components",
-                }
-            });
-
-        if (!portfolio) {
-            throw new ApiError(404, "Portfolio not found", "Portfolio not found");
-        }
+})
 
 
-        if (req.body.components) {
-            for (const reqComponent of req.body.components) {
-                const portfolioComponent = portfolio.components.find((component: any) => component.componentId === reqComponent.componentId);
+router.get("/:url", authHandler, async (req, res) => {
+    const user = req.user;
 
-                // If portfolioComponent===undefined -> Created new component
+    if (!user) {
+        throw new ApiError(404, "User not found", "User not found");
+    }
 
-                if (!componentsAreEquals(reqComponent, portfolioComponent)) {
-                    await createComponent(reqComponent, portfolio._id).then((c) => {
-                        components.push(c);
-                    });
-                } else {
-                    components.push(portfolioComponent);
-                }
-            }
-        }
-
-        await portfolioModel.findOneAndUpdate(
-            {url: req.params.url, user: user.id},
-            {...req.body, components: components},
-            {new: true}
-        ).populate({
+    await portfolioModel.findOne({url: req.params.url, user: user.id})
+        .populate({
             path: "components",
             populate: {
                 path: "components",
             }
-        }).then(async (updatedPortfolio) => {
-            res.status(200).json({
-                status: 200,
-                success: true,
-                data: updatedPortfolio,
-            });
-
-            if (updatedPortfolio == null) {
+        })
+        .then((portfolio) => {
+            if (!portfolio) {
                 throw new ApiError(404, "Portfolio not found", "Portfolio not found");
             }
 
-            await createVersion(portfolio, updatedPortfolio)
-        })
-        //await removeOrphanComponents();
-
-    } catch (err: any) {
-        console.log(err)
-
-        if (err instanceof ApiError) {
-            res.status(err.status).json({
-                status: err.status,
-                success: false,
-                message: err.message,
-            });
-        } else {
-            res.status(400).json({
-                status: 400,
-                success: false,
-                message: err.message,
-            });
-        }
-    }
-})
-
-
-router.delete("/:url", authenticate, async (req, res) => {
-    try {
-        const user = req.user;
-
-        if (!user) {
-            throw new Error("User not found");
-        }
-
-        const portfolio = await portfolioModel.findOne({url: req.params.url});
-
-        if (!portfolio) {
-            throw new ApiError(404, "Portfolio not found", "Portfolio not found");
-        }
-
-        await portfolioModel.deleteOne({url: req.params.url}).then(() => {
             res.status(200).json({
                 status: 200,
                 success: true,
+                data: portfolio,
             });
-        })
+        });
 
-        await versionModel.deleteMany({portfolioId: portfolio._id})
 
-        await removeOrphanComponents()
+});
 
-    } catch (err: any) {
-        if (err instanceof ApiError) {
-            res.status(err.status).json({
-                status: err.status,
-                success: false,
-                message: err.message,
-            });
-        } else {
-            res.status(400).json({
-                status: 400,
-                success: false,
-                message: err.message,
-            });
+router.put("/:url", authHandler, async (req, res) => {
+    const components: any[] = [];
+    const user = req.user;
+    if (!user) {
+        throw new ApiError(404, "User not found", "User not found");
+    }
+
+    const portfolio = await portfolioModel
+        .findOne({url: req.params.url, user: user.id})
+        .populate({
+            path: "components",
+            populate: {
+                path: "components",
+            }
+        });
+
+    if (!portfolio) {
+        throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+    }
+
+
+    if (req.body.components) {
+        for (const reqComponent of req.body.components) {
+            const portfolioComponent = portfolio.components.find((component: any) => component.componentId === reqComponent.componentId);
+
+            // If portfolioComponent===undefined -> Created new component
+
+            if (!componentsAreEquals(reqComponent, portfolioComponent)) {
+                await createComponent(reqComponent, portfolio._id).then((c) => {
+                    components.push(c);
+                });
+            } else {
+                components.push(portfolioComponent);
+            }
         }
     }
+
+    await portfolioModel.findOneAndUpdate(
+        {url: req.params.url, user: user.id},
+        {...req.body, components: components},
+        {new: true}
+    ).populate({
+        path: "components",
+        populate: {
+            path: "components",
+        }
+    }).then(async (updatedPortfolio) => {
+        res.status(200).json({
+            status: 200,
+            success: true,
+            data: updatedPortfolio,
+        });
+
+        if (updatedPortfolio == null) {
+            throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+        }
+
+        await createVersion(portfolio, updatedPortfolio)
+    })
+
+})
+
+
+router.delete("/:url", authHandler, async (req, res) => {
+    const user = req.user;
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    const portfolio = await portfolioModel.findOne({url: req.params.url});
+
+    if (!portfolio) {
+        throw new ApiError(404, "Portfolio not found", "Portfolio not found");
+    }
+
+    await portfolioModel.deleteOne({url: req.params.url}).then(() => {
+        res.status(200).json({
+            status: 200,
+            success: true,
+        });
+    })
+
+    await versionModel.deleteMany({portfolioId: portfolio._id})
+
+    await removeOrphanComponents()
+
+
 })
 
 export default router;

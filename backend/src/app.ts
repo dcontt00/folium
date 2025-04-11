@@ -12,7 +12,7 @@ import logoutRouter from "./routes/logout"
 import fileUpload from "express-fileupload";
 import cors from "cors";
 import connectDB from "./db";
-import {errorHandler} from "./middleware/error";
+import {errorHandler} from "./middleware/errorHandler";
 
 
 const app: Express = express();

@@ -1,11 +1,11 @@
 import express from "express";
-import {authenticate} from "../middleware/auth";
+import {authHandler} from "../middleware/authHandler";
 import path from "path";
 import fs from "node:fs";
 
 const router = express.Router();
 
-router.post("/", authenticate, async (req, res) => {
+router.post("/", authHandler, async (req, res) => {
     const user = req.user;
     if (!user) {
         throw new Error("User not found");
@@ -48,7 +48,7 @@ router.post("/", authenticate, async (req, res) => {
 
 });
 
-router.get('/:userId/:filename', authenticate, (req, res) => {
+router.get('/:userId/:filename', authHandler, (req, res) => {
     const user = req.user;
     if (!user) {
         throw new Error("User not found");
