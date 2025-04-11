@@ -74,13 +74,12 @@ export default function Edit({loaderData}: Route.ComponentProps) {
 
     // Hotkeys
     useHotkeys([
-        ['mod+J', () => console.log('Toggle color scheme')],
         ['ctrl+h', () => openHistoryModal()],
-        ['alt+mod+shift+X', () => console.log('Rick roll')],
     ]);
 
     function onEditComponent(component: ComponentType) {
-        //setEditComponent(component);
+        setEditComponent(component);
+        console.log(component)
 
         const index = portfolioState.components.findIndex((c) => c._id === component._id);
         const newPortfolio = {...portfolioState};
@@ -115,6 +114,13 @@ export default function Edit({loaderData}: Route.ComponentProps) {
             console.log(response);
             const updatedPortfolio = response.data.data;
             setPortfolioState(updatedPortfolio);
+            // Update the editComponent if it exists
+            if (editComponent) {
+                const updatedComponent = updatedPortfolio.components.find(
+                    (component) => component.componentId === editComponent.componentId
+                );
+                setEditComponent(updatedComponent);
+            }
         }).catch((error) => {
             console.log(error);
         });
