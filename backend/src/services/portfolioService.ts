@@ -5,15 +5,26 @@ import {ChangeType, IChange} from "../interfaces/IChange";
 
 // Create portfolio
 async function createPortfolio(
-    portfolio: Portfolio,
-    userId: string
+    title: string, url: string, userId: string, description?: string, populate: boolean = false
 ) {
-    return await portfolioModel.create({
-        ...portfolio,
-        userId,
-    }).then((portfolio) => {
-        return portfolio;
-    })
+
+    const portfolio = await portfolioModel
+        .create(
+            {
+                title: title,
+                description: description,
+                url: url,
+                userId: userId
+            })
+    if (populate) {
+        return await portfolio.populate({
+            path: "components",
+            populate: {
+                path: "components",
+            }
+        });
+    }
+    return portfolio;
 }
 
 

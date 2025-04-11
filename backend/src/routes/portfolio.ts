@@ -11,10 +11,11 @@ import {
 import {authHandler} from "../middleware/authHandler";
 import ApiError from "../interfaces/ApiError";
 import mongoose from "mongoose";
-import {componentsAreEquals, createVersion} from "../services/portfolioService";
+import {componentsAreEquals, createPortfolio, createVersion} from "../services/portfolioService";
 import Component from "../interfaces/component";
 import {ChangeType} from "../interfaces/IChange";
 import Portfolio from "../interfaces/portfolio";
+import AuthenticationError from "../interfaces/AuthError";
 
 
 const router = express.Router();
@@ -26,20 +27,16 @@ router.post("/", authHandler, async (req, res) => {
     const user = req.user;
 
     if (!user) {
-        throw new Error("User not found");
+        throw new AuthenticationError("User not found");
     }
 
     if (!req.body.url || !req.body.title) {
-        throw new Error("URL and title are required");
+        throw new ApiError(500, "URL and title are required");
     }
 
-
-    const newPortfolio = await portfolioModel.create({
-        url: req.body.url,
-        title: req.body.title,
-        description: req.body.description,
-        user: user.id,
-    })
+    // FIXME: Not working
+    const newPortfolio = await createPortfolio(req.body.title, req.body.url, user.id, req.body.description)
+    console.log(newPortfolio);
 
     const titleComponent = await textComponentModel.create({
         index: 0,
@@ -54,36 +51,40 @@ router.post("/", authHandler, async (req, res) => {
         parent_id: newPortfolio._id
     })
 
-    await portfolioModel.findOneAndUpdate(
-        {url: newPortfolio.url, user: user.id},
-        {...req.body, components: [titleComponent._id, textComponent._id]},
-        {new: true}
-    ).populate("components").then(async (portfolio) => {
-        res.status(200).json({
-            status: 200,
-            success: true,
-            data: portfolio,
-        });
 
-        if (portfolio == null) {
-            throw new ApiError(404, "Portfolio not found");
-        }
+    await portfolioModel
+        .findOneAndUpdate(
+            {url: newPortfolio.url, user: user.id},
+            {...req.body, components: [titleComponent._id, textComponent._id]},
+            {new: true}
+        )
+        .populate("components")
+        .then(async (portfolio) => {
+            res.status(200).json({
+                status: 200,
+                success: true,
+                data: portfolio,
+            });
 
-        await versionModel.create(
-            {
-                portfolioId: portfolio._id,
-                changes: {type: ChangeType.NEW_PORTFOLIO, message: "Created Portfolio"},
-                components: portfolio.components,
-                title: portfolio.title,
-                description: portfolio.description,
-                url: portfolio.url,
+            if (portfolio == null) {
+                throw new ApiError(404, "Portfolio not found");
             }
-        ).then(() => {
-            console.log("Version created")
-        }).catch((err => {
-            console.log("Error creating version", err)
-        }))
-    })
+
+            await versionModel.create(
+                {
+                    portfolioId: portfolio._id,
+                    changes: {type: ChangeType.NEW_PORTFOLIO, message: "Created Portfolio"},
+                    components: portfolio.components,
+                    title: portfolio.title,
+                    description: portfolio.description,
+                    url: portfolio.url,
+                }
+            ).then(() => {
+                console.log("Version created")
+            }).catch((err => {
+                console.log("Error creating version", err)
+            }))
+        })
 
 
 });
