@@ -2,6 +2,7 @@ import Portfolio from "../interfaces/portfolio";
 import {portfolioModel, versionModel} from "../models/models";
 import Component from "../interfaces/component";
 import {ChangeType, IChange} from "../interfaces/IChange";
+import ApiError from "../interfaces/ApiError";
 
 // Create portfolio
 async function createPortfolio(
@@ -16,6 +17,13 @@ async function createPortfolio(
                 url: url,
                 user: userId
             })
+        .catch((err) => {
+            if (err.code === 11000) { // MongoDB duplicate key error
+                throw new ApiError(400, "URL already exists");
+            } else {
+                throw new ApiError(500, "Server Error");
+            }
+        })
     if (populate) {
         return await portfolio
             .populate({
