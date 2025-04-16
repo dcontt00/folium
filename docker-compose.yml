@@ -1,7 +1,7 @@
 services:
-  mongo-db:
+  mongodb:
     image: mongo:latest
-    container_name: mongo-db
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -20,7 +20,7 @@ services:
     environment:
       - MONGODB_URI=mongodb://mongodb:27017
     depends_on:
-      - mongo-db
+      - mongodb
     volumes:
       - ./data:/data/db
     restart: always

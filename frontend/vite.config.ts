@@ -1,12 +1,16 @@
 import {defineConfig} from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 import react from "@vitejs/plugin-react";
-import {resolve} from 'node:path'
+import path, {resolve} from 'node:path'
 
 export default defineConfig({
-    plugins: [react(), tsconfigPaths()],
+    plugins: [react()],
     define: {
         'import.meta.env.BACKEND_URL': JSON.stringify(process.env.BACKEND_URL)
+    },
+    resolve: {
+        alias: {
+            '~': path.resolve(__dirname, './src'),
+        },
     },
     server: {
         port: 3000,

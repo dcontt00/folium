@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY backend/package.json backend/yarn.lock backend/tsconfig.json ./
 
 # Install dependencies using Yarn
-RUN yarn install --production
+RUN yarn install
 
 # Copy the rest of the backend application code to the working directory
 COPY backend/src ./src
@@ -48,4 +48,4 @@ COPY --from=backend-builder /usr/src/app/node_modules /app/node_modules
 EXPOSE 3000
 
 # Start the application
-CMD ["node", "server.js"]
+CMD ["node", "app.js"]
