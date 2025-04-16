@@ -1,21 +1,11 @@
-import type {Route} from "./+types/home";
 import {AppShell, Avatar, Burger, Button, Card, Group, SimpleGrid, Skeleton, Stack, Text, Title} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
-import {type AxiosResponse} from "axios";
 import PortfolioCard from "~/components/PortfolioCard";
 import Logo from "~/Logo.svg";
 import NewPortfolioModal from "~/components/NewPortfolioModal";
-import {data, useFetcher} from "react-router";
+import {useFetcher, useLoaderData} from "react-router";
 import {IconCirclePlus} from "@tabler/icons-react";
 import UserMenu from "~/components/UserMenu";
-import axiosInstance from "~/axiosInstance";
-
-export function meta({}: Route.MetaArgs) {
-    return [
-        {title: "New React Router App"},
-        {name: "description", content: "Welcome to React Router!"},
-    ];
-}
 
 interface Portfolio {
     title: string;
@@ -23,56 +13,7 @@ interface Portfolio {
     url: string;
 }
 
-export async function clientLoader({params}: Route.ClientLoaderArgs) {
-    const response: Array<Portfolio> = await axiosInstance.get(`/portfolio`)
-        .then((response: AxiosResponse) => {
-            return response.data.data;
-        })
-        .catch(error => {
-            const responseError = error.response
-            throw data(responseError.data.message, {status: responseError.status});
-        })
-    return response;
-}
-
-
-// HydrateFallback is rendered while the client loader is running
-export function HydrateFallback() {
-    return (
-        <AppShell
-            header={{height: 60}}
-            padding="md"
-        >
-            <AppShell.Header>
-                <Group h="100%" px="md" justify="space-between">
-                    <Burger hiddenFrom="sm" size="sm"/>
-                    <Avatar src={Logo} radius="xs"/>
-                    <Text>Folium</Text>
-                    <Group>
-                        <Button>New Portfolio</Button>
-                        <Avatar/>
-                    </Group>
-                </Group>
-            </AppShell.Header>
-            <AppShell.Main>
-                <Stack align="center">
-                    <Title order={2}>My portfolios</Title>
-
-                    <SimpleGrid cols={{base: 1, sm: 2, lg: 3}}
-                                spacing={{base: 10, sm: 'xl'}}
-                                verticalSpacing={{base: 'md', sm: 'xl'}}>
-                        {[1, 2, 3, 4, 5, 6].map((index) => (
-                            <CardSkeleton key={index}/>
-                        ))
-                        }
-                    </SimpleGrid>
-                </Stack>
-            </AppShell.Main>
-        </AppShell>
-    );
-}
-
-export default function Home({loaderData}: Route.ComponentProps) {
+export default function Home() {
     const [openedBurger, {toggle}] = useDisclosure();
     const [openedNewPortfolioModal, {open: openNewPortfolioModal, close: closeNewPortfolioModal}] = useDisclosure();
     const fetcher = useFetcher();
@@ -82,7 +23,7 @@ export default function Home({loaderData}: Route.ComponentProps) {
     }
 
 
-    const portfolios: Array<Portfolio> = fetcher.data || loaderData;
+    const portfolios: Array<Portfolio> = useLoaderData();
     return (
         <>
             <AppShell
