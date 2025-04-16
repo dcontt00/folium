@@ -1,23 +1,8 @@
-import {data} from "react-router";
+import {useLoaderData} from "react-router";
 import ComponentsSection from "~/components/ComponentsSection";
 import type {Portfolio} from "~/interfaces/interfaces";
-import axiosInstance from "~/axiosInstance";
-import type {AxiosResponse} from "axios";
 import {Center, Loader} from "@mantine/core";
-import type {Route} from "../../.react-router/types/app/routes/+types";
 
-export async function clientLoader({params}: Route.ClientLoaderArgs) {
-
-    // Wait 5 seconds
-    const portfolio: Portfolio = await axiosInstance.get(`/portfolio/${params.url}`)
-        .then((response: AxiosResponse) => {
-            return response.data.data;
-        }).catch((error) => {
-            const responseError = error.response;
-            throw data(responseError.data.message, {status: responseError.status});
-        });
-    return portfolio;
-}
 
 // HydrateFallback is rendered while the client loader is running
 export function HydrateFallback() {
@@ -28,13 +13,9 @@ export function HydrateFallback() {
     );
 }
 
-export default function Portfolio({loaderData}: Route.ComponentProps) {
+export default function Portfolio() {
 
-    if (!loaderData) {
-        return <div>Error: Portfolio data not found</div>;
-    }
-
-    const portfolio: Portfolio = loaderData;
+    const portfolio: Portfolio = useLoaderData();
 
     return (
         <ComponentsSection components={portfolio.components}/>

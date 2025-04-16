@@ -12,6 +12,9 @@ import type Portfolio from "./interfaces/portfolio";
 import Home from "./routes/home";
 import Index from "./routes/index";
 import Edit from "~/routes/edit";
+import Login from "~/routes/login";
+import Register from "~/routes/register";
+import PortfolioRoute from "./routes/portfolio";
 
 
 async function getPortfolios() {
@@ -26,7 +29,11 @@ async function getPortfolios() {
     return response;
 }
 
-async function getPortfolioId(portfolioUrl: string) {
+async function getPortfolio(params: { portfolioUrl?: string }) {
+    const portfolioUrl = params.portfolioUrl
+    if (!portfolioUrl) {
+        return
+    }
     const portfolio: Portfolio = await axiosInstance.get(`/portfolio/${portfolioUrl}`)
         .then((response: AxiosResponse) => {
             return response.data.data;
@@ -39,15 +46,15 @@ async function getPortfolioId(portfolioUrl: string) {
 
 const router = createBrowserRouter([
     {path: "/", Component: Index},
+    {path: "/login", Component: Login},
+    {path: "/register", Component: Register},
     {path: "/home", Component: Home, loader: async () => await getPortfolios()},
     {
-        path: "/edit/:portfolioUrl", Component: Edit, loader: async ({params}) => {
-            if (params.portfolioUrl == null) {
-                return
-            }
-            return await getPortfolioId(params.portfolioUrl)
-        }
-    }
+        path: "/portfolio/:portfolioUrl",
+        Component: PortfolioRoute,
+        loader: async ({params}) => await getPortfolio(params)
+    },
+    {path: "/edit/:portfolioUrl", Component: Edit, loader: async ({params}) => await getPortfolio(params)}
 
 ]);
 export default function App() {
