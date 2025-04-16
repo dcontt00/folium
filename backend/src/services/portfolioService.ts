@@ -14,15 +14,16 @@ async function createPortfolio(
                 title: title,
                 description: description,
                 url: url,
-                userId: userId
+                user: userId
             })
     if (populate) {
-        return await portfolio.populate({
-            path: "components",
-            populate: {
+        return await portfolio
+            .populate({
                 path: "components",
-            }
-        });
+                populate: {
+                    path: "components",
+                }
+            });
     }
     return portfolio;
 }

@@ -1,10 +1,9 @@
 import {ActionIcon, Alert, AppShell, Button, Group, Kbd, Stack, Text} from "@mantine/core";
-import {type AxiosResponse} from "axios";
 import {IconInfoCircle, IconX} from "@tabler/icons-react";
 import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
 import {useState} from "react";
 import {useDisclosure, useHotkeys} from "@mantine/hooks";
-import {data, useNavigate} from "react-router";
+import {useLoaderData, useNavigate} from "react-router";
 import EditComponentSection from "~/components/edit/EditComponentSection";
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
 import SettingsSection from "~/components/edit/editComponents/SettingsSection";
@@ -13,29 +12,16 @@ import {type DropResult} from "@hello-pangea/dnd";
 import ComponentsDnD from "~/components/edit/ComponentsDnD";
 import axiosInstance from "~/axiosInstance";
 import ComponentsSection from "~/components/ComponentsSection";
-import type {Route} from "./+types";
 import HistoryModal from "~/components/edit/HistoryModal";
 import {modals} from "@mantine/modals";
 
-export async function clientLoader({params}: Route.ClientLoaderArgs) {
-    const portfolio: Portfolio = await axiosInstance.get(`/portfolio/${params.url}`)
-        .then((response: AxiosResponse) => {
-            return response.data.data;
-        }).catch((error) => {
-            const responseError = error.response;
-            throw data(responseError.data.message, {status: responseError.status});
-        });
-    return portfolio;
-}
 
 export function HydrateFallback() {
     return <div>Loading...</div>;
 }
 
-export default function Edit({loaderData}: Route.ComponentProps) {
-    if (!loaderData) {
-        return <div>Error: Portfolio data not found</div>;
-    }
+export default function Edit() {
+    const portfolio: Portfolio = useLoaderData();
 
     const openModal = () => modals.openConfirmModal({
         title: 'Please confirm your action',
@@ -50,7 +36,6 @@ export default function Edit({loaderData}: Route.ComponentProps) {
         onConfirm: () => navigate("/home"),
     });
 
-    const portfolio: Portfolio = loaderData;
 
     // State for the portfolio
     const [portfolioState, setPortfolioState] = useState(portfolio);

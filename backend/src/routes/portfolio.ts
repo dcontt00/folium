@@ -34,9 +34,7 @@ router.post("/", authHandler, async (req, res) => {
         throw new ApiError(500, "URL and title are required");
     }
 
-    // FIXME: Not working
     const newPortfolio = await createPortfolio(req.body.title, req.body.url, user.id, req.body.description)
-    console.log(newPortfolio);
 
     const titleComponent = await textComponentModel.create({
         index: 0,
@@ -58,17 +56,23 @@ router.post("/", authHandler, async (req, res) => {
             {...req.body, components: [titleComponent._id, textComponent._id]},
             {new: true}
         )
-        .populate("components")
+        .populate({
+            path: "components",
+            populate: {
+                path: "components",
+            }
+        })
         .then(async (portfolio) => {
+            console.log(portfolio);
+            if (portfolio == null) {
+                throw new ApiError(404, "Portfolio not found");
+            }
             res.status(200).json({
                 status: 200,
                 success: true,
                 data: portfolio,
             });
 
-            if (portfolio == null) {
-                throw new ApiError(404, "Portfolio not found");
-            }
 
             await versionModel.create(
                 {
