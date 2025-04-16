@@ -8,21 +8,19 @@ services:
       - ./db:/data/db
     restart: unless-stopped
 
-  backend:
-    image: backend:latest
-    container_name: backend
-    build:
-      context: ./backend
-      dockerfile: backend.dockerfile
-    environment:
-      - MONGODB_URI=mongodb://mongo-db:27017
-      - JWT_SECRET=secret
 
-  frontend:
-    image: frontend:latest
-    container_name: frontend
+  folium:
+    image: folium:latest
     build:
-      context: ./frontend
-      dockerfile: frontend.dockerfile
+      context: .
+      dockerfile: Dockerfile
+    container_name: folium
     ports:
-      - "8080:3000"
+      - "1234:1234"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017
+    depends_on:
+      - mongo-db
+    volumes:
+      - ./data:/data/db
+    restart: always

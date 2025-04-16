@@ -1,15 +1,7 @@
-import type {Route} from "./+types/home";
 import {AppShell, Button, Container, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
 import {isEmail, isNotEmpty, useForm} from '@mantine/form';
 import {useNavigate} from "react-router";
 import axiosInstance from "~/axiosInstance";
-
-export function meta({}: Route.MetaArgs) {
-    return [
-        {title: "New React Router App"},
-        {name: "description", content: "Welcome to React Router!"},
-    ];
-}
 
 
 interface FormValues {

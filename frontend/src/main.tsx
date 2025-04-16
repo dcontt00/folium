@@ -1,4 +1,4 @@
-import {createBrowserRouter, data, Outlet, RouterProvider,} from "react-router";
+import {createBrowserRouter, data, RouterProvider,} from "react-router";
 import '@mantine/core/styles.css';
 import "./app.css";
 import {MantineProvider} from "@mantine/core";
@@ -57,9 +57,7 @@ const router = createBrowserRouter([
     {path: "/edit/:portfolioUrl", Component: Edit, loader: async ({params}) => await getPortfolio(params)}
 
 ]);
-export default function App() {
-    return <Outlet/>;
-}
+
 
 createRoot(document.getElementById('root')!).render(
     <MantineProvider theme={theme} defaultColorScheme="dark">
