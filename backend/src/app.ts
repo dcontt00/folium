@@ -10,7 +10,6 @@ import portfolioRouter from "./routes/portfolio"
 import imagesRouter from "./routes/images"
 import logoutRouter from "./routes/logout"
 import fileUpload from "express-fileupload";
-import cors from "cors";
 import connectDB from "./db";
 import {errorHandler} from "./middleware/errorHandler";
 
@@ -19,9 +18,6 @@ const app: Express = express();
 const port = 3000
 // Middleware
 app.use(logger('dev'));
-app.use(cors({
-    origin: "*"
-}));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
