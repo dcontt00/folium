@@ -10,7 +10,7 @@ services:
 
 
   folium:
-    image: folium:latest
+    image: ghcr.io/dcontt00/folium:latest
     build:
       context: .
       dockerfile: Dockerfile
