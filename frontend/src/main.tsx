@@ -1,4 +1,4 @@
-import {createBrowserRouter, data, RouterProvider,} from "react-router";
+import {createBrowserRouter, data, RouterProvider} from "react-router";
 import '@mantine/core/styles.css';
 import "./app.css";
 import {MantineProvider} from "@mantine/core";
@@ -15,6 +15,7 @@ import Edit from "~/routes/edit";
 import Login from "~/routes/login";
 import Register from "~/routes/register";
 import PortfolioRoute from "./routes/portfolio";
+import ErrorPage from "~/components/errors/ErrorPage";
 
 
 async function getPortfolios() {
@@ -44,18 +45,32 @@ async function getPortfolio(params: { portfolioUrl?: string }) {
     return portfolio;
 }
 
-const router = createBrowserRouter([
-    {path: "/", Component: Index},
-    {path: "/login", Component: Login},
-    {path: "/register", Component: Register},
-    {path: "/home", Component: Home, loader: async () => await getPortfolios()},
-    {
-        path: "/portfolio/:portfolioUrl",
-        Component: PortfolioRoute,
-        loader: async ({params}) => await getPortfolio(params)
-    },
-    {path: "/edit/:portfolioUrl", Component: Edit, loader: async ({params}) => await getPortfolio(params)}
 
+const router = createBrowserRouter([
+    {
+        path: "/",
+        errorElement: <ErrorPage/>, // Root-level error element
+        children: [
+            {path: "", Component: Index},
+            {path: "login", Component: Login},
+            {path: "register", Component: Register},
+            {
+                path: "home",
+                Component: Home,
+                loader: async () => await getPortfolios()
+            },
+            {
+                path: "portfolio/:portfolioUrl",
+                Component: PortfolioRoute,
+                loader: async ({params}) => await getPortfolio(params)
+            },
+            {
+                path: "edit/:portfolioUrl",
+                Component: Edit,
+                loader: async ({params}) => await getPortfolio(params)
+            }
+        ]
+    }
 ]);
 
 
