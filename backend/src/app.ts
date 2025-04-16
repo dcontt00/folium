@@ -17,7 +17,6 @@ import {errorHandler} from "./middleware/errorHandler";
 
 const app: Express = express();
 const port = 3000
-var whitelist = ['http://localhost:8080', 'http://localhost:5173'];
 // Middleware
 app.use(logger('dev'));
 app.use(cors({
@@ -31,13 +30,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 connectDB();
 
 // Routes
-app.use('/', indexRouter);
-app.use('/user', userRoute);
-app.use("/register", registerRouter);
-app.use("/login", loginRouter);
-app.use("/logout", logoutRouter);
-app.use("/portfolio", portfolioRouter);
-app.use("/images", imagesRouter);
+app.use('/api/', indexRouter);
+app.use('/api/user', userRoute);
+app.use("/api/register", registerRouter);
+app.use("/api/login", loginRouter);
+app.use("/api/logout", logoutRouter);
+app.use("/api/portfolio", portfolioRouter);
+app.use("/api/images", imagesRouter);
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(errorHandler)
 

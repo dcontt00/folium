@@ -5,7 +5,7 @@ let config: Config;
 
 if (import.meta.env.PROD) {
     config = {
-        BACKEND_URL: "http://localhost:3000",
+        BACKEND_URL: "/api",
     };
 } else {
 
