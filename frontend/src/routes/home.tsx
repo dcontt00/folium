@@ -23,7 +23,7 @@ export default function Home() {
     }
 
 
-    const portfolios: Array<Portfolio> = useLoaderData();
+    const portfolios: Array<Portfolio> = fetcher.data || useLoaderData();
     return (
         <>
             <AppShell
