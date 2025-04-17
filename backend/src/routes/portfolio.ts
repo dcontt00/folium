@@ -3,18 +3,15 @@ import {ComponentModel, PortfolioModel} from "@/models";
 import {authHandler} from "@/middleware";
 import {ApiError, AuthenticationError} from "@/classes";
 import {
-    componentsAreEquals,
     createInitialPortfolio,
-    createVersion,
     getPorfolioByUrl,
     getPortfoliosByUserId,
-    getVersionsByPortfolioId,
     removePortfolioByUrl,
     restorePortfolio
 } from "@/services/portfolioService";
 import {IPortfolio} from "@/interfaces";
-import {createComponent} from "@/services/componentService";
-import {deleteOlderVersions, getVersionById} from "@/services/versionService";
+import {componentsAreEquals, createComponent} from "@/services/componentService";
+import {createVersion, deleteOlderVersions, getVersionById, getVersionsByPortfolioId} from "@/services/versionService";
 
 
 const router = express.Router();

@@ -109,8 +109,42 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
     }
 }
 
+async function createTextComponent(index: number, text: string, type: string, parent_id: mongoose.Types.ObjectId) {
+    return await TextComponentModel.create({
+        index: index,
+        text: text,
+        type: type,
+        parent_id: parent_id
+    })
+}
+
+function componentsAreEquals(componentA: any, componentB: any): boolean {
+    if (!componentA || !componentB) {
+        return false; // One of the components is null or undefined
+    }
+
+    // Combine keys from both components
+    const allKeys = new Set([...Object.keys(componentA), ...Object.keys(componentB)]);
+
+    // Keys to not compare
+    const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew"];
+
+    // Filter out the keys to remove
+    const keys = [...allKeys].filter(key => !keysToRemove.includes(key));
+
+    for (const key of keys) {
+        if (componentA[key]?.toString() !== componentB[key]?.toString()) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 export {
     removeOrphanComponents,
-    createComponent
+    createComponent,
+    createTextComponent,
+    componentsAreEquals
 }

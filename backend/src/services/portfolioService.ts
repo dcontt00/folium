@@ -1,9 +1,8 @@
 import IPortfolio from "@/interfaces/IPortfolio";
-import {PortfolioModel, TextComponentModel, VersionModel} from "@/models";
+import {PortfolioModel, VersionModel} from "@/models";
 import {ChangeType, IChange, IComponent, IVersion} from "@/interfaces";
 import {ApiError} from "@/classes";
-import mongoose from "mongoose";
-import {removeOrphanComponents} from "@/services/componentService";
+import {createTextComponent, removeOrphanComponents} from "@/services/componentService";
 
 // Create portfolio
 async function createPortfolio(
@@ -87,14 +86,6 @@ async function createInitialPortfolio(
         })
 }
 
-async function createTextComponent(index: number, text: string, type: string, parent_id: mongoose.Types.ObjectId) {
-    return await TextComponentModel.create({
-        index: index,
-        text: text,
-        type: type,
-        parent_id: parent_id
-    })
-}
 
 async function getPortfoliosByUserId(userId: string) {
     return PortfolioModel.find({user: userId});
@@ -234,53 +225,6 @@ async function getPortfolioChanges(prevPortfolio: IPortfolio, newPortfolio: IPor
     return changes;
 }
 
-async function createVersion(
-    prevPortfolio: IPortfolio,
-    newPortfolio: IPortfolio,
-) {
-
-    const changes = await getPortfolioChanges(prevPortfolio, newPortfolio)
-    return await VersionModel.create({
-        portfolioId: newPortfolio._id,
-        changes: changes,
-        components: newPortfolio.components,
-        title: newPortfolio.title,
-        description: newPortfolio.description,
-        url: newPortfolio.url,
-    }).then((version) => {
-        return version;
-    })
-}
-
-function componentsAreEquals(componentA: any, componentB: any): boolean {
-    if (!componentA || !componentB) {
-        return false; // One of the components is null or undefined
-    }
-
-    // Combine keys from both components
-    const allKeys = new Set([...Object.keys(componentA), ...Object.keys(componentB)]);
-
-    // Keys to not compare
-    const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew"];
-
-    // Filter out the keys to remove
-    const keys = [...allKeys].filter(key => !keysToRemove.includes(key));
-
-    for (const key of keys) {
-        if (componentA[key]?.toString() !== componentB[key]?.toString()) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-async function getVersionsByPortfolioId(portfolioId: string) {
-    return VersionModel
-        .find({portfolioId: portfolioId})
-        .sort({createdAt: -1});
-
-}
 
 async function getPorfolioByUrl(url: string) {
     return PortfolioModel.findOne({url: url})
@@ -333,12 +277,8 @@ async function restorePortfolio(version: IVersion, components: any) {
 export {
     createPortfolio,
     getPortfolioChanges,
-    createVersion,
-    componentsAreEquals,
-    createTextComponent,
     createInitialPortfolio,
     getPortfoliosByUserId,
-    getVersionsByPortfolioId,
     getPorfolioByUrl,
     removePortfolioByUrl,
     restorePortfolio
