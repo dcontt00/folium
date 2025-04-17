@@ -2,16 +2,16 @@ import express, {Express} from "express";
 import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan"
-import indexRouter from "./routes/index"
-import userRoute from "./routes/user"
-import registerRouter from "./routes/register"
-import loginRouter from "./routes/login"
-import portfolioRouter from "./routes/portfolio"
-import imagesRouter from "./routes/images"
-import logoutRouter from "./routes/logout"
+import indexRouter from "@/routes/index"
+import userRoute from "@/routes/user"
+import registerRouter from "@/routes/register"
+import loginRouter from "@/routes/login"
+import portfolioRouter from "@/routes/portfolio"
+import imagesRouter from "@/routes/images"
+import logoutRouter from "@/routes/logout"
 import fileUpload from "express-fileupload";
-import connectDB from "./db";
-import {errorHandler} from "./middleware/errorHandler";
+import connectDB from "@/db";
+import {errorHandler} from "@/middleware/errorHandler";
 
 
 const app: Express = express();

@@ -1,9 +1,9 @@
 import express from "express";
-import {authHandler} from "../middleware/authHandler";
+import {authHandler} from "@/middleware/authHandler";
 import path from "path";
 import fs from "node:fs";
-import ApiError from "../interfaces/ApiError";
-import AuthenticationError from "../interfaces/AuthError";
+import ApiError from "@/interfaces/ApiError";
+import AuthenticationError from "@/interfaces/AuthError";
 
 const router = express.Router();
 
@@ -27,7 +27,7 @@ router.post("/", authHandler, async (req, res) => {
     }
 
     const upload = req.files.upload;
-    const uploadFolder = path.join(__dirname, "../../images/", user.id)
+    const uploadFolder = path.join(__dirname, "@/images/", user.id)
 
     // Check if the folder exists, if not, create it
     if (!fs.existsSync(uploadFolder)) {
@@ -55,7 +55,7 @@ router.get('/:userId/:filename', authHandler, (req, res) => {
         throw new Error("User not found");
     }
     const {userId, filename} = req.params;
-    const filePath = path.join(__dirname, "../../images", userId, filename);
+    const filePath = path.join(__dirname, "@/images", userId, filename);
 
     res.sendFile(filePath, (err) => {
         if (err) {

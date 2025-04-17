@@ -7,15 +7,15 @@ import {
     PortfolioModel,
     TextComponentModel,
     VersionModel
-} from "../models";
-import {authHandler} from "../middleware/authHandler";
-import ApiError from "../interfaces/ApiError";
+} from "@/models";
+import {authHandler} from "@/middleware/authHandler";
+import ApiError from "@/interfaces/ApiError";
 import mongoose from "mongoose";
-import {componentsAreEquals, createPortfolio, createVersion} from "../services/portfolioService";
-import Component from "../interfaces/component";
-import {ChangeType} from "../interfaces/IChange";
-import IPortfolio from "../interfaces/IPortfolio";
-import AuthenticationError from "../interfaces/AuthError";
+import {componentsAreEquals, createPortfolio, createVersion} from "@/services/portfolioService";
+import Component from "@/interfaces/component";
+import {ChangeType} from "@/interfaces/IChange";
+import IPortfolio from "@/interfaces/IPortfolio";
+import AuthenticationError from "@/interfaces/AuthError";
 
 
 const router = express.Router();

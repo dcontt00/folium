@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Portfolio from "../classes/Portfolio";
+import Portfolio from "@/classes/Portfolio";
 
 const PortfolioSchema = new mongoose.Schema(
     {

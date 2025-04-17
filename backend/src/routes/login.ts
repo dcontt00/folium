@@ -1,9 +1,9 @@
 import express, {NextFunction, Request, Response} from "express";
-import {UserModel} from "../models";
+import {UserModel} from "@/models";
 import jwt from "jsonwebtoken"
-import config from "../utils/config";
+import config from "@/utils/config";
 import bcrypt from "bcrypt";
-import AuthenticationError from "../interfaces/AuthError";
+import AuthenticationError from "@/interfaces/AuthError";
 
 const router = express.Router();
 

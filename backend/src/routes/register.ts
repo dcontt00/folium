@@ -1,6 +1,6 @@
 import express, {Request, Response} from "express"
-import {UserModel} from "../models";
-import {User} from "../interfaces/user";
+import {UserModel} from "@/models";
+import {User} from "@/interfaces/user";
 import bcrypt from "bcrypt";
 
 const router = express.Router();

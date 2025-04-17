@@ -1,8 +1,8 @@
-import IPortfolio from "../interfaces/IPortfolio";
-import {PortfolioModel, VersionModel} from "../models";
-import Component from "../interfaces/component";
-import {ChangeType, IChange} from "../interfaces/IChange";
-import ApiError from "../interfaces/ApiError";
+import IPortfolio from "@/interfaces/IPortfolio";
+import {PortfolioModel, VersionModel} from "@/models";
+import Component from "@/interfaces/component";
+import {ChangeType, IChange} from "@/interfaces/IChange";
+import ApiError from "@/interfaces/ApiError";
 
 // Create portfolio
 async function createPortfolio(

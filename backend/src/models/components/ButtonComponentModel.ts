@@ -1,6 +1,6 @@
 import ComponentModel from "./ComponentModel";
-import buttonComponentSchema from "@/schemas/components/ButtonComponentSchema";
+import {ButtonComponentSchema} from "@/schemas";
 
-const ButtonComponentModel = ComponentModel.discriminator("ButtonComponent", buttonComponentSchema)
+const ButtonComponentModel = ComponentModel.discriminator("ButtonComponent", ButtonComponentSchema)
 
 export default ButtonComponentModel;

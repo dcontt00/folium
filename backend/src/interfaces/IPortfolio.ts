@@ -1,4 +1,4 @@
-import Component from "./component"
+import Component from "@/component"
 import mongoose from "mongoose";
 
 export default interface IPortfolio {
