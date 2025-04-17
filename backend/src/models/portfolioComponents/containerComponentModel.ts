@@ -1,23 +1,8 @@
-import mongoose from "mongoose";
 import componentModel from "./componentModel";
+import IContainerComponent from "@/interfaces/IContainerComponent";
+import {ContainerComponentSchema} from "@/schemas";
 
 
-interface IContainerComponent extends Document {
-    index: number;
-    components: mongoose.Types.ObjectId[];
-    parent_id: mongoose.Types.ObjectId;
-}
-
-const containerComponentModel = componentModel.discriminator<IContainerComponent>("ContainerComponent", new mongoose.Schema(
-    {
-        components: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Component",
-            },
-        ],
-    },
-    {timestamps: true}
-));
+const containerComponentModel = componentModel.discriminator<IContainerComponent>("ContainerComponent", ContainerComponentSchema);
 
 export default containerComponentModel;
