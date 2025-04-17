@@ -3,7 +3,7 @@ import {authHandler} from "@/middleware/authHandler";
 import path from "path";
 import fs from "node:fs";
 import ApiError from "@/classes/ApiError";
-import AuthenticationError from "@/classes/AuthError";
+import AuthenticationError from "@/classes/AuthenticationError";
 
 const router = express.Router();
 

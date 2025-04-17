@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import IComponent from "@/interfaces/IComponent";
+import {IComponent} from "@/interfaces";
 import {ComponentSchema} from "@/schemas";
 
 

@@ -3,7 +3,7 @@ import jwt, {JwtPayload} from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import {UserModel} from "@/models";
 import config from "@/utils/config";
-import AuthenticationError from '@/classes/AuthError';
+import {AuthenticationError} from '@/classes';
 
 export const authHandler = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {

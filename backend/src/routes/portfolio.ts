@@ -12,10 +12,8 @@ import {authHandler} from "@/middleware/authHandler";
 import ApiError from "@/classes/ApiError";
 import mongoose from "mongoose";
 import {componentsAreEquals, createPortfolio, createVersion} from "@/services/portfolioService";
-import IComponent from "@/interfaces/IComponent";
-import {ChangeType} from "@/interfaces/IChange";
-import IPortfolio from "@/interfaces/IPortfolio";
-import AuthenticationError from "@/classes/AuthError";
+import {ChangeType, IComponent, IPortfolio} from "@/interfaces";
+import AuthenticationError from "@/classes/AuthenticationError";
 
 
 const router = express.Router();

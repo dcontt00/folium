@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import ApiError from "@/classes/ApiError";
-import AuthenticationError from "@/classes/AuthError";
+import AuthenticationError from "@/classes/AuthenticationError";
 
 const errorHandler = (
     err: Error,

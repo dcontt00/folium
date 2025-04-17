@@ -1,5 +1,5 @@
 import Config from "./Config";
-import {IChange} from "@/interfaces/IChange";
+import {ChangeType, IChange} from "@/interfaces/IChange";
 import IVersion from "@/interfaces/IVersion";
 import IComponent from "@/interfaces/IComponent";
 import IContainerComponent from "@/interfaces/IContainerComponent";
@@ -14,5 +14,6 @@ export {
     IComponent,
     IContainerComponent,
     IPortfolio,
-    IUser
+    IUser,
+    ChangeType
 }
