@@ -7,7 +7,7 @@ import {
     portfolioModel,
     textComponentModel,
     versionModel
-} from "../models/models";
+} from "../models";
 import {authHandler} from "../middleware/authHandler";
 import ApiError from "../interfaces/ApiError";
 import mongoose from "mongoose";

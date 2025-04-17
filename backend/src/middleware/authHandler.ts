@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import jwt, {JwtPayload} from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
-import {userModel} from "../models/models";
+import {userModel} from "../models";
 import config from "../utils/config";
 import AuthenticationError from '../interfaces/AuthError';
 

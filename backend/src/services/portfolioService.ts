@@ -1,5 +1,5 @@
 import IPortfolio from "../interfaces/IPortfolio";
-import {portfolioModel, versionModel} from "../models/models";
+import {portfolioModel, versionModel} from "../models";
 import Component from "../interfaces/component";
 import {ChangeType, IChange} from "../interfaces/IChange";
 import ApiError from "../interfaces/ApiError";
