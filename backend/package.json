@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "npx nodemon -x 'ts-node --log-error -r tsconfig-paths/register' -e ts src/app.ts",
-    "build": "rimraf ./dist && tsc ",
-    "serve": "node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/app.js"
+    "build": "rimraf ./dist && tsc && tsc-alias ",
+    "serve": "node dist/app.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -34,6 +34,7 @@
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "tsc": "^2.0.4",
+    "tsc-alias": "^1.8.15",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3"
   }
