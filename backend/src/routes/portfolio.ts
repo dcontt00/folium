@@ -8,12 +8,11 @@ import {
     TextComponentModel,
     VersionModel
 } from "@/models";
-import {authHandler} from "@/middleware/authHandler";
-import ApiError from "@/classes/ApiError";
+import {authHandler} from "@/middleware";
+import {ApiError, AuthenticationError} from "@/classes";
 import mongoose from "mongoose";
 import {componentsAreEquals, createPortfolio, createVersion} from "@/services/portfolioService";
 import {ChangeType, IComponent, IPortfolio} from "@/interfaces";
-import AuthenticationError from "@/classes/AuthenticationError";
 
 
 const router = express.Router();

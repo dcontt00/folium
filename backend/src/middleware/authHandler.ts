@@ -5,7 +5,7 @@ import {UserModel} from "@/models";
 import config from "@/utils/config";
 import {AuthenticationError} from '@/classes';
 
-export const authHandler = asyncHandler(
+const authHandler = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             let token: string = req.cookies.jwt;
@@ -38,4 +38,4 @@ export const authHandler = asyncHandler(
         }
     }
 );
-
+export default authHandler;

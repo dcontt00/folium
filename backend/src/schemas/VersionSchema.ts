@@ -1,7 +1,7 @@
 // models/Version.ts
 import {Schema} from 'mongoose';
 import {formatDistanceToNow} from "date-fns";
-import IVersion from "@/interfaces/IVersion";
+import {IVersion} from "@/interfaces";
 
 
 const VersionSchema: Schema<IVersion> = new Schema({

@@ -1,6 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import ApiError from "@/classes/ApiError";
-import AuthenticationError from "@/classes/AuthenticationError";
+import {ApiError, AuthenticationError} from "@/classes";
 
 const errorHandler = (
     err: Error,
@@ -25,4 +24,4 @@ const errorHandler = (
     }
 };
 
-export {errorHandler};
+export default errorHandler;

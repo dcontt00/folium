@@ -11,7 +11,7 @@ import imagesRouter from "@/routes/images"
 import logoutRouter from "@/routes/logout"
 import fileUpload from "express-fileupload";
 import connectDB from "@/db";
-import {errorHandler} from "@/middleware/errorHandler";
+import {errorHandler} from "@/middleware";
 
 
 const app: Express = express();

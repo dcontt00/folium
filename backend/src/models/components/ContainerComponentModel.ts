@@ -1,6 +1,6 @@
 import ComponentModel from "./ComponentModel";
-import IContainerComponent from "@/interfaces/IContainerComponent";
 import {ContainerComponentSchema} from "@/schemas";
+import {IContainerComponent} from "@/interfaces";
 
 
 const ContainerComponentModel = ComponentModel.discriminator<IContainerComponent>("ContainerComponent", ContainerComponentSchema);

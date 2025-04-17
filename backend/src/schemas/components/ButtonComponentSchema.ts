@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import ButtonComponent from "@/classes/ButtonComponent";
+import {ButtonComponent} from "@/classes";
 
 const buttonComponentSchema = new mongoose.Schema(
     {

@@ -1,7 +1,7 @@
 import express, {NextFunction, Request, Response} from "express"
 import {UserModel} from "@/models";
 import {IUser} from "@/interfaces";
-import {authHandler} from "@/middleware/authHandler";
+import {authHandler} from "@/middleware";
 
 const router = express.Router();
 

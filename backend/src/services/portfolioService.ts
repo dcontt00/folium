@@ -1,8 +1,7 @@
 import IPortfolio from "@/interfaces/IPortfolio";
 import {PortfolioModel, VersionModel} from "@/models";
-import IComponent from "@/interfaces/IComponent";
-import {ChangeType, IChange} from "@/interfaces/IChange";
-import ApiError from "@/classes/ApiError";
+import {ChangeType, IChange, IComponent} from "@/interfaces";
+import {ApiError} from "@/classes";
 
 // Create portfolio
 async function createPortfolio(
