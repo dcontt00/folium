@@ -1,12 +1,12 @@
 import express from "express";
 import {
-    buttonComponentModel,
-    componentModel,
-    containerComponentModel,
-    imageComponentModel,
-    portfolioModel,
-    textComponentModel,
-    versionModel
+    ButtonComponentModel,
+    ComponentModel,
+    ContainerComponentModel,
+    ImageComponentModel,
+    PortfolioModel,
+    TextComponentModel,
+    VersionModel
 } from "../models";
 import {authHandler} from "../middleware/authHandler";
 import ApiError from "../interfaces/ApiError";
@@ -36,21 +36,21 @@ router.post("/", authHandler, async (req, res) => {
 
     const newPortfolio = await createPortfolio(req.body.title, req.body.url, user.id, req.body.description)
 
-    const titleComponent = await textComponentModel.create({
+    const titleComponent = await TextComponentModel.create({
         index: 0,
         text: "Welcome to your new portfolio",
         type: "h1",
         parent_id: newPortfolio._id
     })
 
-    const textComponent = await textComponentModel.create({
+    const textComponent = await TextComponentModel.create({
         index: 1,
-        text: "You can add portfolioComponents from left menu",
+        text: "You can add components from left menu",
         parent_id: newPortfolio._id
     })
 
 
-    await portfolioModel
+    await PortfolioModel
         .findOneAndUpdate(
             {url: newPortfolio.url, user: user.id},
             {...req.body, components: [titleComponent._id, textComponent._id]},
@@ -74,7 +74,7 @@ router.post("/", authHandler, async (req, res) => {
             });
 
 
-            await versionModel.create(
+            await VersionModel.create(
                 {
                     portfolioId: portfolio._id,
                     changes: {type: ChangeType.NEW_PORTFOLIO, message: "Created Portfolio"},
@@ -100,7 +100,7 @@ router.get("/", authHandler, async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
-    await portfolioModel.find({user: user.id}).then((portfolios) => {
+    await PortfolioModel.find({user: user.id}).then((portfolios) => {
         res.status(200).json({
             status: 200,
             success: true,
@@ -113,7 +113,7 @@ router.get("/", authHandler, async (req, res) => {
 
 router.get("/:portfolioId/versions", authHandler, async (req, res) => {
 
-    await versionModel
+    await VersionModel
         .find({portfolioId: req.params.portfolioId})
         .sort({createdAt: -1})
         .then((versions) => {
@@ -138,18 +138,18 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
         throw new ApiError(400, "Version ID is required");
     }
 
-    const version = await versionModel.findById(versionId);
+    const version = await VersionModel.findById(versionId);
 
     if (version == null) {
         throw new ApiError(404, "Version not found");
     }
 
-    const components = await componentModel.find({_id: {$in: version.components}}).lean();
+    const components = await ComponentModel.find({_id: {$in: version.components}}).lean();
 
     if (req.query.restore == 'true') {
 
         // Update portfolio
-        await portfolioModel
+        await PortfolioModel
             .findOneAndUpdate({
                 _id: version.portfolioId,
             }, {
@@ -173,7 +173,7 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
             });
 
         // Delete version newer than the restored version
-        await versionModel.deleteMany({
+        await VersionModel.deleteMany({
             portfolioId: version.portfolioId,
             createdAt: {$gt: version.createdAt}
         }).then(() => {
@@ -199,7 +199,7 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
 
 router.get("/:portfolioUrl/view", authHandler, async (req, res) => {
 
-    await portfolioModel
+    await PortfolioModel
         .findOne({url: req.params.portfolioUrl})
         .populate({
             path: "components",
@@ -229,7 +229,7 @@ router.get("/:url", authHandler, async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
-    await portfolioModel.findOne({url: req.params.url, user: user.id})
+    await PortfolioModel.findOne({url: req.params.url, user: user.id})
         .populate({
             path: "components",
             populate: {
@@ -258,7 +258,7 @@ router.put("/:url", authHandler, async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
-    const portfolio = await portfolioModel
+    const portfolio = await PortfolioModel
         .findOne({url: req.params.url, user: user.id})
         .populate({
             path: "components",
@@ -288,7 +288,7 @@ router.put("/:url", authHandler, async (req, res) => {
         }
     }
 
-    await portfolioModel.findOneAndUpdate(
+    await PortfolioModel.findOneAndUpdate(
         {url: req.params.url, user: user.id},
         {...req.body, components: components},
         {new: true}
@@ -321,20 +321,20 @@ router.delete("/:url", authHandler, async (req, res) => {
         throw new Error("User not found");
     }
 
-    const portfolio = await portfolioModel.findOne({url: req.params.url});
+    const portfolio = await PortfolioModel.findOne({url: req.params.url});
 
     if (!portfolio) {
         throw new ApiError(404, "Portfolio not found");
     }
 
-    await portfolioModel.deleteOne({url: req.params.url}).then(() => {
+    await PortfolioModel.deleteOne({url: req.params.url}).then(() => {
         res.status(200).json({
             status: 200,
             success: true,
         });
     })
 
-    await versionModel.deleteMany({portfolioId: portfolio._id})
+    await VersionModel.deleteMany({portfolioId: portfolio._id})
 
     await removeOrphanComponents()
 
@@ -349,7 +349,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
             if (!component.text) {
                 throw new ApiError(400, "Text is required for text component");
             }
-            return await textComponentModel.create({
+            return await TextComponentModel.create({
                 componentId: component.componentId,
                 type: component.type,
                 index: component.index,
@@ -361,7 +361,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
             if (!component.text || !component.url) {
                 throw new ApiError(400, "Text and URL are required for button component");
             }
-            return await buttonComponentModel.create({
+            return await ButtonComponentModel.create({
                 componentId: component.componentId,
                 color: component.color,
                 index: component.index,
@@ -374,7 +374,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
                 throw new ApiError(400, "URL is required for image component");
             }
 
-            return await imageComponentModel.create({
+            return await ImageComponentModel.create({
                 componentId: component.componentId,
                 parent_id: parent_id,
                 index: component.index,
@@ -387,7 +387,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
             const containerComponents: Array<any> = [];
 
             // Create container component
-            const containerComponent = await containerComponentModel.create({
+            const containerComponent = await ContainerComponentModel.create({
                 componentId: component.componentId,
                 parent_id: parent_id,
                 index: component.index,
@@ -402,7 +402,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
             }
 
             // Update the containerComponent with the created components
-            return await containerComponentModel.findOneAndUpdate(
+            return await ContainerComponentModel.findOneAndUpdate(
                 {_id: containerComponent._id},
                 {components: containerComponents},
                 {new: true}
@@ -420,7 +420,7 @@ async function editComponent(component: any): Promise<any> {
                 throw new ApiError(400, "Text is required for text component");
             }
 
-            return await textComponentModel.findOneAndUpdate(
+            return await TextComponentModel.findOneAndUpdate(
                 {_id: component._id},
                 {type: component.type, index: component.index, text: component.text},
                 {new: true}
@@ -434,7 +434,7 @@ async function editComponent(component: any): Promise<any> {
                 throw new ApiError(400, "Text and URL are required for button component");
             }
 
-            return await buttonComponentModel.findOneAndUpdate(
+            return await ButtonComponentModel.findOneAndUpdate(
                 {_id: component._id},
                 {
                     type: component.type,
@@ -454,7 +454,7 @@ async function editComponent(component: any): Promise<any> {
                 throw new ApiError(400, "URL is required for image component");
             }
 
-            return await imageComponentModel.findOneAndUpdate(
+            return await ImageComponentModel.findOneAndUpdate(
                 {_id: component._id},
                 {
                     type: component.type,
@@ -481,7 +481,7 @@ async function editComponent(component: any): Promise<any> {
                     })
                 }
             }
-            return await containerComponentModel.findOneAndUpdate(
+            return await ContainerComponentModel.findOneAndUpdate(
                 {_id: component._id},
                 {index: component.index, components: containerComponents},
                 {new: true}
@@ -494,7 +494,7 @@ async function editComponent(component: any): Promise<any> {
 async function removeOrphanComponents() {
     try {
         // Step 1: Get all component IDs that are referenced in any portfolio or containerComponent
-        const portfolios = await portfolioModel.find({}, {components: 1}).populate("components");
+        const portfolios = await PortfolioModel.find({}, {components: 1}).populate("components");
         const referencedComponentIds = new Set<string>();
         portfolios.forEach(portfolio => {
             portfolio.components.forEach((component: Component) => {
@@ -504,7 +504,7 @@ async function removeOrphanComponents() {
 
 
         // Step 2: Get all component IDs from the components collection
-        const allComponents = await componentModel.find({}, {_id: 1});
+        const allComponents = await ComponentModel.find({}, {_id: 1});
         const allComponentIds = allComponents.map(component => component._id.toString());
 
         // Step 3: Find the difference between these two sets of IDs
@@ -513,7 +513,7 @@ async function removeOrphanComponents() {
         console.log("Referenced component IDs:", referencedComponentIds);
 
         // Step 4: Remove orphan components
-        await componentModel.deleteMany({_id: {$in: orphanComponentIds}});
+        await ComponentModel.deleteMany({_id: {$in: orphanComponentIds}});
 
     } catch (e) {
         console.error(e);

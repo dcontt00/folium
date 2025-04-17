@@ -3,6 +3,6 @@ import Component from "@/interfaces/component";
 import {ComponentSchema} from "@/schemas";
 
 
-const componentModel = mongoose.model<Component>('Component', ComponentSchema);
+const ComponentModel = mongoose.model<Component>('Component', ComponentSchema);
 
-export default componentModel;
+export default ComponentModel;

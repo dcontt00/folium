@@ -1,5 +1,5 @@
 import express, {Request, Response} from "express"
-import {userModel} from "../models";
+import {UserModel} from "../models";
 import {User} from "../interfaces/user";
 import bcrypt from "bcrypt";
 
@@ -13,7 +13,7 @@ router.post("/", async (req: Request, res: Response) => {
     // Hash the password
     user.password = await bcrypt.hash(user.password, saltRounds)
 
-    await userModel.create(user).then((user) => {
+    await UserModel.create(user).then((user) => {
         const userResponse = {
             name: user.name,
             email: user.email,

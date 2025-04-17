@@ -1,5 +1,5 @@
 import express, {NextFunction, Request, Response} from "express";
-import {userModel} from "../models";
+import {UserModel} from "../models";
 import jwt from "jsonwebtoken"
 import config from "../utils/config";
 import bcrypt from "bcrypt";
@@ -12,7 +12,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     const {email, password} = req.body
 
     // Check if user exists
-    const user = await userModel.findOne({
+    const user = await UserModel.findOne({
         email: email,
     });
 

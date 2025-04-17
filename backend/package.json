@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "npx nodemon -x 'ts-node --log-error' -e ts src/app.ts",
+    "dev": "npx nodemon -x 'ts-node --log-error -r tsconfig-paths/register' -e ts src/app.ts",
     "build": "rimraf ./dist && tsc",
     "serve": "node dist/app.js"
   },
@@ -34,6 +34,7 @@
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "tsc": "^2.0.4",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3"
   }
 }

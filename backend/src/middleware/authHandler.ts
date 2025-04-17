@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import jwt, {JwtPayload} from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
-import {userModel} from "../models";
+import {UserModel} from "../models";
 import config from "../utils/config";
 import AuthenticationError from '../interfaces/AuthError';
 
@@ -21,7 +21,7 @@ export const authHandler = asyncHandler(
                 throw new AuthenticationError("Not authorized, userId not found");
             }
 
-            const user = await userModel.findById(decoded.userId, "_id name email");
+            const user = await UserModel.findById(decoded.userId, "_id name email");
 
             if (!user) {
                 res.status(401);

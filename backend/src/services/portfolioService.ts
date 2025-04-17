@@ -1,5 +1,5 @@
 import IPortfolio from "../interfaces/IPortfolio";
-import {portfolioModel, versionModel} from "../models";
+import {PortfolioModel, VersionModel} from "../models";
 import Component from "../interfaces/component";
 import {ChangeType, IChange} from "../interfaces/IChange";
 import ApiError from "../interfaces/ApiError";
@@ -9,7 +9,7 @@ async function createPortfolio(
     title: string, url: string, userId: string, description?: string, populate: boolean = false
 ) {
 
-    const portfolio = await portfolioModel
+    const portfolio = await PortfolioModel
         .create(
             {
                 title: title,
@@ -176,7 +176,7 @@ async function createVersion(
 ) {
 
     const changes = await getPortfolioChanges(prevPortfolio, newPortfolio)
-    return await versionModel.create({
+    return await VersionModel.create({
         portfolioId: newPortfolio._id,
         changes: changes,
         components: newPortfolio.components,
