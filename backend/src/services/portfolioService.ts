@@ -1,4 +1,4 @@
-import Portfolio from "../interfaces/portfolio";
+import IPortfolio from "../interfaces/IPortfolio";
 import {portfolioModel, versionModel} from "../models/models";
 import Component from "../interfaces/component";
 import {ChangeType, IChange} from "../interfaces/IChange";
@@ -137,7 +137,7 @@ function getComponentChanges(previousComponents: Component[], currentComponents:
 }
 
 
-async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portfolio): Promise<IChange[]> {
+async function getPortfolioChanges(prevPortfolio: IPortfolio, newPortfolio: IPortfolio): Promise<IChange[]> {
     const changes: IChange[] = [];
 
     // Check portfolio attributes
@@ -171,8 +171,8 @@ async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portf
 }
 
 async function createVersion(
-    prevPortfolio: Portfolio,
-    newPortfolio: Portfolio,
+    prevPortfolio: IPortfolio,
+    newPortfolio: IPortfolio,
 ) {
 
     const changes = await getPortfolioChanges(prevPortfolio, newPortfolio)

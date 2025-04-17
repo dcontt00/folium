@@ -14,7 +14,7 @@ import mongoose from "mongoose";
 import {componentsAreEquals, createPortfolio, createVersion} from "../services/portfolioService";
 import Component from "../interfaces/component";
 import {ChangeType} from "../interfaces/IChange";
-import Portfolio from "../interfaces/portfolio";
+import IPortfolio from "../interfaces/IPortfolio";
 import AuthenticationError from "../interfaces/AuthError";
 
 
@@ -180,7 +180,7 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
             console.log("Deleted versions newer than", version.createdAt);
         })
     } else {
-        const portfolio: Portfolio = {
+        const portfolio: IPortfolio = {
             _id: version.portfolioId,
             title: version.title,
             description: version.description,
@@ -193,6 +193,30 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
             data: portfolio,
         });
     }
+
+
+})
+
+router.get("/:portfolioUrl/view", authHandler, async (req, res) => {
+
+    await portfolioModel
+        .findOne({url: req.params.portfolioUrl})
+        .populate({
+            path: "components",
+            populate: {
+                path: "components",
+            }
+        }).then((portfolio) => {
+            if (!portfolio) {
+                throw new ApiError(404, "Portfolio not found");
+            }
+
+            res.status(200).json({
+                status: 200,
+                success: true,
+                data: portfolio.toHtml(),
+            });
+        })
 
 
 })

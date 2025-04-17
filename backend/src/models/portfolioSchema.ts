@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Portfolio from "../classes/Portfolio";
 
 const PortfolioSchema = new mongoose.Schema(
     {
@@ -33,5 +34,7 @@ const PortfolioSchema = new mongoose.Schema(
     },
     {timestamps: true}
 );
+
+PortfolioSchema.loadClass(Portfolio);
 
 export default PortfolioSchema;
