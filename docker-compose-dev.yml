@@ -10,7 +10,10 @@ services:
 
 
   folium:
-    image: ghcr.io/dcontt00/folium:latest
+    image: folium:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: folium
     ports:
       - "3000:3000"
