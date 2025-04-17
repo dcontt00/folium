@@ -3,7 +3,7 @@ import {UserModel} from "@/models";
 import jwt from "jsonwebtoken"
 import config from "@/utils/config";
 import bcrypt from "bcrypt";
-import AuthenticationError from "@/interfaces/AuthError";
+import AuthenticationError from "@/classes/AuthError";
 
 const router = express.Router();
 

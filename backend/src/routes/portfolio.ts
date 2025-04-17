@@ -9,13 +9,13 @@ import {
     VersionModel
 } from "@/models";
 import {authHandler} from "@/middleware/authHandler";
-import ApiError from "@/interfaces/ApiError";
+import ApiError from "@/classes/ApiError";
 import mongoose from "mongoose";
 import {componentsAreEquals, createPortfolio, createVersion} from "@/services/portfolioService";
-import Component from "@/interfaces/component";
+import IComponent from "@/interfaces/IComponent";
 import {ChangeType} from "@/interfaces/IChange";
 import IPortfolio from "@/interfaces/IPortfolio";
-import AuthenticationError from "@/interfaces/AuthError";
+import AuthenticationError from "@/classes/AuthError";
 
 
 const router = express.Router();
@@ -497,7 +497,7 @@ async function removeOrphanComponents() {
         const portfolios = await PortfolioModel.find({}, {components: 1}).populate("components");
         const referencedComponentIds = new Set<string>();
         portfolios.forEach(portfolio => {
-            portfolio.components.forEach((component: Component) => {
+            portfolio.components.forEach((component: IComponent) => {
                 referencedComponentIds.add(component._id.toString());
             });
         });

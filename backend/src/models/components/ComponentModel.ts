@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import Component from "@/interfaces/component";
+import IComponent from "@/interfaces/IComponent";
 import {ComponentSchema} from "@/schemas";
 
 
-const ComponentModel = mongoose.model<Component>('Component', ComponentSchema);
+const ComponentModel = mongoose.model<IComponent>('Component', ComponentSchema);
 
 export default ComponentModel;

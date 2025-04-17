@@ -1,5 +1,4 @@
-import {IChange} from "@/IChange";
-import Component from "@/component";
+import {IChange, IComponent} from "@/interfaces";
 import mongoose from "mongoose";
 
 export default interface IVersion extends Document {
@@ -8,7 +7,7 @@ export default interface IVersion extends Document {
     createdAt: Date;
     relativeCreatedAt: string
     changes: IChange[];
-    components: Component[];
+    components: IComponent[];
     title: string;
     description: string;
     url: string;

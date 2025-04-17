@@ -1,8 +1,8 @@
 import IPortfolio from "@/interfaces/IPortfolio";
 import {PortfolioModel, VersionModel} from "@/models";
-import Component from "@/interfaces/component";
+import IComponent from "@/interfaces/IComponent";
 import {ChangeType, IChange} from "@/interfaces/IChange";
-import ApiError from "@/interfaces/ApiError";
+import ApiError from "@/classes/ApiError";
 
 // Create portfolio
 async function createPortfolio(
@@ -37,7 +37,7 @@ async function createPortfolio(
 }
 
 
-function getComponentUpdatesAndRemovals(previousComponents: Component[], currentComponents: Component[]): IChange[] {
+function getComponentUpdatesAndRemovals(previousComponents: IComponent[], currentComponents: IComponent[]): IChange[] {
     const changes: IChange[] = [];
     for (const prevComponent of previousComponents) {
         const currentComponent = currentComponents.find(
@@ -94,7 +94,7 @@ function getComponentUpdatesAndRemovals(previousComponents: Component[], current
     return changes;
 }
 
-function getComponentAdditions(previousComponents: Component[], currentComponents: Component[]): IChange[] {
+function getComponentAdditions(previousComponents: IComponent[], currentComponents: IComponent[]): IChange[] {
     const changes: IChange[] = [];
 
     for (const currentComponent of currentComponents) {
@@ -122,7 +122,7 @@ function getComponentAdditions(previousComponents: Component[], currentComponent
 }
 
 
-function getComponentChanges(previousComponents: Component[], currentComponents: Component[]): IChange[] {
+function getComponentChanges(previousComponents: IComponent[], currentComponents: IComponent[]): IChange[] {
     const changes: IChange[] = [];
 
     // Detect additions

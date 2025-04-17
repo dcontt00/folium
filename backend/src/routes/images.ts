@@ -2,8 +2,8 @@ import express from "express";
 import {authHandler} from "@/middleware/authHandler";
 import path from "path";
 import fs from "node:fs";
-import ApiError from "@/interfaces/ApiError";
-import AuthenticationError from "@/interfaces/AuthError";
+import ApiError from "@/classes/ApiError";
+import AuthenticationError from "@/classes/AuthError";
 
 const router = express.Router();
 

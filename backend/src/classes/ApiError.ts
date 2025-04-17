@@ -1,4 +1,4 @@
-class ApiError extends Error {
+export default class ApiError extends Error {
     status: number;
     timestamp: string;
 
@@ -10,4 +10,3 @@ class ApiError extends Error {
     }
 }
 
-export default ApiError;
