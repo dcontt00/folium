@@ -1,7 +1,9 @@
 import IPortfolio from "@/interfaces/IPortfolio";
-import {PortfolioModel, VersionModel} from "@/models";
-import {ChangeType, IChange, IComponent} from "@/interfaces";
+import {PortfolioModel, TextComponentModel, VersionModel} from "@/models";
+import {ChangeType, IChange, IComponent, IVersion} from "@/interfaces";
 import {ApiError} from "@/classes";
+import mongoose from "mongoose";
+import {removeOrphanComponents} from "@/services/componentService";
 
 // Create portfolio
 async function createPortfolio(
@@ -33,6 +35,69 @@ async function createPortfolio(
             });
     }
     return portfolio;
+}
+
+async function createInitialPortfolio(
+    title: string,
+    url: string,
+    description: string,
+    userId: string,
+) {
+    const newPortfolio = await createPortfolio(title, url, userId, description)
+
+    const titleComponent = await createTextComponent(0, "Welcome to your new portfolio", "h1", newPortfolio._id)
+
+    const textComponent = await createTextComponent(1, "You can add components from left menu", "text", newPortfolio._id)
+
+    await PortfolioModel
+        .findOneAndUpdate(
+            {url: url},
+            {title: title, description: description, components: [titleComponent._id, textComponent._id]},
+            {new: true}
+        )
+        .populate({
+            path: "components",
+            populate: {
+                path: "components",
+            }
+        })
+        .then(async (portfolio) => {
+            console.log(portfolio);
+            if (portfolio == null) {
+                throw new ApiError(404, "Portfolio not found");
+            }
+            await VersionModel.create(
+                {
+                    portfolioId: portfolio._id,
+                    changes: {type: ChangeType.NEW_PORTFOLIO, message: "Created Portfolio"},
+                    components: portfolio.components,
+                    title: portfolio.title,
+                    description: portfolio.description,
+                    url: portfolio.url,
+                }
+            ).then(() => {
+                console.log("Version created")
+            }).catch((err => {
+                console.log("Error creating version", err)
+                throw new ApiError(500, "Error creating version");
+            }))
+        }).catch((err) => {
+            console.log("Error creating version", err)
+            throw new ApiError(500, "Error creating portfolio");
+        })
+}
+
+async function createTextComponent(index: number, text: string, type: string, parent_id: mongoose.Types.ObjectId) {
+    return await TextComponentModel.create({
+        index: index,
+        text: text,
+        type: type,
+        parent_id: parent_id
+    })
+}
+
+async function getPortfoliosByUserId(userId: string) {
+    return PortfolioModel.find({user: userId});
 }
 
 
@@ -210,9 +275,71 @@ function componentsAreEquals(componentA: any, componentB: any): boolean {
     return true;
 }
 
+async function getVersionsByPortfolioId(portfolioId: string) {
+    return VersionModel
+        .find({portfolioId: portfolioId})
+        .sort({createdAt: -1});
+
+}
+
+async function getPorfolioByUrl(url: string) {
+    return PortfolioModel.findOne({url: url})
+        .populate({
+            path: "components",
+            populate: {
+                path: "components",
+            }
+        });
+
+}
+
+async function removePortfolioByUrl(url: string) {
+    const portfolio = await PortfolioModel.findOne({url: url});
+
+    if (!portfolio) {
+        throw new ApiError(404, "Portfolio not found");
+    }
+
+    try {
+        await PortfolioModel.deleteOne({url: url})
+        await VersionModel.deleteMany({portfolioId: portfolio._id})
+        await removeOrphanComponents()
+    } catch (error) {
+        console.log("Error deleting portfolio", error)
+        throw new ApiError(500, "Error deleting portfolio");
+    }
+}
+
+async function restorePortfolio(version: IVersion, components: any) {
+    return PortfolioModel
+        .findOneAndUpdate({
+            _id: version.portfolioId,
+        }, {
+            components: components,
+            title: version.title,
+            description: version.description,
+            url: version.url,
+        }, {new: true})
+        .populate({
+            path: "components",
+            populate: {
+                path: "components",
+            }
+        });
+
+}
+
+
 export {
     createPortfolio,
     getPortfolioChanges,
     createVersion,
-    componentsAreEquals
+    componentsAreEquals,
+    createTextComponent,
+    createInitialPortfolio,
+    getPortfoliosByUserId,
+    getVersionsByPortfolioId,
+    getPorfolioByUrl,
+    removePortfolioByUrl,
+    restorePortfolio
 }
