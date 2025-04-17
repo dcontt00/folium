@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+      // Map '@/' to the 'src/' directory
+    },
+
     /* Language and Environment */
     "target": "es2016",
     /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
