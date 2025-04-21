@@ -1,0 +1,15 @@
+meta {
+  name: Export
+  type: http
+  seq: 9
+}
+
+get {
+  url: http://localhost:3000/api/portfolio/:url/export
+  body: none
+  auth: inherit
+}
+
+params:path {
+  url: test
+}

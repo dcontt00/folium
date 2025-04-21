@@ -12,6 +12,8 @@ import {
 import {IPortfolio} from "@/interfaces";
 import {componentsAreEquals, createComponent} from "@/services/componentService";
 import {createVersion, deleteOlderVersions, getVersionById, getVersionsByPortfolioId} from "@/services/versionService";
+import path from "path";
+import fs from "fs"
 
 
 const router = express.Router();
@@ -39,6 +41,52 @@ router.post("/", authHandler, async (req, res) => {
 
 
 });
+
+router.get("/:url/export", authHandler, async (req, res) => {
+    try {
+        const portfolioUrl = req.params.url;
+
+        // Fetch the portfolio by URL
+        const portfolio = await PortfolioModel.findOne({url: portfolioUrl}).populate({
+            path: 'components',
+            populate: {
+                path: 'components',
+            },
+        });
+
+        if (!portfolio) {
+            throw new Error('Portfolio not found');
+        }
+
+        // Generate the HTML using the toHtml method
+        const htmlContent = portfolio.toHtml();
+
+        // Define the output directory and file path
+        const outputDir = path.resolve(`src/public/${portfolioUrl}`);
+        const outputFilePath = path.join(outputDir, 'index.html');
+
+        // Ensure the directory exists
+        fs.mkdirSync(outputDir, {recursive: true});
+
+        // Write the HTML content to the file
+        fs.writeFileSync(outputFilePath, htmlContent, 'utf-8');
+        console.log(`HTML file created at: ${outputFilePath}`);
+
+        res.status(200).json({
+            status: 200,
+            success: true,
+            message: `HTML file created at: ${outputFilePath}`,
+        });
+    } catch (error) {
+        console.error('Error exporting portfolio to HTML:', error);
+        res.status(500).json({
+            status: 500,
+            success: false,
+            message: 'Error exporting portfolio to HTML',
+        });
+    }
+});
+
 
 router.get("/", authHandler, async (req, res) => {
     const user = req.user;
