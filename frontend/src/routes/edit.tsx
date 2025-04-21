@@ -214,6 +214,7 @@ export default function Edit() {
                         description={description}
                         setDescription={setDescription}
                         setUnsaved={setUnsaved}
+                        portfolioUrl={portfolio.url}
                     />
                 </Stack>
             </AppShell.Aside>

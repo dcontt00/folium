@@ -1,4 +1,5 @@
 import {Button, Divider, Text, Textarea, TextInput, Title} from "@mantine/core";
+import axiosInstance from "~/axiosInstance";
 
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
     description: string;
     setDescription: (description: string) => void;
     setUnsaved: (unsaved: boolean) => void;
+    portfolioUrl: string
 }
 
 export default function SettingsSection({
@@ -16,8 +18,24 @@ export default function SettingsSection({
                                             setTitle,
                                             description,
                                             setDescription,
-                                            setUnsaved
+                                            setUnsaved,
+                                            portfolioUrl
                                         }: Props) {
+
+
+    async function exportAndSave() {
+        const response = await axiosInstance.get(`/portfolio/${portfolioUrl}/export`, {
+            responseType: "blob"
+        })
+        // Create a URL for the file
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${portfolioUrl}.html`); // Set the file name
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    }
 
 
     return (
@@ -43,6 +61,11 @@ export default function SettingsSection({
             <Button hiddenFrom="sm" onClick={toggleOpenedSettings}>Close</Button>
             <Title order={3}>Export</Title>
             <Text>You can export the portfolio as HTML and CSS or select a provider to host it directly</Text>
+            <Button
+                onClick={exportAndSave}
+            >
+                Export and download
+            </Button>
         </>
     )
 }

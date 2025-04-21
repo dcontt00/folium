@@ -72,11 +72,23 @@ router.get("/:url/export", authHandler, async (req, res) => {
         fs.writeFileSync(outputFilePath, htmlContent, 'utf-8');
         console.log(`HTML file created at: ${outputFilePath}`);
 
-        res.status(200).json({
+        // Send the file for download
+        res.download(outputFilePath, `${portfolioUrl}.html`, (err) => {
+            if (err) {
+                console.error('Error sending file:', err);
+                res.status(500).json({
+                    status: 500,
+                    success: false,
+                    message: 'Error sending file',
+                });
+            }
+        });
+
+        /*res.status(200).json({
             status: 200,
             success: true,
             message: `HTML file created at: ${outputFilePath}`,
-        });
+        });*/
     } catch (error) {
         console.error('Error exporting portfolio to HTML:', error);
         res.status(500).json({
