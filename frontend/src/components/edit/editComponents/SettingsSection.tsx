@@ -1,4 +1,4 @@
-import {Button, Textarea, TextInput, Title} from "@mantine/core";
+import {Button, Divider, Text, Textarea, TextInput, Title} from "@mantine/core";
 
 
 interface Props {
@@ -39,7 +39,10 @@ export default function SettingsSection({
                     setUnsaved(true);
                 }}
             />
+            <Divider/>
             <Button hiddenFrom="sm" onClick={toggleOpenedSettings}>Close</Button>
+            <Title order={3}>Export</Title>
+            <Text>You can export the portfolio as HTML and CSS or select a provider to host it directly</Text>
         </>
     )
 }

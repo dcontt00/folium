@@ -18,6 +18,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
     const [data, setData] = useState<IVersion[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
+    const [currentVersionIndex, setCurrentVersionIndex] = useState(0);
 
     async function fetchHistory() {
         try {
@@ -31,11 +32,11 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
         }
     }
 
-    async function fetchVersion(versionId: string) {
+    async function fetchVersion(version: IVersion) {
         try {
-            const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${versionId}`);
-            console.log(response.data.data);
+            const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${version._id}`);
             setPortfolioState(response.data.data);
+            setCurrentVersionIndex(0);
         } catch (err: any) {
             setError(err);
         } finally {
@@ -45,10 +46,11 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
         }
     }
 
-    async function restoreVersion(versionId: string) {
+    async function restoreVersion(versionId: string, index: number) {
         try {
             const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${versionId}?restore=true`);
             setPortfolioState(response.data.data);
+            setCurrentVersionIndex(0)
         } catch (err: any) {
             setError(err);
         } finally {
@@ -69,10 +71,16 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
             <Stack p="sm">
                 {loading && <div>Loading...</div>}
                 {error && <div>Error: {error.message}</div>}
-                <Timeline active={20} bulletSize={24} lineWidth={2}>
+                <Timeline active={5 - currentVersionIndex - 1} reverseActive bulletSize={24} lineWidth={2}>
                     {data && data.map((version: IVersion, index: number) => (
                         <Timeline.Item title={version.relativeCreatedAt}>
-                            <Stack style={{paddingTop: 10}}>
+                            <Stack
+                                p="xs"
+                                style={{
+                                    paddingTop: 10,
+                                    backgroundColor: currentVersionIndex === index ? "rgba(255, 255, 255, 0.1)" : "transparent",
+                                }}
+                            >
                                 <List>
                                     {version.changes.map((change: IChange) => (
                                         <List.Item
@@ -80,7 +88,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
                                                 <ChangeIcon change={change}/>
                                             }
                                         >
-                                            <Text c="dimmed">
+                                            <Text>
                                                 {change.message}
                                             </Text>
                                         </List.Item>
@@ -91,7 +99,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
                                     <Button
                                         leftSection={<IconRestore/>}
                                         size="compact-md"
-                                        onClick={() => restoreVersion(version._id)}
+                                        onClick={() => restoreVersion(version._id, index)}
                                     >
                                         Restore
                                     </Button>
@@ -99,7 +107,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
                                         variant="light"
                                         leftSection={<IconEye/>}
                                         size="compact-md"
-                                        onClick={() => fetchVersion(version._id)}
+                                        onClick={() => fetchVersion(version)}
                                     >
                                         Preview
                                     </Button>

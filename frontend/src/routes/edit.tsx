@@ -96,6 +96,10 @@ export default function Edit() {
     }
 
     async function onSave() {
+
+        if (!unsaved) {
+            return;
+        }
         const newPortfolio = {...portfolioState};
         newPortfolio.title = title;
         newPortfolio.description = description;
