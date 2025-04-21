@@ -65,7 +65,7 @@ export default function PortfolioCard({title, description, url, onDelete}: Portf
                     <Button
                         variant="default"
                         leftSection={<IconExternalLink size={14}/>}
-                        onClick={() => navigate(`/portfolio/${url}`)}
+                        onClick={() => navigate(`/view/${url}`)}
                     >
                         Visit
                     </Button>
