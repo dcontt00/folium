@@ -1,4 +1,4 @@
-import {ActionIcon, Alert, AppShell, Button, Group, Kbd, Stack, Text} from "@mantine/core";
+import {ActionIcon, Alert, AppShell, Button, Stack, Text} from "@mantine/core";
 import {IconInfoCircle, IconX} from "@tabler/icons-react";
 import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
 import {useState} from "react";
@@ -45,7 +45,11 @@ export default function Edit() {
     // State for components that can be shown or hidden
     const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
     const [openedSettings, {toggle: toggleOpenedSettings}] = useDisclosure(false);
-    const [openedHistoryModal, {open: openHistoryModal, close: closeHistoryModal}] = useDisclosure(false);
+    const [openedHistoryModal, {
+        open: openHistoryModal,
+        close: closeHistoryModal,
+        toggle: toggleHistoryModal
+    }] = useDisclosure(false);
 
 
     // State for the edit features
@@ -59,7 +63,7 @@ export default function Edit() {
 
     // Hotkeys
     useHotkeys([
-        ['ctrl+h', () => openHistoryModal()],
+        ['ctrl+h', () => toggleHistoryModal()],
     ]);
 
     function onEditComponent(component: ComponentType) {
@@ -172,6 +176,7 @@ export default function Edit() {
                     toggleOpenedSettings={toggleOpenedSettings}
                     unsaved={unsaved}
                     portfolio={portfolio}
+                    openHistoryModal={openHistoryModal}
                 />
             </AppShell.Header>
             <AppShell.Navbar>
@@ -206,18 +211,6 @@ export default function Edit() {
                         setDescription={setDescription}
                         setUnsaved={setUnsaved}
                     />
-                    <Button onClick={openHistoryModal}>
-                        <Group>
-
-                            <p>
-                                Open history
-
-                            </p>
-                            <div>
-                                <Kbd size="xs">Ctrl</Kbd>+<Kbd size="xs">H</Kbd>
-                            </div>
-                        </Group>
-                    </Button>
                 </Stack>
             </AppShell.Aside>
             <AppShell.Main>

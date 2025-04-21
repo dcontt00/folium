@@ -1,6 +1,6 @@
 import {ActionIcon, Avatar, Button, Group} from "@mantine/core";
 import Logo from "~/Logo.svg";
-import {IconArrowLeft, IconDeviceDesktop, IconDeviceFloppy, IconSettings} from "@tabler/icons-react";
+import {IconArrowLeft, IconDeviceDesktop, IconDeviceFloppy, IconHistory, IconSettings} from "@tabler/icons-react";
 import {useNavigate} from "react-router";
 
 interface Props {
@@ -10,9 +10,18 @@ interface Props {
     unsaved: boolean;
     portfolio: any;
     onPreview: () => void;
+    openHistoryModal: () => void;
 }
 
-export default function HeaderButtons({onSave, onBack, toggleOpenedSettings, unsaved, portfolio, onPreview}: Props) {
+export default function HeaderButtons({
+                                          onSave,
+                                          onBack,
+                                          toggleOpenedSettings,
+                                          unsaved,
+                                          portfolio,
+                                          onPreview,
+                                          openHistoryModal
+                                      }: Props) {
     const navigate = useNavigate();
 
     return (
@@ -39,10 +48,17 @@ export default function HeaderButtons({onSave, onBack, toggleOpenedSettings, uns
                     Preview
                 </Button>
                 <Button
+                    leftSection={<IconHistory/>}
+                    onClick={openHistoryModal}
+                >
+                    History
+                </Button>
+                <Button
                     leftSection={<IconSettings/>}
                     onClick={toggleOpenedSettings}
                 >
-                    Settings</Button>
+                    Settings
+                </Button>
             </Group>
             <Group h="100%" px="md" hiddenFrom="sm">
                 <Avatar src={Logo} radius="xs"/>
@@ -55,6 +71,9 @@ export default function HeaderButtons({onSave, onBack, toggleOpenedSettings, uns
                 </ActionIcon>
                 <ActionIcon onClick={() => navigate(`/preview/${portfolio.url}`)}>
                     <IconDeviceDesktop/>
+                </ActionIcon>
+                <ActionIcon onClick={openHistoryModal}>
+                    <IconHistory/>
                 </ActionIcon>
                 <ActionIcon onClick={toggleOpenedSettings}>
                     <IconSettings/>
