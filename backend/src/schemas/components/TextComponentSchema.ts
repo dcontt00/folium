@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import TextType from "@/interfaces/TextType";
+import TextComponent from "@/classes/components/TextComponent";
 
 
 const TextComponentSchema = new mongoose.Schema(
@@ -15,7 +17,7 @@ const TextComponentSchema = new mongoose.Schema(
         },
         type: {
             type: String,
-            enum: ["h1", "h2", "h3", "h4", "h5", "h6", "text"],
+            enum: TextType,
             default: "text",
         },
         fontSize: {
@@ -26,5 +28,7 @@ const TextComponentSchema = new mongoose.Schema(
     },
     {timestamps: true}
 )
+
+TextComponentSchema.loadClass(TextComponent);
 
 export default TextComponentSchema;

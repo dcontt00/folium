@@ -1,7 +1,7 @@
 import {VersionModel} from "@/models";
 import mongoose from "mongoose";
-import IPortfolio from "../interfaces/IPortfolio";
 import {getPortfolioChanges} from "@/services/portfolioService";
+import {Portfolio} from "@/classes";
 
 
 async function getVersionById(id: string,) {
@@ -16,8 +16,8 @@ async function deleteOlderVersions(portfolioId: mongoose.Types.ObjectId, date: a
 }
 
 async function createVersion(
-    prevPortfolio: IPortfolio,
-    newPortfolio: IPortfolio,
+    prevPortfolio: Portfolio,
+    newPortfolio: Portfolio,
 ) {
 
     const changes = await getPortfolioChanges(prevPortfolio, newPortfolio)

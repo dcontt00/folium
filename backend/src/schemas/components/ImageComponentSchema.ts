@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import ImageComponent from "@/classes/components/ImageComponent";
 
 
 const ImageComponentSchema = new mongoose.Schema(
@@ -26,5 +27,7 @@ const ImageComponentSchema = new mongoose.Schema(
     },
     {timestamps: true}
 )
+
+ImageComponentSchema.loadClass(ImageComponent);
 
 export default ImageComponentSchema;

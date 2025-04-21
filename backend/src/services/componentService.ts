@@ -6,9 +6,9 @@ import {
     PortfolioModel,
     TextComponentModel
 } from "@/models";
-import {IComponent} from "@/interfaces";
 import mongoose from "mongoose";
 import {ApiError} from "@/classes";
+import Component from "@/classes/components/Component";
 
 async function removeOrphanComponents() {
     try {
@@ -16,7 +16,7 @@ async function removeOrphanComponents() {
         const portfolios = await PortfolioModel.find({}, {components: 1}).populate("components");
         const referencedComponentIds = new Set<string>();
         portfolios.forEach(portfolio => {
-            portfolio.components.forEach((component: IComponent) => {
+            portfolio.components.forEach((component: Component) => {
                 referencedComponentIds.add(component._id.toString());
             });
         });

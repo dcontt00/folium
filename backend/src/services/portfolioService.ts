@@ -1,8 +1,8 @@
-import IPortfolio from "@/interfaces/IPortfolio";
 import {PortfolioModel, VersionModel} from "@/models";
-import {ChangeType, IChange, IComponent, IVersion} from "@/interfaces";
-import {ApiError} from "@/classes";
+import {ChangeType, IChange, IVersion} from "@/interfaces";
+import {ApiError, Portfolio} from "@/classes";
 import {createTextComponent, removeOrphanComponents} from "@/services/componentService";
+import Component from "@/classes/components/Component";
 
 // Create portfolio
 async function createPortfolio(
@@ -92,7 +92,7 @@ async function getPortfoliosByUserId(userId: string) {
 }
 
 
-function getComponentUpdatesAndRemovals(previousComponents: IComponent[], currentComponents: IComponent[]): IChange[] {
+function getComponentUpdatesAndRemovals(previousComponents: Component[], currentComponents: Component[]): IChange[] {
     const changes: IChange[] = [];
     for (const prevComponent of previousComponents) {
         const currentComponent = currentComponents.find(
@@ -128,7 +128,7 @@ function getComponentUpdatesAndRemovals(previousComponents: IComponent[], curren
             }
 
             // Compare fields to detect changes
-            const allKeys = Object.keys(prevComponent.toObject());
+            const allKeys = Object.keys(prevComponent);
             const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew", "__t", "parent_id"];
             const keys = allKeys.filter(key => !keysToRemove.includes(key));
 
@@ -149,7 +149,7 @@ function getComponentUpdatesAndRemovals(previousComponents: IComponent[], curren
     return changes;
 }
 
-function getComponentAdditions(previousComponents: IComponent[], currentComponents: IComponent[]): IChange[] {
+function getComponentAdditions(previousComponents: Component[], currentComponents: Component[]): IChange[] {
     const changes: IChange[] = [];
 
     for (const currentComponent of currentComponents) {
@@ -177,7 +177,7 @@ function getComponentAdditions(previousComponents: IComponent[], currentComponen
 }
 
 
-function getComponentChanges(previousComponents: IComponent[], currentComponents: IComponent[]): IChange[] {
+function getComponentChanges(previousComponents: Component[], currentComponents: Component[]): IChange[] {
     const changes: IChange[] = [];
 
     // Detect additions
@@ -192,7 +192,7 @@ function getComponentChanges(previousComponents: IComponent[], currentComponents
 }
 
 
-async function getPortfolioChanges(prevPortfolio: IPortfolio, newPortfolio: IPortfolio): Promise<IChange[]> {
+async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portfolio): Promise<IChange[]> {
     const changes: IChange[] = [];
 
     // Check portfolio attributes
