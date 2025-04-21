@@ -14,6 +14,7 @@ import {
 import {IPortfolio} from "@/interfaces";
 import {componentsAreEquals, createComponent} from "@/services/componentService";
 import {createVersion, deleteOlderVersions, getVersionById, getVersionsByPortfolioId} from "@/services/versionService";
+import Component from "@/classes/components/Component";
 
 
 const router = express.Router();
@@ -115,7 +116,7 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
         throw new ApiError(404, "Version not found");
     }
 
-    const components = await ComponentModel.find({_id: {$in: version.components}}).lean();
+    const components: Component[] = await ComponentModel.find({_id: {$in: version.components}})
 
     if (req.query.restore == 'true') {
         const restoredPortfolio = await restorePortfolio(version, components)

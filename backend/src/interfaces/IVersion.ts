@@ -1,5 +1,6 @@
-import {IChange, IComponent} from "@/interfaces";
+import {IChange} from "@/interfaces";
 import mongoose from "mongoose";
+import Component from "@/classes/components/Component";
 
 export default interface IVersion extends Document {
     portfolioId: mongoose.Types.ObjectId;
@@ -7,7 +8,7 @@ export default interface IVersion extends Document {
     createdAt: Date;
     relativeCreatedAt: string
     changes: IChange[];
-    components: IComponent[];
+    components: Component[];
     title: string;
     description: string;
     url: string;
