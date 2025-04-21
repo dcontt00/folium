@@ -19,7 +19,6 @@ const VersionSchema: Schema<IVersion> = new Schema({
                 ref: 'Component',
             },
         ],
-        title: {type: String, required: true},
         description: {type: String},
         url: {type: String, required: true},
     },
