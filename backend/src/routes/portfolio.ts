@@ -9,12 +9,11 @@ import {
     getPortfoliosByUserId,
     removePortfolioByUrl,
     restorePortfolio,
-    zipDirectory
+    zipPortfolio
 } from "@/services/portfolioService";
 import {IPortfolio} from "@/interfaces";
 import {componentsAreEquals, createComponent} from "@/services/componentService";
 import {createVersion, deleteOlderVersions, getVersionById, getVersionsByPortfolioId} from "@/services/versionService";
-import path from "path";
 
 
 const router = express.Router();
@@ -46,13 +45,8 @@ router.post("/", authHandler, async (req, res) => {
 router.get("/:url/export", authHandler, async (req, res) => {
     try {
         const portfolioUrl = req.params.url;
-
         await generateHtmlFiles(portfolioUrl)
-        const publicDir = path.resolve(`src/public`);
-        const outputDir = path.resolve(`${publicDir}/${portfolioUrl}`);
-        const outputFilePath = path.join(publicDir, `${portfolioUrl}.zip`);
-        await zipDirectory(outputDir, outputFilePath);
-
+        const outputFilePath = await zipPortfolio(portfolioUrl);
 
         // Send the file for download
         res.download(outputFilePath, `${portfolioUrl}.zip`, (err) => {

@@ -305,14 +305,28 @@ async function restorePortfolio(version: IVersion, components: any) {
 
 }
 
-async function zipDirectory(sourceDir: string, outputFilePath: string): Promise<void> {
+/**
+ * Zips the portfolio folder and returns the path to the zip file
+ * @param portfolioUrl
+ */
+async function zipPortfolio(portfolioUrl: string): Promise<string> {
+
+    const rootFolder = path.resolve(__dirname, '../../');
+    const exportFolder = path.join(rootFolder, "exports")
+    // Ensure the directory exists
+    fs.mkdirSync(exportFolder, {recursive: true});
+    const publicDir = path.resolve(`src/public`);
+    const sourceDir = path.resolve(`${publicDir}/${portfolioUrl}`);
+    const outputFilePath = path.join(exportFolder, `${portfolioUrl}.zip`);
+
+
     return new Promise((resolve, reject) => {
         const output = fs.createWriteStream(outputFilePath);
         const archive = archiver('zip', {zlib: {level: 9}});
 
         output.on('close', () => {
             console.log(`Zipped ${archive.pointer()} total bytes`);
-            resolve();
+            resolve(outputFilePath);
         });
 
         archive.on('error', (err: any) => {
@@ -323,6 +337,8 @@ async function zipDirectory(sourceDir: string, outputFilePath: string): Promise<
         archive.directory(sourceDir, false);
         archive.finalize();
     });
+
+
 }
 
 
@@ -335,5 +351,5 @@ export {
     removePortfolioByUrl,
     restorePortfolio,
     generateHtmlFiles,
-    zipDirectory
+    zipPortfolio
 }
