@@ -1,11 +1,11 @@
 import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react";
-import path from 'node:path'
+import path from "node:path";
 
 export default defineConfig({
     plugins: [react()],
     define: {
-        'import.meta.env.BACKEND_URL': JSON.stringify(process.env.BACKEND_URL)
+        'import.meta.env.BACKEND_URL': JSON.stringify(process.env.BACKEND_URL),
     },
     resolve: {
         alias: {
@@ -19,5 +19,17 @@ export default defineConfig({
             usePolling: true,
         },
     },
-
-});
+    build: {
+        rollupOptions: {
+            input: {
+                main: path.resolve(__dirname, 'index.html'),
+                edit: path.resolve(__dirname, 'edit/index.html'),
+                home: path.resolve(__dirname, 'home/index.html'),
+                login: path.resolve(__dirname, 'login/index.html'),
+                portfolio: path.resolve(__dirname, 'portfolio/index.html'),
+                register: path.resolve(__dirname, 'register/index.html'),
+            }
+        },
+    },
+})
+;
