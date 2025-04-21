@@ -22,7 +22,7 @@ const TextComponentSchema = new mongoose.Schema(
         },
         fontSize: {
             type: Number,
-            default: 16,
+            default: 0,
         }
 
     },

@@ -22,9 +22,18 @@ export default class Portfolio {
         const componentsHtml = this.components.map(component => component.toHtml()).join("");
 
         return `
+
+
+<head>
+    <title>Express</title>
+    <link href="/stylesheets/style.css" rel="stylesheet">
+</head>
+<body>
+
             <div class="container">
                 ${componentsHtml}
             </div>
+</body>
         `;
     }
 }

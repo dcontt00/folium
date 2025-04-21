@@ -9,6 +9,7 @@ import {
 import mongoose from "mongoose";
 import {ApiError} from "@/classes";
 import Component from "@/classes/components/Component";
+import TextType from "@/interfaces/TextType";
 
 async function removeOrphanComponents() {
     try {
@@ -109,7 +110,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
     }
 }
 
-async function createTextComponent(index: number, text: string, type: string, parent_id: mongoose.Types.ObjectId) {
+async function createTextComponent(index: number, text: string, type: TextType, parent_id: mongoose.Types.ObjectId) {
     return await TextComponentModel.create({
         index: index,
         text: text,

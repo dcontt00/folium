@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Component from "@/classes/components/Component";
 
 const ComponentSchema = new mongoose.Schema(
     {
@@ -17,5 +18,7 @@ const ComponentSchema = new mongoose.Schema(
     },
     {timestamps: true}
 );
+
+ComponentSchema.loadClass(Component)
 
 export default ComponentSchema;

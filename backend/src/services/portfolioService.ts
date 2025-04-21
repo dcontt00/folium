@@ -3,6 +3,7 @@ import {ChangeType, IChange, IVersion} from "@/interfaces";
 import {ApiError, Portfolio} from "@/classes";
 import {createTextComponent, removeOrphanComponents} from "@/services/componentService";
 import Component from "@/classes/components/Component";
+import TextType from "@/interfaces/TextType";
 
 // Create portfolio
 async function createPortfolio(
@@ -44,9 +45,9 @@ async function createInitialPortfolio(
 ) {
     const newPortfolio = await createPortfolio(title, url, userId, description)
 
-    const titleComponent = await createTextComponent(0, "Welcome to your new portfolio", "h1", newPortfolio._id)
+    const titleComponent = await createTextComponent(0, "Welcome to your new portfolio", TextType.H1, newPortfolio._id)
 
-    const textComponent = await createTextComponent(1, "You can add components from left menu", "text", newPortfolio._id)
+    const textComponent = await createTextComponent(1, "You can add components from left menu", TextType.P, newPortfolio._id)
 
     await PortfolioModel
         .findOneAndUpdate(
