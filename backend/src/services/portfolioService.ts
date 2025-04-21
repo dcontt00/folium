@@ -4,6 +4,37 @@ import {ApiError, Portfolio} from "@/classes";
 import {createTextComponent, removeOrphanComponents} from "@/services/componentService";
 import Component from "@/classes/components/Component";
 import TextType from "@/interfaces/TextType";
+import path from "path";
+import fs from "fs";
+import archiver from "archiver"
+
+
+async function generateHtmlFiles(portfolioUrl: string) {
+    const portfolio = await PortfolioModel.findOne({url: portfolioUrl}).populate({
+        path: 'components',
+        populate: {
+            path: 'components',
+        },
+    });
+
+    if (!portfolio) {
+        throw new Error('Portfolio not found');
+    }
+
+    // Generate the HTML using the toHtml method
+    const htmlContent = portfolio.toHtml();
+
+    // Define the output directory and file path
+    const outputDir = path.resolve(`src/public/${portfolioUrl}`);
+    const outputFilePath = path.join(outputDir, 'index.html');
+
+    // Ensure the directory exists
+    fs.mkdirSync(outputDir, {recursive: true});
+
+    // Write the HTML content to the file
+    fs.writeFileSync(outputFilePath, htmlContent, 'utf-8');
+    console.log(`HTML file created at: ${outputFilePath}`);
+}
 
 // Create portfolio
 async function createPortfolio(
@@ -274,6 +305,26 @@ async function restorePortfolio(version: IVersion, components: any) {
 
 }
 
+async function zipDirectory(sourceDir: string, outputFilePath: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const output = fs.createWriteStream(outputFilePath);
+        const archive = archiver('zip', {zlib: {level: 9}});
+
+        output.on('close', () => {
+            console.log(`Zipped ${archive.pointer()} total bytes`);
+            resolve();
+        });
+
+        archive.on('error', (err: any) => {
+            reject(err);
+        });
+
+        archive.pipe(output);
+        archive.directory(sourceDir, false);
+        archive.finalize();
+    });
+}
+
 
 export {
     createPortfolio,
@@ -282,5 +333,7 @@ export {
     getPortfoliosByUserId,
     getPorfolioByUrl,
     removePortfolioByUrl,
-    restorePortfolio
+    restorePortfolio,
+    generateHtmlFiles,
+    zipDirectory
 }
