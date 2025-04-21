@@ -2,7 +2,7 @@ import {Button, Group, List, Modal, Stack, Text, ThemeIcon, Timeline} from "@man
 import {useEffect, useState} from "react";
 import config from "~/config";
 import axiosInstance from "~/axiosInstance";
-import {IconClipboard, IconEdit, IconPlus, IconTrash} from "@tabler/icons-react";
+import {IconClipboard, IconEdit, IconEye, IconPlus, IconRestore, IconTrash} from "@tabler/icons-react";
 import type IVersion from "~/interfaces/IVersion";
 import type {IChange} from "~/interfaces/IChange";
 
@@ -70,7 +70,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
                 {loading && <div>Loading...</div>}
                 {error && <div>Error: {error.message}</div>}
                 <Timeline active={20} bulletSize={24} lineWidth={2}>
-                    {data && data.map((version: IVersion) => (
+                    {data && data.map((version: IVersion, index: number) => (
                         <Timeline.Item title={version.relativeCreatedAt}>
                             <Stack style={{paddingTop: 10}}>
                                 <List>
@@ -87,10 +87,22 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
                                     ))}
                                 </List>
 
-                                <Group>
-                                    <Button size="compact-md" onClick={() => restoreVersion(version._id)}>Restore to
-                                        this</Button>
-                                    <Button size="compact-md" onClick={() => fetchVersion(version._id)}>Preview</Button>
+                                <Group hidden={index === 0}>
+                                    <Button
+                                        leftSection={<IconRestore/>}
+                                        size="compact-md"
+                                        onClick={() => restoreVersion(version._id)}
+                                    >
+                                        Restore
+                                    </Button>
+                                    <Button
+                                        variant="light"
+                                        leftSection={<IconEye/>}
+                                        size="compact-md"
+                                        onClick={() => fetchVersion(version._id)}
+                                    >
+                                        Preview
+                                    </Button>
                                 </Group>
                             </Stack>
 
