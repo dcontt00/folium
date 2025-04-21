@@ -11,7 +11,9 @@ import imagesRouter from "@/routes/images"
 import logoutRouter from "@/routes/logout"
 import fileUpload from "express-fileupload";
 import connectDB from "@/db";
-import {errorHandler} from "@/middleware";
+import {authHandler, errorHandler} from "@/middleware";
+import {getPorfolioByUrl} from "@/services/portfolioService";
+import {ApiError} from "@/classes";
 
 
 const app: Express = express();
@@ -34,6 +36,20 @@ app.use("/api/logout", logoutRouter);
 app.use("/api/portfolio", portfolioRouter);
 app.use("/api/images", imagesRouter);
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+// Serve portfolios in HTML
+app.get("/view/:portfolioUrl", authHandler, async (req, res) => {
+
+    const portfolio = await getPorfolioByUrl(req.params.portfolioUrl);
+
+    if (portfolio == null) {
+        throw new ApiError(404, "Portfolio not found");
+    }
+
+    res.send(portfolio.toHtml())
+})
+
 
 app.use(errorHandler)
 

@@ -14,7 +14,6 @@ import Index from "./routes/index";
 import Edit from "~/routes/edit";
 import Login from "~/routes/login";
 import Register from "~/routes/register";
-import PortfolioRoute from "./routes/portfolio";
 import ErrorPage from "~/components/errors/ErrorPage";
 
 
@@ -45,6 +44,21 @@ async function getPortfolio(params: { portfolioUrl?: string }) {
     return portfolio;
 }
 
+async function renderPortfolio(params: { portfolioUrl?: string }) {
+    const portfolioUrl = params.portfolioUrl
+    if (!portfolioUrl) {
+        return
+    }
+    const portfolio: string = await axiosInstance.get(`/portfolio/${portfolioUrl}/view`)
+        .then((response: AxiosResponse) => {
+            return response.data.data;
+        }).catch((error) => {
+            const responseError = error.response;
+            throw data(responseError.data.message, {status: responseError.status});
+        });
+    return portfolio;
+}
+
 
 const router = createBrowserRouter([
     {
@@ -59,11 +73,11 @@ const router = createBrowserRouter([
                 Component: Home,
                 loader: async () => await getPortfolios()
             },
-            {
-                path: "portfolio/:portfolioUrl",
+            /*{
+                path: "view/:portfolioUrl",
                 Component: PortfolioRoute,
-                loader: async ({params}) => await getPortfolio(params)
-            },
+                loader: async ({params}) => await renderPortfolio(params)
+            },*/
             {
                 path: "edit/:portfolioUrl",
                 Component: Edit,

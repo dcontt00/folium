@@ -1,6 +1,4 @@
 import {useLoaderData} from "react-router";
-import ComponentsSection from "~/components/ComponentsSection";
-import type {Portfolio} from "~/interfaces/interfaces";
 import {Center, Loader} from "@mantine/core";
 
 
@@ -15,9 +13,8 @@ export function HydrateFallback() {
 
 export default function Portfolio() {
 
-    const portfolio: Portfolio = useLoaderData();
+    const portfolio: string = useLoaderData();
 
-    return (
-        <ComponentsSection components={portfolio.components}/>
-    )
+    return <div dangerouslySetInnerHTML={{__html: portfolio}}/>;
+
 }

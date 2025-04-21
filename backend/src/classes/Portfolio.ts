@@ -19,6 +19,12 @@ export default class Portfolio {
     }
 
     toHtml() {
-        return this.components.map(component => component.toHtml()).join("");
+        const componentsHtml = this.components.map(component => component.toHtml()).join("");
+
+        return `
+            <div class="container">
+                ${componentsHtml}
+            </div>
+        `;
     }
 }

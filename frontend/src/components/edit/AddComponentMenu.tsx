@@ -36,7 +36,7 @@ export default function AddComponentMenu({
             index: portfolioComponentsLength - 1,
             parent_id: parent_id,
             text: "Hello World",
-            type: TextType.TEXT,
+            type: TextType.P,
             style: TextStyle.NORMAL
         }
         onAddComponent(newComponent);

@@ -121,11 +121,7 @@ router.get("/:portfolioUrl/view", authHandler, async (req, res) => {
         throw new ApiError(404, "Portfolio not found");
     }
 
-    res.status(200).json({
-        status: 200,
-        success: true,
-        data: portfolio.toHtml(),
-    });
+    res.send(portfolio.toHtml())
 
 
 })
