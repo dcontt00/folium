@@ -1,5 +1,7 @@
 import {useLoaderData} from "react-router";
 import {Center, Loader} from "@mantine/core";
+import ComponentsSection from "~/components/ComponentsSection"
+import type Portfolio from "~/interfaces/portfolio";
 
 
 // HydrateFallback is rendered while the client loader is running
@@ -11,10 +13,9 @@ export function HydrateFallback() {
     );
 }
 
-export default function Portfolio() {
+export default function PortfolioRoute() {
 
-    const portfolio: string = useLoaderData();
-
-    return <div dangerouslySetInnerHTML={{__html: portfolio}}/>;
+    const portfolio: Portfolio = useLoaderData();
+    return <ComponentsSection components={portfolio.components}/>
 
 }

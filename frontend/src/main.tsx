@@ -14,6 +14,7 @@ import Index from "./routes/index";
 import Edit from "~/routes/edit";
 import Login from "~/routes/login";
 import Register from "~/routes/register";
+import PortfolioRoute from "~/routes/portfolio";
 import ErrorPage from "~/components/errors/ErrorPage";
 
 
@@ -72,6 +73,11 @@ const router = createBrowserRouter([
                 path: "home",
                 Component: Home,
                 loader: async () => await getPortfolios()
+            },
+            {
+                path: "view/:portfolioUrl",
+                Component: PortfolioRoute,
+                loader: async ({params}) => await getPortfolio(params)
             },
             /*{
                 path: "view/:portfolioUrl",
