@@ -28,12 +28,12 @@ async function uploadFilesToGithubPages(githubToken: string, githubUser: string,
 }
 
 async function uploadFileToGithubPages(githubToken: string, githubUser: string, portfolioUrl: string, filePath: string) {
-    console.log("Uploading file:", filePath);
     const fileContent = fs.readFileSync(filePath, 'utf-8');
-
     const fileName = filePath.split("/").pop()!;
     const url = `${GITHUB_API_URL}/repos/${githubUser}/${portfolioUrl}/contents/${fileName}`;
 
+    console.log("filePath", filePath)
+    console.log("fileName", fileName)
     // Convert file content to Base64
     const contentBase64 = Buffer.from(fileContent).toString("base64");
 
@@ -47,7 +47,7 @@ async function uploadFileToGithubPages(githubToken: string, githubUser: string, 
             },
             {headers: {Authorization: `Bearer ${githubToken}`}}
         ).catch((error) => {
-            console.error("Add file Error uploading file:", error.message);
+            console.error("Error adding file:", error.message);
         })
 
     } else {
@@ -60,7 +60,7 @@ async function uploadFileToGithubPages(githubToken: string, githubUser: string, 
             },
             {headers: {Authorization: `Bearer ${githubToken}`}}
         ).catch((error) => {
-            console.error("Edit file Error uploading file:", error.message);
+            console.error("Error editing file:", error.message);
         })
     }
 }
@@ -156,17 +156,13 @@ async function branchExists(githubToken: string, githubUser: string, portfolioUr
 
 async function fileExists(githubToken: string, githubUser: string, portfolioUrl: string, fileName: string, branch: string) {
     const url = `${GITHUB_API_URL}/repos/${githubUser}/${portfolioUrl}/contents/${fileName}?ref=${branch}`;
-    console.log("fileExists", url)
 
     try {
         const response = await axios.get(url, {
             headers: {Authorization: `Bearer ${githubToken}`},
         });
-        console.log("fileExists", response.status)
         return response.status === 200;
     } catch (error: any) {
-        console.log("fileExists", error.response.status)
-
         if (error.response && error.response.status === 404) {
             return false; // File does not exist
         }
