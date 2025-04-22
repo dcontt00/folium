@@ -1,28 +1,37 @@
 import axios from "axios";
 import fs from "fs";
+import config from "@/utils/config";
 
 const GITHUB_API_URL = "https://api.github.com";
 const TOKEN = "your_personal_access_token"; // Replace with your PAT
 
 
 async function exchangeCodeForToken(code: string) {
-    const res = await axios.get(
+    return await axios.get(
         "https://github.com/login/oauth/access_token",
         {
             params: {
-                client_id: process.env.GITHUB_CLIENT_ID,
-                client_secret: process.env.GITHUB_CLIENT_SECRET,
+                client_id: config.GITHUB_OAUTH_CLIENT_ID,
+                client_secret: config.GITHUB_OAUTH_CLIENT_SECRET,
                 code: code,
-                redirect_uri: `your-domain/integrations/github/oauth2/callback`,
+                redirect_uri: `http://localhost:3000/auth/github/callback`,
             },
             headers: {
                 "Accept": "application/json",
                 "Accept-Encoding": "application/json",
             },
         }
-    );
-
-    return res.data.access_token;
+    ).then((res) => {
+        console.log(res)
+        if (res.data.error) {
+            console.error("Error exchanging code for token:", res.data.error);
+            throw new Error("Error exchanging code for token");
+        }
+        return res.data.access_token;
+    }).catch((err) => {
+        console.error("Error exchanging code for token:", err.message);
+        throw new Error("Error exchanging code for token");
+    })
 
 }
 

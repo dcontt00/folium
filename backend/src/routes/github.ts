@@ -5,22 +5,44 @@ import {getExportsFolder} from "@/utils/directories";
 import {authHandler} from "@/middleware";
 import {exchangeCodeForToken, uploadFilesToGithubPages} from "@/services/githubService";
 import {generateHtmlFiles} from "@/services/portfolioService";
+import userModel from "@/models/UserModel";
 
 const router = express.Router();
 
 
-router.get("/oauth", (req, res) => {
+router.get("/oauth", authHandler, async (req, res) => {
     const code = req.query.code as string;
+    const user = req.user
+
+    if (!user) {
+        throw new Error("User not found");
+    }
 
     if (!code) {
         throw new Error("Missing required parameters: code");
     }
 
     // Handle the OAuth callback here
-    const token = exchangeCodeForToken(code)
-
-    // You can exchange the code for an access token using your backend service
-    res.send("OAuth callback received.");
+    const token = await exchangeCodeForToken(code)
+    console.log(token)
+    await userModel
+        .findOneAndUpdate({_id: user.id}, {githubToken: token})
+        .then((user) => {
+            console.log(user)
+            res.status(200).json({
+                status: 200,
+                success: true,
+                message: "Github token updated successfully",
+            })
+        })
+        .catch((err) => {
+            console.error("Error updating Github token:", err);
+            res.status(500).json({
+                status: 500,
+                success: false,
+                message: "Error updating Github token",
+            })
+        })
 
 })
 
