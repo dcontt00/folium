@@ -1,6 +1,7 @@
 import {Button, Divider, PasswordInput, Text, Textarea, TextInput, Title} from "@mantine/core";
 import axiosInstance from "~/axiosInstance";
 import {useState} from "react";
+import GithubLogin from "~/components/GithubLogin";
 
 
 interface Props {
@@ -84,6 +85,8 @@ export default function SettingsSection({
             >
                 Export and download
             </Button>
+
+            <GithubLogin/>
 
 
             <Title order={3}>Login to Github</Title>
