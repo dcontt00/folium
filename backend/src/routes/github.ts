@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.get("/oauth", authHandler, async (req, res) => {
     const code = req.query.code as string;
+    const redirectUri = req.query.redirect_uri as string;
     const user = req.user
 
     if (!user) {
@@ -22,9 +23,14 @@ router.get("/oauth", authHandler, async (req, res) => {
         throw new Error("Missing required parameters: code");
     }
 
+    if (!redirectUri) {
+        throw new Error("Missing required parameters: redirect_uri");
+    }
+
     // Handle the OAuth callback here
-    const token = await exchangeCodeForToken(code)
-    console.log(token)
+    const token = await exchangeCodeForToken(code, redirectUri)
+
+    // TODO: Encrypt the token before saving it to the database
     await userModel
         .findOneAndUpdate({_id: user.id}, {githubToken: token})
         .then((user) => {

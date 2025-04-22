@@ -19,7 +19,14 @@ export default function GithubCallback() {
             if (code && stateParam) {
                 if (state === stateParam) {
                     try {
-                        const response = await axiosInstance.get(`/github/oauth?code=${code}`);
+                        const rootUrl = window.location.origin;
+                        const redirectUrl = `${rootUrl}/auth/github/callback`;
+                        const response = await axiosInstance.get(`/github/oauth`, {
+                            params: {
+                                code: code,
+                                redirect_uri: redirectUrl,
+                            }
+                        });
                         setValue("Success: " + response.data.message);
                     } catch (error) {
                         console.error("Error during API call:", error);
