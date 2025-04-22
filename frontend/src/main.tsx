@@ -15,6 +15,7 @@ import Edit from "~/routes/edit";
 import Login from "~/routes/login";
 import Register from "~/routes/register";
 import PortfolioRoute from "~/routes/portfolio";
+import GithubCallback from "~/routes/githubCallback";
 import ErrorPage from "~/components/errors/ErrorPage";
 
 
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
                 path: "edit/:portfolioUrl",
                 Component: Edit,
                 loader: async ({params}) => await getPortfolio(params)
+            },
+            {
+                path: "/auth/github/callback",
+                Component: GithubCallback
             }
         ]
     }

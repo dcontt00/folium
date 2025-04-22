@@ -3,10 +3,26 @@ import path from "path";
 import fs from "fs";
 import {getExportsFolder} from "@/utils/directories";
 import {authHandler} from "@/middleware";
-import {uploadFilesToGithubPages} from "@/services/githubService";
+import {exchangeCodeForToken, uploadFilesToGithubPages} from "@/services/githubService";
 import {generateHtmlFiles} from "@/services/portfolioService";
 
 const router = express.Router();
+
+
+router.get("/oauth", (req, res) => {
+    const code = req.query.code as string;
+
+    if (!code) {
+        throw new Error("Missing required parameters: code");
+    }
+
+    // Handle the OAuth callback here
+    const token = exchangeCodeForToken(code)
+
+    // You can exchange the code for an access token using your backend service
+    res.send("OAuth callback received.");
+
+})
 
 
 router.get('/upload', authHandler, async (req, res, next) => {

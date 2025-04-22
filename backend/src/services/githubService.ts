@@ -5,6 +5,27 @@ const GITHUB_API_URL = "https://api.github.com";
 const TOKEN = "your_personal_access_token"; // Replace with your PAT
 
 
+async function exchangeCodeForToken(code: string) {
+    const res = await axios.get(
+        "https://github.com/login/oauth/access_token",
+        {
+            params: {
+                client_id: process.env.GITHUB_CLIENT_ID,
+                client_secret: process.env.GITHUB_CLIENT_SECRET,
+                code: code,
+                redirect_uri: `your-domain/integrations/github/oauth2/callback`,
+            },
+            headers: {
+                "Accept": "application/json",
+                "Accept-Encoding": "application/json",
+            },
+        }
+    );
+
+    return res.data.access_token;
+
+}
+
 async function uploadFilesToGithubPages(githubToken: string, githubUser: string, portfolioUrl: string, filePath: string) {
     if (!await repositoryExists(githubToken, githubUser, portfolioUrl)) {
         await createRepository(githubToken, portfolioUrl)
@@ -172,5 +193,6 @@ async function fileExists(githubToken: string, githubUser: string, portfolioUrl:
 
 export {
     uploadFileToGithubPages,
-    uploadFilesToGithubPages
+    uploadFilesToGithubPages,
+    exchangeCodeForToken
 }

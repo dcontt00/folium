@@ -11,8 +11,10 @@ export default function GithubLogin() {
     function navigateToGithubLogin() {
         const cryptoState = crypto.randomUUID().toString();
         setState(cryptoState);
+        const rootUrl = window.location.origin;
+        console.log(rootUrl)
         window.open(
-            `https://github.com/login/oauth/authorize?client_id=${config.GITHUB_OAUTH_CLIENT_ID}&response_type=code&scope=repo&redirect_uri=http://localhost:3000/auth/github/callback&state=${cryptoState}`,
+            `https://github.com/login/oauth/authorize?client_id=${config.GITHUB_OAUTH_CLIENT_ID}&response_type=code&scope=repo&redirect_uri=${rootUrl}/auth/github/callback&state=${cryptoState}`,
             "_blank"
         );
     }
