@@ -9,11 +9,13 @@ import loginRouter from "@/routes/login"
 import portfolioRouter from "@/routes/portfolio"
 import imagesRouter from "@/routes/images"
 import logoutRouter from "@/routes/logout"
+import githubRouter from "@/routes/github"
 import fileUpload from "express-fileupload";
 import connectDB from "@/db";
 import {authHandler, errorHandler} from "@/middleware";
 import {getPorfolioByUrl} from "@/services/portfolioService";
 import {ApiError} from "@/classes";
+import {createDirectories} from "@/utils/directories";
 
 
 const app: Express = express();
@@ -35,6 +37,8 @@ app.use("/api/login", loginRouter);
 app.use("/api/logout", logoutRouter);
 app.use("/api/portfolio", portfolioRouter);
 app.use("/api/images", imagesRouter);
+app.use("/api/github", githubRouter);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -54,6 +58,7 @@ app.get("/view/:portfolioUrl", authHandler, async (req, res) => {
 app.use(errorHandler)
 
 app.listen(port, () => {
+    createDirectories()
     console.log(`Server running at http://localhost:${port}`);
 });
 
