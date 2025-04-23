@@ -10,6 +10,34 @@ import {ApiError} from "@/classes";
 
 const router = express.Router();
 
+router.get("/status", authHandler, async (req, res) => {
+    const user = req.user;
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    const {
+        githubToken,
+        githubUsername
+    } = await userModel.findById(user.id).select("githubToken githubUsername").then((user) => {
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        return user;
+    });
+
+    if (!githubToken || !githubUsername) {
+        throw new ApiError(400, "Not authorized with Github");
+    }
+
+    // Test if token is valid
+    try {
+        await getUserFromToken(githubToken as string);
+    } catch (e: any) {
+        throw new ApiError(400, "Not authorized with Github");
+    }
+
+})
 
 router.get("/oauth", authHandler, async (req, res) => {
     const code = req.query.code as string;

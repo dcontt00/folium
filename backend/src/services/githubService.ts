@@ -4,18 +4,35 @@ import config from "@/utils/config";
 
 const GITHUB_API_URL = "https://api.github.com";
 
+
+async function revokeGithubToken(clientId: string, clientSecret: string, token: string) {
+    const url = `https://api.github.com/applications/${clientId}/token`;
+    await axios.delete(url, {
+        auth: {
+            username: clientId,
+            password: clientSecret,
+        },
+        data: {
+            access_token: token,
+        },
+    }).then((res) => {
+        console.log("Token revoked successfully.");
+    }).catch((err) => {
+        console.error("Error revoking token:", err.message);
+        throw new Error("Error revoking token");
+    })
+}
+
 async function getUserFromToken(githubToken: string) {
     const url = `${GITHUB_API_URL}/user`;
 
-    try {
-        const response = await axios.get(url, {
-            headers: {Authorization: `Bearer ${githubToken}`},
-        });
-        return response.data; // Returns user details
-    } catch (error: any) {
-        console.error("Error fetching user details:", error.message);
-        throw new Error("Unable to fetch user details");
-    }
+    const response = await axios.get(url, {
+        headers: {Authorization: `Bearer ${githubToken}`},
+    }).catch((error) => {
+        console.error("Error fetching user from token:", error.message);
+        throw new Error("Error fetching user from token");
+    })
+    return response.data; // Returns user details
 }
 
 async function exchangeCodeForToken(code: string, redirectUri: string) {
