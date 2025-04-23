@@ -36,6 +36,7 @@ router.get("/status", authHandler, async (req, res) => {
         throw new ApiError(400, "Not authorized with Github");
     }
 
+
     res.send(true);
 
 })
@@ -129,7 +130,9 @@ router.get('/upload', authHandler, async (req, res, next) => {
         portfolioDir,
     );
 
-    res.send("Files uploaded successfully.");
+    const url = `https://${githubUsername}.github.io/${portfolioUrl}/`;
+
+    res.send({url: url});
 });
 
 

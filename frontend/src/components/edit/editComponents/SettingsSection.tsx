@@ -1,4 +1,4 @@
-import {Button, Divider, Text, Textarea, TextInput, Title} from "@mantine/core";
+import {Anchor, Button, Divider, Stack, Text, Textarea, TextInput, Title} from "@mantine/core";
 import axiosInstance from "~/axiosInstance";
 import GithubLogin from "~/components/GithubLogin";
 import {useEffect, useState} from "react";
@@ -26,12 +26,13 @@ export default function SettingsSection({
                                         }: Props) {
     const [githubIsAuthorized, setGithubIsAuthorized] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [showTooltip, setShowTooltip] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [url, setUrl] = useState("");
 
     useEffect(() => {
         const checkGithubAuthorization = async () => {
             console.log("Sí")
-            await axiosInstance.get('/github/status').then(() => {
+            await axiosInstance.get('/github/status').then((response) => {
                 setGithubIsAuthorized(true);
                 console.log("No")
                 return true;
@@ -66,6 +67,7 @@ export default function SettingsSection({
                 portfolioUrl: portfolioUrl,
             }
         }).then((response) => {
+            setUrl(response.data.url);
             console.log(response);
         }).catch((error) => {
             console.log(error);
@@ -74,9 +76,9 @@ export default function SettingsSection({
 
 
         // Show tooltip during 3 seconds
-        setShowTooltip(true);
+        setSuccess(true);
         setTimeout(() => {
-            setShowTooltip(false);
+            setSuccess(false);
         }, 3000);
     }
 
@@ -116,18 +118,27 @@ export default function SettingsSection({
                 <>
 
                     <Button
-                        leftSection={showTooltip ? <IconCheck/> : <IconBrandGithub/>}
+                        leftSection={success ? <IconCheck/> : <IconBrandGithub/>}
                         onClick={exportToGithub}
                         loading={loading}
                         color={
-
-                            showTooltip ? "green" : "blue"
+                            success ? "green" : "blue"
                         }
                     >
-                        {showTooltip ?
+                        {success ?
                             "Success" :
                             "Export to Github"}
                     </Button>
+                {url != "" &&
+                    <Stack gap="xs">
+                        <Text>Your site is on:
+                        </Text>
+
+                        <Anchor href={url} target="_blank" rel="noreferrer">
+                            {url}
+                        </Anchor>
+                    </Stack>
+                }
                 </>
                 :
                 <GithubLogin/>
