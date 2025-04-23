@@ -2,7 +2,7 @@ import {Button, Divider, Text, Textarea, TextInput, Title} from "@mantine/core";
 import axiosInstance from "~/axiosInstance";
 import GithubLogin from "~/components/GithubLogin";
 import {useEffect, useState} from "react";
-import {IconBrandGithub, IconDownload} from "@tabler/icons-react";
+import {IconBrandGithub, IconCheck, IconDownload} from "@tabler/icons-react";
 
 
 interface Props {
@@ -25,6 +25,8 @@ export default function SettingsSection({
                                             portfolioUrl
                                         }: Props) {
     const [githubIsAuthorized, setGithubIsAuthorized] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [showTooltip, setShowTooltip] = useState(false);
 
     useEffect(() => {
         const checkGithubAuthorization = async () => {
@@ -58,6 +60,7 @@ export default function SettingsSection({
     }
 
     async function exportToGithub() {
+        setLoading(true);
         await axiosInstance.get(`/github/upload`, {
             params: {
                 portfolioUrl: portfolioUrl,
@@ -67,6 +70,14 @@ export default function SettingsSection({
         }).catch((error) => {
             console.log(error);
         });
+        setLoading(false);
+
+
+        // Show tooltip during 3 seconds
+        setShowTooltip(true);
+        setTimeout(() => {
+            setShowTooltip(false);
+        }, 3000);
     }
 
 
@@ -102,12 +113,22 @@ export default function SettingsSection({
             <Title order={4}>Github</Title>
 
             {githubIsAuthorized ?
-                <Button
-                    leftSection={<IconBrandGithub/>}
-                    onClick={exportToGithub}
-                >
-                    Export to Github
-                </Button>
+                <>
+
+                    <Button
+                        leftSection={showTooltip ? <IconCheck/> : <IconBrandGithub/>}
+                        onClick={exportToGithub}
+                        loading={loading}
+                        color={
+
+                            showTooltip ? "green" : "blue"
+                        }
+                    >
+                        {showTooltip ?
+                            "Success" :
+                            "Export to Github"}
+                    </Button>
+                </>
                 :
                 <GithubLogin/>
             }
