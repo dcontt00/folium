@@ -1,6 +1,8 @@
 import {Button, Divider, Text, Textarea, TextInput, Title} from "@mantine/core";
 import axiosInstance from "~/axiosInstance";
 import GithubLogin from "~/components/GithubLogin";
+import {useEffect, useState} from "react";
+import {IconDownload} from "@tabler/icons-react";
 
 
 interface Props {
@@ -22,6 +24,22 @@ export default function SettingsSection({
                                             setUnsaved,
                                             portfolioUrl
                                         }: Props) {
+    const [githubIsAuthorized, setGithubIsAuthorized] = useState(false);
+    useEffect(() => {
+        const checkGithubAuthorization = async () => {
+            try {
+                const response = await axiosInstance.get('/github/status');
+                setGithubIsAuthorized(true);
+            } catch (error) {
+                console.error('Error checking GitHub authorization:', error);
+                setGithubIsAuthorized(false);
+            }
+        };
+
+        checkGithubAuthorization();
+
+
+    }, []);
 
 
     async function exportAndSave() {
@@ -75,22 +93,22 @@ export default function SettingsSection({
             <Title order={3}>Export</Title>
             <Text>You can export the portfolio as HTML and CSS or select a provider to host it directly</Text>
             <Button
+                leftSection={<IconDownload/>}
                 onClick={exportAndSave}
             >
-                Export and download
+                Download
             </Button>
+            <Title order={4}>Github</Title>
 
-            <GithubLogin/>
-
-
-            <Title order={3}>Login to Github</Title>
-
-            <Button
-                onClick={exportToGithub}
-            >
-                Export to Github
-            </Button>
-
+            {githubIsAuthorized ?
+                <Button
+                    onClick={exportToGithub}
+                >
+                    Export to Github
+                </Button>
+                :
+                <GithubLogin/>
+            }
         </>
     )
 }

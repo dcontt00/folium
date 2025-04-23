@@ -1,6 +1,7 @@
 import config from "~/config";
 import {Button} from "@mantine/core";
 import {useLocalStorage} from "@mantine/hooks";
+import {IconBrandGithub} from "@tabler/icons-react";
 
 export default function GithubLogin() {
     const [state, setState] = useLocalStorage({
@@ -21,7 +22,10 @@ export default function GithubLogin() {
     }
 
     return (
-        <Button onClick={navigateToGithubLogin}>
+        <Button
+            leftSection={<IconBrandGithub/>}
+            onClick={navigateToGithubLogin}
+        >
             Login to Github
         </Button>
     );
