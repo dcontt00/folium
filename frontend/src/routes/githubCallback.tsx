@@ -10,7 +10,6 @@ export default function GithubCallback() {
         key: 'state',
         defaultValue: '',
     });
-    const [value, setValue] = useState("");
     const [loading, setLoading] = useState(true);
     const [success, setSuccess] = useState(false);
 
@@ -26,22 +25,19 @@ export default function GithubCallback() {
                     try {
                         const rootUrl = window.location.origin;
                         const redirectUrl = `${rootUrl}/auth/github/callback`;
-                        const response = await axiosInstance.get(`/github/oauth`, {
+                        await axiosInstance.get(`/github/oauth`, {
                             params: {
                                 code: code,
                                 redirect_uri: redirectUrl,
                             }
                         });
-                        setValue("Success: " + response.data.message);
                         setSuccess(true);
 
                     } catch (error) {
                         console.error("Error during API call:", error);
-                        setValue("Failed to authenticate");
                         setSuccess(false);
                     }
                 } else {
-                    setValue("Failed");
                     console.error("State does not match");
                     setSuccess(false);
                 }
