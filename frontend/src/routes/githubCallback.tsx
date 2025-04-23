@@ -6,7 +6,7 @@ import {IconBrandGithub, IconCheck, IconX} from "@tabler/icons-react";
 
 export default function GithubCallback() {
 
-    const [state, setState] = useLocalStorage({
+    const [state] = useLocalStorage({
         key: 'state',
         defaultValue: '',
     });

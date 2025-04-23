@@ -2,7 +2,7 @@ import {Button, Divider, Text, Textarea, TextInput, Title} from "@mantine/core";
 import axiosInstance from "~/axiosInstance";
 import GithubLogin from "~/components/GithubLogin";
 import {useEffect, useState} from "react";
-import {IconDownload} from "@tabler/icons-react";
+import {IconBrandGithub, IconDownload} from "@tabler/icons-react";
 
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
     description: string;
     setDescription: (description: string) => void;
     setUnsaved: (unsaved: boolean) => void;
-    portfolioUrl: string
+    portfolioUrl: string,
 }
 
 export default function SettingsSection({
@@ -25,22 +25,23 @@ export default function SettingsSection({
                                             portfolioUrl
                                         }: Props) {
     const [githubIsAuthorized, setGithubIsAuthorized] = useState(false);
+
     useEffect(() => {
         const checkGithubAuthorization = async () => {
-            try {
-                const response = await axiosInstance.get('/github/status');
+            console.log("Sí")
+            await axiosInstance.get('/github/status').then(() => {
                 setGithubIsAuthorized(true);
-            } catch (error) {
-                console.error('Error checking GitHub authorization:', error);
+                console.log("No")
+                return true;
+            }).catch((e) => {
+                console.log(e)
                 setGithubIsAuthorized(false);
-            }
+            })
+
         };
-
+        console.log('Checking GitHub authorization');
         checkGithubAuthorization();
-
-
     }, []);
-
 
     async function exportAndSave() {
         const response = await axiosInstance.get(`/portfolio/${portfolioUrl}/export`, {
@@ -102,6 +103,7 @@ export default function SettingsSection({
 
             {githubIsAuthorized ?
                 <Button
+                    leftSection={<IconBrandGithub/>}
                     onClick={exportToGithub}
                 >
                     Export to Github

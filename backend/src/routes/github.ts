@@ -31,11 +31,12 @@ router.get("/status", authHandler, async (req, res) => {
     }
 
     // Test if token is valid
-    try {
-        await getUserFromToken(githubToken as string);
-    } catch (e: any) {
+    const githubUser = await getUserFromToken(githubToken as string);
+    if (!githubUser) {
         throw new ApiError(400, "Not authorized with Github");
     }
+
+    res.send(true);
 
 })
 

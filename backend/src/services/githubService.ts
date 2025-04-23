@@ -24,14 +24,19 @@ async function revokeGithubToken(clientId: string, clientSecret: string, token: 
 }
 
 async function getUserFromToken(githubToken: string) {
+    console.log("getUserFromToken", githubToken)
     const url = `${GITHUB_API_URL}/user`;
 
     const response = await axios.get(url, {
         headers: {Authorization: `Bearer ${githubToken}`},
+    }).then((result) => {
+        console.log("result", result)
+        return result
     }).catch((error) => {
         console.error("Error fetching user from token:", error.message);
         throw new Error("Error fetching user from token");
     })
+    console.log("response", response.data)
     return response.data; // Returns user details
 }
 
