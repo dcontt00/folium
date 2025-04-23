@@ -30,6 +30,10 @@ const UserSchema = new mongoose.Schema(
                 ref: "Portfolio",
             },
         ],
+        githubUsername: {
+            type: String,
+            required: false,
+        },
         githubToken: {
             type: String,
             required: false,

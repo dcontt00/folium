@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 import {getExportsFolder} from "@/utils/directories";
 import {authHandler} from "@/middleware";
-import {exchangeCodeForToken, uploadFilesToGithubPages} from "@/services/githubService";
+import {exchangeCodeForToken, getUserFromToken, uploadFilesToGithubPages} from "@/services/githubService";
 import {generateHtmlFiles} from "@/services/portfolioService";
 import userModel from "@/models/UserModel";
 
@@ -29,10 +29,12 @@ router.get("/oauth", authHandler, async (req, res) => {
 
     // Handle the OAuth callback here
     const token = await exchangeCodeForToken(code, redirectUri)
+    const githubUser = await getUserFromToken(token)
+    const githubUsername = githubUser.login
 
     // TODO: Encrypt the token before saving it to the database
     await userModel
-        .findOneAndUpdate({_id: user.id}, {githubToken: token})
+        .findOneAndUpdate({_id: user.id}, {githubToken: token, githubUsername: githubUsername})
         .then((user) => {
             console.log(user)
             res.status(200).json({

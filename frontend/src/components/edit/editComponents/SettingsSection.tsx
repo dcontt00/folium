@@ -1,6 +1,5 @@
-import {Button, Divider, PasswordInput, Text, Textarea, TextInput, Title} from "@mantine/core";
+import {Button, Divider, Text, Textarea, TextInput, Title} from "@mantine/core";
 import axiosInstance from "~/axiosInstance";
-import {useState} from "react";
 import GithubLogin from "~/components/GithubLogin";
 
 
@@ -43,8 +42,6 @@ export default function SettingsSection({
         await axiosInstance.get(`/github/upload`, {
             params: {
                 portfolioUrl: portfolioUrl,
-                githubUsername: githubUsername,
-                githubToken: githubToken
             }
         }).then((response) => {
             console.log(response);
@@ -52,9 +49,6 @@ export default function SettingsSection({
             console.log(error);
         });
     }
-
-    const [githubUsername, setGithubUsername] = useState("");
-    const [githubToken, setGithubToken] = useState("");
 
 
     return (
@@ -90,19 +84,12 @@ export default function SettingsSection({
 
 
             <Title order={3}>Login to Github</Title>
-            <TextInput
-                label="Github Username"
-                value={githubUsername}
-                onChange={(event) => setGithubUsername(event.currentTarget.value)}
-            />
-            <PasswordInput
-                label="Github Token"
-                value={githubToken}
-                onChange={(event) => setGithubToken(event.currentTarget.value)}
-            />
+
             <Button
                 onClick={exportToGithub}
-            >Ok</Button>
+            >
+                Export to Github
+            </Button>
 
         </>
     )

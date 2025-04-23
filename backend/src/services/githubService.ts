@@ -3,8 +3,20 @@ import fs from "fs";
 import config from "@/utils/config";
 
 const GITHUB_API_URL = "https://api.github.com";
-const TOKEN = "your_personal_access_token"; // Replace with your PAT
 
+async function getUserFromToken(githubToken: string) {
+    const url = `${GITHUB_API_URL}/user`;
+
+    try {
+        const response = await axios.get(url, {
+            headers: {Authorization: `Bearer ${githubToken}`},
+        });
+        return response.data; // Returns user details
+    } catch (error: any) {
+        console.error("Error fetching user details:", error.message);
+        throw new Error("Unable to fetch user details");
+    }
+}
 
 async function exchangeCodeForToken(code: string, redirectUri: string) {
     return await axios.get(
@@ -202,5 +214,6 @@ async function fileExists(githubToken: string, githubUser: string, portfolioUrl:
 export {
     uploadFileToGithubPages,
     uploadFilesToGithubPages,
-    exchangeCodeForToken
+    exchangeCodeForToken,
+    getUserFromToken
 }
