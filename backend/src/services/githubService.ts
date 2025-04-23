@@ -54,7 +54,6 @@ async function uploadFilesToGithubPages(githubToken: string, githubUser: string,
     if (!await branchExists(githubToken, githubUser, portfolioUrl, "gh-pages")) {
         await createBranch(githubToken, githubUser, portfolioUrl, "gh-pages")
     }
-    console.log(filePath)
 
     const files = fs.readdirSync(filePath);
     for (const file of files) {
@@ -73,12 +72,11 @@ async function uploadFileToGithubPages(githubToken: string, githubUser: string, 
     const fileName = filePath.split("/").pop()!;
     const url = `${GITHUB_API_URL}/repos/${githubUser}/${portfolioUrl}/contents/${fileName}`;
 
-    console.log("filePath", filePath)
-    console.log("fileName", fileName)
     // Convert file content to Base64
     const contentBase64 = Buffer.from(fileContent).toString("base64");
+    const fileSha = await getFileShaIfExists(githubToken, githubUser, portfolioUrl, fileName, "gh-pages");
 
-    if (!await fileExists(githubToken, githubUser, portfolioUrl, fileName, "gh-pages")) {
+    if (!fileSha) {
         await axios.put(
             url,
             {
@@ -98,6 +96,7 @@ async function uploadFileToGithubPages(githubToken: string, githubUser: string, 
                 message: `Update ${fileName}`,
                 content: contentBase64,
                 branch: "gh-pages",
+                sha: fileSha,
             },
             {headers: {Authorization: `Bearer ${githubToken}`}}
         ).catch((error) => {
@@ -195,25 +194,33 @@ async function branchExists(githubToken: string, githubUser: string, portfolioUr
     }
 }
 
-async function fileExists(githubToken: string, githubUser: string, portfolioUrl: string, fileName: string, branch: string) {
-    const url = `${GITHUB_API_URL}/repos/${githubUser}/${portfolioUrl}/contents/${fileName}?ref=${branch}`;
+async function getFileShaIfExists(
+    githubToken: string,
+    githubUser: string,
+    portfolioUrl: string,
+    fileName: string,
+    branch: string
+): Promise<string | null> {
+    const url = `https://api.github.com/repos/${githubUser}/${portfolioUrl}/contents/${fileName}?ref=${branch}`;
 
     try {
         const response = await axios.get(url, {
             headers: {Authorization: `Bearer ${githubToken}`},
         });
-        return response.status === 200;
+        return response.data.sha; // Return the SHA if the file exists
     } catch (error: any) {
         if (error.response && error.response.status === 404) {
-            return false; // File does not exist
+            return null; // File does not exist, return null
         }
         throw error; // Some other error occurred
     }
 }
 
+
 export {
     uploadFileToGithubPages,
     uploadFilesToGithubPages,
     exchangeCodeForToken,
-    getUserFromToken
+    getUserFromToken,
+    getFileShaIfExists
 }

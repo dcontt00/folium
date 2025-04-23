@@ -6,6 +6,7 @@ import {authHandler} from "@/middleware";
 import {exchangeCodeForToken, getUserFromToken, uploadFilesToGithubPages} from "@/services/githubService";
 import {generateHtmlFiles} from "@/services/portfolioService";
 import userModel from "@/models/UserModel";
+import {ApiError} from "@/classes";
 
 const router = express.Router();
 
@@ -32,7 +33,6 @@ router.get("/oauth", authHandler, async (req, res) => {
     const githubUser = await getUserFromToken(token)
     const githubUsername = githubUser.login
 
-    // TODO: Encrypt the token before saving it to the database
     await userModel
         .findOneAndUpdate({_id: user.id}, {githubToken: token, githubUsername: githubUsername})
         .then((user) => {
@@ -56,38 +56,51 @@ router.get("/oauth", authHandler, async (req, res) => {
 
 
 router.get('/upload', authHandler, async (req, res, next) => {
-    try {
-        const {githubToken, githubUsername, portfolioUrl} = req.query;
+    const user = req.user;
 
-        if (!githubToken || !githubUsername || !portfolioUrl) {
-            res.status(400).send("Missing required parameters: githubToken, githubUsername, portfolioUrl");
-            return;
-        }
-
-        const exportFolder = getExportsFolder();
-        const portfolioDir = path.join(exportFolder, portfolioUrl as string);
-
-        if (!fs.existsSync(portfolioDir)) {
-            res.status(404).send("Portfolio directory not found.");
-            return;
-        }
-
-        // Generate HTML files
-        await generateHtmlFiles(portfolioUrl as string)
-
-
-        await uploadFilesToGithubPages(
-            githubToken as string,
-            githubUsername as string,
-            portfolioUrl as string,
-            portfolioDir,
-        );
-
-        res.send("Files uploaded successfully.");
-    } catch (error) {
-        console.error("Error uploading files:", error);
-        next(error); // Pass the error to the next middleware
+    if (!user) {
+        throw new ApiError(404, "User not found");
     }
+
+    const {portfolioUrl} = req.query;
+
+    if (!portfolioUrl) {
+        throw new ApiError(400, "Missing required parameters: portfolioUrl");
+        return;
+    }
+
+    const exportFolder = getExportsFolder();
+    const portfolioDir = path.join(exportFolder, portfolioUrl as string);
+
+    if (!fs.existsSync(portfolioDir)) {
+        res.status(404).send("Portfolio directory not found.");
+        return;
+    }
+
+    // Generate HTML files
+    await generateHtmlFiles(portfolioUrl as string)
+
+    const {
+        githubToken,
+        githubUsername
+    } = await userModel.findById(user.id).select("githubToken githubUsername").then((user) => {
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        return user;
+    });
+
+    if (!githubToken || !githubUsername) {
+        throw new ApiError(400, "Not authorized with Github");
+    }
+    await uploadFilesToGithubPages(
+        githubToken as string,
+        githubUsername as string,
+        portfolioUrl as string,
+        portfolioDir,
+    );
+
+    res.send("Files uploaded successfully.");
 });
 
 
