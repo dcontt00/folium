@@ -10,7 +10,7 @@ const pages = [
     {name: '/home', title: 'Home'},
     {name: '/portfolio', title: 'Portfolio'},
     {name: '/edit', title: 'Edit'},
-    {name: "/githubCallback", title: "GitHub Callback"},
+    {name: "/github-callback", title: "GitHub Callback"},
 ];
 
 // Directory where the HTML files will be created

@@ -91,8 +91,12 @@ const router = createBrowserRouter([
                 loader: async ({params}) => await getPortfolio(params)
             },
             {
-                path: "/auth/github/callback",
+                path: "/github-callback",
                 Component: GithubCallback
+            },
+            {
+                path: "/settings",
+                Component: () => <div>Settings</div>
             }
         ]
     }

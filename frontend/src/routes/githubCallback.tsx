@@ -24,7 +24,7 @@ export default function GithubCallback() {
                 if (state === stateParam) {
                     try {
                         const rootUrl = window.location.origin;
-                        const redirectUrl = `${rootUrl}/auth/github/callback`;
+                        const redirectUrl = `${rootUrl}/github-callback`;
                         await axiosInstance.get(`/github/oauth`, {
                             params: {
                                 code: code,
