@@ -17,6 +17,7 @@ import Register from "~/routes/register";
 import PortfolioRoute from "~/routes/portfolio";
 import GithubCallback from "~/routes/githubCallback";
 import ErrorPage from "~/components/errors/ErrorPage";
+import Profile from "~/routes/profile";
 
 
 async function getPortfolios() {
@@ -44,6 +45,16 @@ async function getPortfolio(params: { portfolioUrl?: string }) {
             throw data(responseError.data.message, {status: responseError.status});
         });
     return portfolio;
+}
+
+async function getUser() {
+    return axiosInstance.get(`/user`)
+        .then((response: AxiosResponse) => {
+            return response.data.user;
+        }).catch((error) => {
+            const responseError = error.response;
+            throw data(responseError.data.message, {status: responseError.status});
+        });
 }
 
 async function renderPortfolio(params: { portfolioUrl?: string }) {
@@ -95,8 +106,9 @@ const router = createBrowserRouter([
                 Component: GithubCallback
             },
             {
-                path: "/settings",
-                Component: () => <div>Settings</div>
+                path: "/profile",
+                Component: Profile,
+                loader: async () => await getUser()
             }
         ]
     }
