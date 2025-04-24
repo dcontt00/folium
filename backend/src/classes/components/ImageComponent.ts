@@ -41,13 +41,13 @@ export default class ImageComponent extends Component {
                         justifyContent: 'center',
                         backgroundColor: 'rgba(0, 0, 0, ${this.overlayTransparency})',
                     }}>
-                        <span style={{color: 'white', fontSize: '1.125rem'}}>{imageComponent.overlayText}</span>
+                        <span style={{color: 'white', fontSize: '1.125rem'}}>${this.overlayText}</span>
                     </div>
                  ` : ''}
             </div>
             ${this.caption ? `
                 <div style={{marginTop: '0.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'white'}}>
-                    {imageComponent.caption}
+                    ${this.caption}
                 </div>
             ` : ''}
         </div>

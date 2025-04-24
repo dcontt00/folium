@@ -29,6 +29,7 @@ function createDirectories() {
 
 export {
     getExportsFolder,
-    createDirectories
+    createDirectories,
+    getImagesFolder
 }
 
