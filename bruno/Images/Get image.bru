@@ -5,7 +5,12 @@ meta {
 }
 
 get {
-  url: http://localhost:3000/images/67e3fda07cce53768bb9612a/1743071601881.png
+  url: http://localhost:3000/api/images/:userId/:image
   body: none
   auth: inherit
+}
+
+params:path {
+  image: avatar.jpg
+  userId: 6809fced7f81333107b81151
 }

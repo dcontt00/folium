@@ -4,8 +4,10 @@ import path from "path";
 import fs from "node:fs";
 import {ApiError, AuthenticationError} from "@/classes";
 import {getImagesFolder} from "@/utils/directories";
+import sharp from "sharp";
 
 const router = express.Router();
+
 
 router.post("/", authHandler, async (req, res) => {
     const user = req.user;
@@ -18,38 +20,39 @@ router.post("/", authHandler, async (req, res) => {
 
     if (!req.files.upload) {
         res.status(400).send("No file uploaded");
-        return
+        return;
     }
 
     if (Array.isArray(req.files.upload)) {
         res.status(400).send("Only one file can be uploaded");
-        return
+        return;
     }
-    const imagesPath = getImagesFolder()
+
+    const imagesPath = getImagesFolder();
     const upload = req.files.upload;
-    const uploadFolder = path.join(imagesPath, user.id)
-    console.log(uploadFolder)
+    const uploadFolder = path.join(imagesPath, user.id);
 
     // Check if the folder exists, if not, create it
     if (!fs.existsSync(uploadFolder)) {
         fs.mkdirSync(uploadFolder, {recursive: true});
     }
 
-    const extension = path.extname(upload.name);
-    const uploadPath = `${uploadFolder}/${Date.now().toString()}${extension}`;
-    const url = `/images/${user.id}/${path.basename(uploadPath)}`;
+    const type = req.query.type;
+    const outputFilename = type === "avatar" ? "avatar.jpg" : `${Date.now().toString()}.jpg`;
+    const outputPath = path.join(uploadFolder, outputFilename);
+    const url = `/images/${user.id}/${outputFilename}`;
 
-    upload.mv(uploadPath, (err) => {
-        if (err) {
-            res.status(500).send(err);
-            return
-        }
-
-        res.status(200).json({url: url})
-    })
-
+    try {
+        // Use sharp to process the image
+        await sharp(upload.data)
+            .jpeg({quality: 80}) // Convert to JPEG with 80% quality
+            .toFile(outputPath);
+        res.status(200).json({url: url});
+    } catch (error) {
+        console.error("Error processing image:", error);
+        res.status(500).send("Error processing image");
+    }
 });
-
 router.get('/:userId/:filename', authHandler, (req, res) => {
     const user = req.user;
     if (!user) {
