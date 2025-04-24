@@ -29,6 +29,7 @@ export default defineConfig({
                 portfolio: path.resolve(__dirname, 'portfolio/index.html'),
                 register: path.resolve(__dirname, 'register/index.html'),
                 githubCallback: path.resolve(__dirname, 'github-callback/index.html'),
+                profile: path.resolve(__dirname, 'profile/index.html'),
             }
         },
     },
