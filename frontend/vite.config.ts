@@ -28,6 +28,7 @@ export default defineConfig({
                 login: path.resolve(__dirname, 'login/index.html'),
                 portfolio: path.resolve(__dirname, 'portfolio/index.html'),
                 register: path.resolve(__dirname, 'register/index.html'),
+                githubCallback: path.resolve(__dirname, 'githubCallback/index.html'),
             }
         },
     },
