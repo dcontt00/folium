@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import Component from "@/classes/components/Component";
+import {html as beautifyHtml} from "js-beautify";
+
 
 export default class Portfolio {
     _id: mongoose.Types.ObjectId;
@@ -20,20 +22,21 @@ export default class Portfolio {
 
     toHtml() {
         const componentsHtml = this.components.map(component => component.toHtml()).join("");
+        const rawHtml = `
+        <html>
 
-        return `
+            <head>
+                <title>Express</title>
+                <link href="/stylesheets/style.css" rel="stylesheet">
+            </head>
+            <body>
 
-
-<head>
-    <title>Express</title>
-    <link href="/stylesheets/style.css" rel="stylesheet">
-</head>
-<body>
-
-            <div class="container">
-                ${componentsHtml}
-            </div>
-</body>
+                <div class="container">
+                    ${componentsHtml}
+                </div>
+            </body>
+        </html>
         `;
+        return beautifyHtml(rawHtml, {indent_size: 2});
     }
 }
