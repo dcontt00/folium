@@ -115,7 +115,7 @@ export default function HeroContentLeft() {
                                 <Stack>
                                     <Button
                                         leftSection={<IconArrowLeft/>}
-                                        onClick={() => setShowLogin(prev => !prev)}
+                                        onClick={() => setShowRegister(prev => !prev)}
                                     >
                                         Back
                                     </Button>

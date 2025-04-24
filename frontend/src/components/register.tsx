@@ -1,4 +1,4 @@
-import {Button, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
+import {Button, Group, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
 import {isEmail, isNotEmpty, useForm} from '@mantine/form';
 import {useNavigate} from "react-router";
 import axiosInstance from "~/axiosInstance";
@@ -75,25 +75,21 @@ export default function Register() {
                 gap="md"
             >
                 <Title order={3}>Register</Title>
-                <TextInput
-                    withAsterisk
-                    label="Name"
-                    key={form.key('name')}
-                    {...form.getInputProps('name')}
-                />
+                <Group>
+                    <TextInput
+                        withAsterisk
+                        label="Name"
+                        key={form.key('name')}
+                        {...form.getInputProps('name')}
+                    />
 
-                <TextInput
-                    withAsterisk
-                    label="Surname"
-                    key={form.key('surname')}
-                    {...form.getInputProps('surname')}
-                />
-                <TextInput
-                    withAsterisk
-                    label="Username"
-                    key={form.key('username')}
-                    {...form.getInputProps('username')}
-                />
+                    <TextInput
+                        withAsterisk
+                        label="Surname"
+                        key={form.key('surname')}
+                        {...form.getInputProps('surname')}
+                    />
+                </Group>
 
                 <TextInput
                     withAsterisk
@@ -101,14 +97,21 @@ export default function Register() {
                     key={form.key('email')}
                     {...form.getInputProps('email')}
                 />
-                <PasswordInput
-                    withAsterisk
-                    label="Password"
-                    key={form.key('password')}
-                    {...form.getInputProps('password')}
-                />
-
-
+                <Group>
+                    <TextInput
+                        withAsterisk
+                        label="Username"
+                        key={form.key('username')}
+                        {...form.getInputProps('username')}
+                    />
+                    <PasswordInput
+                        withAsterisk
+                        label="Password"
+                        key={form.key('password')}
+                        style={{flex: 1}}
+                        {...form.getInputProps('password')}
+                    />
+                </Group>
                 <Button type="submit" disabled={!form.isValid()}>Submit</Button>
             </Stack>
         </form>
