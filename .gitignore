@@ -6,3 +6,4 @@ frontend/.react-router
 frontend/build
 db
 backend/images
+backend/exports

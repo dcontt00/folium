@@ -28,8 +28,8 @@ export default class ImageComponent extends Component {
             width: ${this.width * 100}%
         }}>
             <div style={{position: 'relative', width: '100%'}}>
-                <img style={{width: '100%'}} src={this.url} alt={this.url}/>
-                {this.overlayText && (
+                <img style={{width: '100%'}} src=${this.url} alt=${this.url}/>
+                ${this.overlayText ? `
                     <div style={{
                         position: 'absolute',
                         top: 0,
@@ -43,13 +43,13 @@ export default class ImageComponent extends Component {
                     }}>
                         <span style={{color: 'white', fontSize: '1.125rem'}}>{imageComponent.overlayText}</span>
                     </div>
-                )}
+                 ` : ''}
             </div>
-            {imageComponent.caption && (
+            ${this.caption ? `
                 <div style={{marginTop: '0.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'white'}}>
                     {imageComponent.caption}
                 </div>
-            )}
+            ` : ''}
         </div>
         
         
