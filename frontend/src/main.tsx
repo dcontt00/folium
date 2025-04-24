@@ -16,7 +16,7 @@ import Register from "~/routes/register";
 import PortfolioRoute from "~/routes/portfolio";
 import GithubCallback from "~/routes/githubCallback";
 import Profile from "~/routes/profile";
-import Index from "~/routes";
+import Index from "~/routes/index";
 import Errors from "~/components/errors";
 
 
