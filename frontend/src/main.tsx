@@ -10,14 +10,14 @@ import axiosInstance from "./axiosInstance";
 import type {AxiosResponse} from "axios";
 import type Portfolio from "./interfaces/portfolio";
 import Home from "./routes/home";
-import Index from "./routes/index";
 import Edit from "~/routes/edit";
 import Login from "~/routes/login";
 import Register from "~/routes/register";
 import PortfolioRoute from "~/routes/portfolio";
 import GithubCallback from "~/routes/githubCallback";
-import ErrorPage from "~/components/errors/ErrorPage";
 import Profile from "~/routes/profile";
+import Index from "~/routes";
+import Errors from "~/components/errors";
 
 
 async function getPortfolios() {
@@ -76,7 +76,7 @@ async function renderPortfolio(params: { portfolioUrl?: string }) {
 const router = createBrowserRouter([
     {
         path: "/",
-        errorElement: <ErrorPage/>, // Root-level error element
+        errorElement: <Errors/>, // Root-level error element
         children: [
             {path: "", Component: Index},
             {path: "login", Component: Login},

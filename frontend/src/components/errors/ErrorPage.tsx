@@ -1,52 +1,36 @@
-import {useRouteError} from "react-router";
-import React from "react";
-import {Button, Center, Stack, Title} from "@mantine/core";
+import {Button, Container, Group, Text, Title} from '@mantine/core';
+import classes from './ErrorPage.module.css';
+import {useNavigate} from "react-router";
 
-export default function ErrorPage() {
-    const error = useRouteError();
+interface NotFoundProps {
+    errorCode: number;
+    title: string;
+    description: string;
+    buttonText?: string;
+    buttonLink?: string;
 
+}
 
-    // @ts-ignore
-    switch (error?.status) {
-        case 400:
-            return (
-                <Center>
-                    <Title order={2}>Bad Request</Title>
-                </Center>
-            );
-        case 401:
-            return (
-                <Center>
-                    <Stack align="center">
-                        <Title order={2}>Not authorized</Title>
-                        <Button
-                            component="a"
-                            href="/login"
-                        >
-                            Login
-                        </Button>
-
-                    </Stack>
-                </Center>
-            );
-        case 404:
-            return (
-                <Center>
-                    <Title order={2}>Not Found</Title>
-                </Center>
-            );
-        case 500:
-            return (
-                <Center>
-                    <Title order={2}>Server Error</Title>
-                </Center>
-            );
-    }
-
+export default function NotFound({errorCode, title, description, buttonLink, buttonText}: NotFoundProps) {
+    const navigate = useNavigate();
     return (
-        <Center>
-            <Title order={2}>Something went wrong</Title>
-            <p>We couldn’t load the requested data. Please try again later.</p>
-        </Center>
+        <Container className={classes.root}>
+            <div className={classes.label}>{errorCode}</div>
+            <Title className={classes.title}>{title}</Title>
+            <Text c="dimmed" size="lg" ta="center" className={classes.description}>
+                {description}
+            </Text>
+            <Group justify="center">
+                <Button
+                    variant="subtle"
+                    size="md"
+                    onClick={() => {
+                        navigate(buttonLink ? buttonLink : "/home")
+                    }}
+                >
+                    {buttonText ? buttonText : "Take me back to home page"}
+                </Button>
+            </Group>
+        </Container>
     );
 }
