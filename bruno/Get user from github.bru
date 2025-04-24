@@ -1,0 +1,11 @@
+meta {
+  name: Get user from github
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://api.github.com/user
+  body: none
+  auth: inherit
+}

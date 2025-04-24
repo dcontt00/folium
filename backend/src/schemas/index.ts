@@ -7,6 +7,7 @@ import ComponentSchema from "./components/ComponentSchema";
 import ContainerComponentSchema from "./components/ContainerComponentSchema";
 import ImageComponentSchema from "./components/ImageComponentSchema";
 import TextComponentSchema from "./components/TextComponentSchema";
+import StyleClassSchema from "@/schemas/StyleClassSchema";
 
 
 export {
@@ -19,4 +20,5 @@ export {
     ContainerComponentSchema,
     ImageComponentSchema,
     TextComponentSchema,
+    StyleClassSchema
 }
