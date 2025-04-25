@@ -7,3 +7,4 @@ frontend/build
 db
 backend/images
 backend/exports
+backend/html

@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const StyleClassSchema = new mongoose.Schema(
     {
+        identifier: {
+            type: String,
+            required: true,
+        },
         textFont: {
             type: String,
             default: "Arial",

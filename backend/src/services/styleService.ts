@@ -1,0 +1,18 @@
+import StyleModel from "@/models/StyleModel";
+import StyleClassModel from "@/models/StyleClassModel";
+
+async function createPortfolioStyle() {
+    const rootStyleClass = await StyleClassModel.create(
+        {
+            identifier: "root",
+        }
+    )
+    return await StyleModel.create({
+        classes: [rootStyleClass._id],
+    });
+
+}
+
+export {
+    createPortfolioStyle
+}

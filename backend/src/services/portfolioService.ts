@@ -8,6 +8,8 @@ import path from "path";
 import fs from "fs";
 import archiver from "archiver"
 import {getHtmlFolder} from "@/utils/directories";
+import {createPortfolioStyle} from "@/services/styleService";
+import mongoose from "mongoose";
 
 
 async function generateHtmlFiles(portfolioUrl: string) {
@@ -38,7 +40,7 @@ async function generateHtmlFiles(portfolioUrl: string) {
 
 // Create portfolio
 async function createPortfolio(
-    title: string, url: string, userId: string, description?: string, populate: boolean = false
+    title: string, url: string, userId: string, description: string, style: mongoose.Types.ObjectId, populate: boolean = false
 ) {
 
     const portfolio = await PortfolioModel
@@ -47,7 +49,8 @@ async function createPortfolio(
                 title: title,
                 description: description,
                 url: url,
-                user: userId
+                user: userId,
+                style: style
             })
         .catch((err) => {
             if (err.code === 11000) { // MongoDB duplicate key error
@@ -74,11 +77,13 @@ async function createInitialPortfolio(
     description: string,
     userId: string,
 ) {
-    const newPortfolio = await createPortfolio(title, url, userId, description)
+    const style = await createPortfolioStyle()
+    const newPortfolio = await createPortfolio(title, url, userId, description, style._id)
 
     const titleComponent = await createTextComponent(0, "Welcome to your new portfolio", TextType.H1, newPortfolio._id)
 
     const textComponent = await createTextComponent(1, "You can add components from left menu", TextType.P, newPortfolio._id)
+
 
     await PortfolioModel
         .findOneAndUpdate(

@@ -31,6 +31,11 @@ const PortfolioSchema = new mongoose.Schema(
                 ref: "Version",
             },
         ],
+        style: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Style",
+            required: true,
+        }
     },
     {timestamps: true}
 );

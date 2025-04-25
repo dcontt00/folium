@@ -14,6 +14,7 @@ import axiosInstance from "~/axiosInstance";
 import ComponentsSection from "~/components/ComponentsSection";
 import HistoryModal from "~/components/edit/HistoryModal";
 import {modals} from "@mantine/modals";
+import PortfolioStyle from "~/components/edit/PortfolioStyle";
 
 
 export function HydrateFallback() {
@@ -202,6 +203,7 @@ export default function Edit() {
                                    icon={<IconInfoCircle/>}/>
                         )
                     }
+                    <PortfolioStyle/>
                     <Button hiddenFrom="sm" onClick={toggleOpenedEditComponent}>Close</Button>
                 </Stack>
             </AppShell.Navbar>
