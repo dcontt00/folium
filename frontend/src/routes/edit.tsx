@@ -14,7 +14,7 @@ import axiosInstance from "~/axiosInstance";
 import ComponentsSection from "~/components/ComponentsSection";
 import HistoryModal from "~/components/edit/HistoryModal";
 import {modals} from "@mantine/modals";
-import Index from "~/components/edit/portfolioStyle";
+import PortfolioStyle from "~/components/edit/portfolioStyle";
 
 
 export function HydrateFallback() {
@@ -40,8 +40,11 @@ export default function Edit() {
 
     // State for the portfolio
     const [portfolioState, setPortfolioState] = useState(portfolio);
+    const rootStyle = portfolioState.style.classes.find(cls => cls.identifier === "root");
     const [description, setDescription] = useState(portfolioState.description);
     const [title, setTitle] = useState(portfolioState.title);
+    const [fontFamily, setFontFamily] = useState(rootStyle?.textFont || "Arial");
+    const [backgroundColor, setBackgroundColor] = useState(rootStyle?.backgroudColor || "var(--mantine-color-body)");
 
     // State for components that can be shown or hidden
     const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
@@ -203,7 +206,12 @@ export default function Edit() {
                                    icon={<IconInfoCircle/>}/>
                         )
                     }
-                    <Index portfolio={portfolioState}/>
+                    <PortfolioStyle
+                        fontFamily={fontFamily}
+                        setFontFamily={setFontFamily}
+                        backgroundColor={backgroundColor}
+                        setBackgroundColor={setBackgroundColor}
+                    />
                     <Button hiddenFrom="sm" onClick={toggleOpenedEditComponent}>Close</Button>
                 </Stack>
             </AppShell.Navbar>
@@ -220,7 +228,13 @@ export default function Edit() {
                     />
                 </Stack>
             </AppShell.Aside>
-            <AppShell.Main>
+            <AppShell.Main
+                style={{
+                    backgroundColor: backgroundColor,
+                }}
+
+
+            >
                 {previewEnabled ?
                     <>
                         <ActionIcon onClick={() => setPreviewEnabled(false)}>
@@ -235,6 +249,7 @@ export default function Edit() {
                         onRemoveComponent={onRemoveComponent}
                         onDragEnd={onDragEnd}
                         onEditComponent={onEditComponent}
+                        fontFamily={fontFamily}
                     />
                 }
             </AppShell.Main>

@@ -12,6 +12,7 @@ interface Props {
     onDragEnd: (result: DropResult) => void;
     onRemoveComponent: (component: ComponentType) => void;
     onEditComponent: (component: ComponentType) => void;
+    fontFamily: string;
 }
 
 export default function ComponentsDnD({
@@ -19,7 +20,8 @@ export default function ComponentsDnD({
                                           portfolioState,
                                           onDragEnd,
                                           onRemoveComponent,
-                                          onEditComponent
+                                          onEditComponent,
+                                          fontFamily
                                       }: Props) {
 
     return (
@@ -38,9 +40,12 @@ export default function ComponentsDnD({
                                         <div {...provided.dragHandleProps}>
                                             <IconMenu2 className="icon"/>
                                         </div>
-                                        <EditComponent component={component}
-                                                       onSelectEditComponent={onSelectEditComponent}
-                                                       onEditComponent={onEditComponent}/>
+                                        <EditComponent
+                                            component={component}
+                                            onSelectEditComponent={onSelectEditComponent}
+                                            onEditComponent={onEditComponent}
+                                            fontFamily={fontFamily}
+                                        />
 
                                         {component.__t != "ContainerComponent" && (
 

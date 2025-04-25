@@ -12,7 +12,7 @@ const StyleClassSchema = new mongoose.Schema(
         },
         backgroudColor: {
             type: String,
-            default: "#FFFFFF",
+            default: "#242424",
         },
         display: {
             type: String,

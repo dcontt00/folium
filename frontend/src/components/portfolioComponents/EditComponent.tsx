@@ -15,15 +15,16 @@ interface Props {
     component: ComponentType;
     onEditComponent: (component: ComponentType) => void;
     onSelectEditComponent: (component: ComponentType) => void;
+    fontFamily: string;
 }
 
-export default function EditComponent({component, onEditComponent, onSelectEditComponent}: Props) {
+export default function EditComponent({component, onEditComponent, onSelectEditComponent, fontFamily}: Props) {
     function renderComponent(component: ComponentType) {
 
         switch (component.__t) {
             case "TextComponent":
                 const textComponent = component as TextComponentType;
-                return <TextComponent textComponent={textComponent}/>
+                return <TextComponent fontFamily={fontFamily} textComponent={textComponent}/>
 
             case "ButtonComponent":
                 const buttonComponent = component as ButtonComponentType;
