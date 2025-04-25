@@ -40,12 +40,8 @@ export default function Edit() {
 
     // State for the portfolio
     const [portfolioState, setPortfolioState] = useState(portfolio);
-    const rootStyle = portfolioState.style.classes.find(cls => cls.identifier === "root");
     const [title, setTitle] = useState(portfolioState.title);
     const [description, setDescription] = useState(portfolioState.description);
-    const [fontFamily, setFontFamily] = useState(rootStyle?.textFont || "Arial");
-    const [backgroundColor, setBackgroundColor] = useState(rootStyle?.backgroudColor || "var(--mantine-color-body)");
-
     // Effect to set the portfolio state when the portfolio changes
     const isFirstRender = useRef(true);
     useEffect(() => {
@@ -56,7 +52,7 @@ export default function Edit() {
         }
         setUnsaved(true);
 
-    }, [portfolioState, title, description, fontFamily, backgroundColor]);
+    }, [portfolioState, title, description]);
 
     // State for components that can be shown or hidden
     const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
@@ -146,7 +142,6 @@ export default function Edit() {
         const newPortfolio = {...portfolioState};
         newPortfolio.components.push(component);
         setPortfolioState(newPortfolio);
-        setUnsaved(true);
         setEditComponent(portfolioState.components[portfolioState.components.length - 1]);
     }
 
@@ -169,6 +164,19 @@ export default function Edit() {
         const newPortfolio = {...portfolioState, components: newComponents};
         setPortfolioState(newPortfolio);
         setUnsaved(true);
+    }
+
+    function onStyleChange(identifier: string, attribute: "backgroundColor" | "textFont", value: any) {
+        const newPortfolio = {...portfolioState};
+        const styleClass = newPortfolio.style.classes.get(identifier)
+        if (styleClass == null) {
+            return
+        }
+
+        styleClass[attribute] = value
+        newPortfolio.style.classes.set(identifier, styleClass)
+        setPortfolioState(newPortfolio);
+
     }
 
     return (
@@ -217,9 +225,9 @@ export default function Edit() {
                         )
                     }
                     <PortfolioStyle
-                        fontFamily={fontFamily}
+                        fontFamily={portfolioState.style.classes.get("root")?.textFont!!}
                         setFontFamily={setFontFamily}
-                        backgroundColor={backgroundColor}
+                        backgroundColor={portfolioState.style.classes.get("root")?.backgroundColor!!}
                         setBackgroundColor={setBackgroundColor}
                     />
                     <Button hiddenFrom="sm" onClick={toggleOpenedEditComponent}>Close</Button>
@@ -240,7 +248,7 @@ export default function Edit() {
             </AppShell.Aside>
             <AppShell.Main
                 style={{
-                    backgroundColor: backgroundColor,
+                    backgroundColor: portfolioState.style.classes.get("root")?.backgroundColor!!,
                 }}
 
 
@@ -250,7 +258,8 @@ export default function Edit() {
                         <ActionIcon onClick={() => setPreviewEnabled(false)}>
                             <IconX/>
                         </ActionIcon>
-                        <ComponentsSection fontFamily={fontFamily} components={portfolioState.components}/>
+                        <ComponentsSection fontFamily={portfolioState.style.classes.get("root")?.textFont!!}
+                                           components={portfolioState.components}/>
                     </>
                     :
                     <ComponentsDnD
@@ -259,7 +268,7 @@ export default function Edit() {
                         onRemoveComponent={onRemoveComponent}
                         onDragEnd={onDragEnd}
                         onEditComponent={onEditComponent}
-                        fontFamily={fontFamily}
+                        fontFamily={portfolioState.style.classes.get("root")?.textFont!!}
                     />
                 }
             </AppShell.Main>
