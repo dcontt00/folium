@@ -1,7 +1,17 @@
-import {Accordion, Autocomplete, ColorInput, Stack} from "@mantine/core";
+import {Accordion, ColorInput, Stack} from "@mantine/core";
 import {IconBrush} from "@tabler/icons-react";
+import type Portfolio from "~/interfaces/portfolio";
+import FontsComboBox from "./FontsCombobox";
 
-export default function PortfolioStyle() {
+interface Props {
+    portfolio: Portfolio
+}
+
+
+export default function PortfolioStyle({portfolio}: Props) {
+    const rootStyle = portfolio.style.classes.find(cls => cls.identifier === "root");
+
+
     return (
         <Accordion styles={{
             content: {
@@ -14,11 +24,9 @@ export default function PortfolioStyle() {
                     <Stack>
                         <ColorInput
                             label="Background color"
+                            value={rootStyle?.backgroudColor}
                         />
-                        <Autocomplete
-                            label="Font"
-                            data={['Arial', 'Courier New', 'Georgia', 'Times New Roman', 'Verdana', 'Helvetica', 'Tahoma', 'Impact', 'Comic Sans MS']}
-                        />
+                        <FontsComboBox portfolio={portfolio}/>
                     </Stack>
                 </Accordion.Panel>
             </Accordion.Item>

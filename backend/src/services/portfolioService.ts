@@ -270,6 +270,11 @@ async function getPortfolioByUrl(url: string) {
             populate: {
                 path: "components",
             }
+        }).populate({
+            path: "style",
+            populate: {
+                path: "classes"
+            }
         });
 
 }
