@@ -258,7 +258,7 @@ async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portf
 }
 
 
-async function getPorfolioByUrl(url: string) {
+async function getPortfolioByUrl(url: string) {
     return PortfolioModel.findOne({url: url})
         .populate({
             path: "components",
@@ -346,7 +346,7 @@ export {
     getPortfolioChanges,
     createInitialPortfolio,
     getPortfoliosByUserId,
-    getPorfolioByUrl,
+    getPortfolioByUrl,
     removePortfolioByUrl,
     restorePortfolio,
     generateHtmlFiles,

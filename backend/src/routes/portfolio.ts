@@ -5,7 +5,7 @@ import {ApiError, AuthenticationError} from "@/classes";
 import {
     createInitialPortfolio,
     generateHtmlFiles,
-    getPorfolioByUrl,
+    getPortfolioByUrl,
     getPortfoliosByUserId,
     removePortfolioByUrl,
     restorePortfolio,
@@ -149,7 +149,7 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
 
 router.get("/:portfolioUrl/view", authHandler, async (req, res) => {
 
-    const portfolio = await getPorfolioByUrl(req.params.portfolioUrl);
+    const portfolio = await getPortfolioByUrl(req.params.portfolioUrl);
 
     if (portfolio == null) {
         throw new ApiError(404, "Portfolio not found");
@@ -168,7 +168,7 @@ router.get("/:url", authHandler, async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
-    const portfolio = await getPorfolioByUrl(req.params.url)
+    const portfolio = await getPortfolioByUrl(req.params.url)
     res.status(200).json({
         status: 200,
         success: true,
