@@ -13,9 +13,7 @@ import githubRouter from "@/routes/github"
 import fileUpload from "express-fileupload";
 import connectDB from "@/db";
 import {authHandler, errorHandler} from "@/middleware";
-import {getPorfolioByUrl} from "@/services/portfolioService";
-import {ApiError} from "@/classes";
-import {createDirectories} from "@/utils/directories";
+import {createDirectories, getHtmlFolder} from "@/utils/directories";
 
 
 const app: Express = express();
@@ -43,15 +41,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Serve portfolios in HTML
-app.get("/view/:portfolioUrl", authHandler, async (req, res) => {
+app.get("/api/view/:portfolioUrl", authHandler, async (req, res) => {
 
-    const portfolio = await getPorfolioByUrl(req.params.portfolioUrl);
+    const htmlFolder = getHtmlFolder()
+    const portfolioFolder = path.join(htmlFolder, req.params.portfolioUrl)
+    const portfolioHtmlFile = path.join(portfolioFolder, "index.html")
 
-    if (portfolio == null) {
-        throw new ApiError(404, "Portfolio not found");
-    }
 
-    res.send(portfolio.toHtml())
+    res.sendFile(portfolioHtmlFile)
 })
 
 

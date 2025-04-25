@@ -9,7 +9,7 @@ import sharp from "sharp";
 const router = express.Router();
 
 
-router.post("/", authHandler, async (req, res) => {
+router.post("/", async (req, res) => {
     const user = req.user;
     if (!user) {
         throw new AuthenticationError("User not found");

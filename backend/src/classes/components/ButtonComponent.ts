@@ -13,7 +13,11 @@ export default class ButtonComponent extends Component {
     }
 
     toHtml() {
-        return `<button style="background-color: ${this.color};">${this.text}</button>`;
+        return `
+
+<button onclick=${this.url} style="background-color: ${this.color};"> ${this.text}</button>
+
+`;
     }
 
 }

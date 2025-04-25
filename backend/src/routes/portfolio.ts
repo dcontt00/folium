@@ -40,6 +40,8 @@ router.post("/", authHandler, async (req, res) => {
         data: initialPortfolio,
     })
 
+    await generateHtmlFiles(req.body.url)
+
 
 });
 
@@ -234,6 +236,7 @@ router.put("/:url", authHandler, async (req, res) => {
         }
 
         await createVersion(portfolio, updatedPortfolio)
+        await generateHtmlFiles(portfolio.url)
     })
 
 })

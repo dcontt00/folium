@@ -7,7 +7,7 @@ import TextType from "@/interfaces/TextType";
 import path from "path";
 import fs from "fs";
 import archiver from "archiver"
-import {getExportsFolder} from "@/utils/directories";
+import {getHtmlFolder} from "@/utils/directories";
 
 
 async function generateHtmlFiles(portfolioUrl: string) {
@@ -24,10 +24,10 @@ async function generateHtmlFiles(portfolioUrl: string) {
 
     // Generate the HTML using the toHtml method
     const htmlContent = portfolio.toHtml();
-    const exportFolder = getExportsFolder()
+    const htmlFolder = getHtmlFolder()
 
     // Define the output directory and file path
-    const outputDir = path.join(exportFolder, portfolioUrl);
+    const outputDir = path.join(htmlFolder, portfolioUrl);
     fs.mkdirSync(outputDir, {recursive: true}); // Create the directory if it doesn't exist
     const outputFilePath = path.join(outputDir, 'index.html');
 
@@ -314,10 +314,9 @@ async function zipPortfolio(portfolioUrl: string): Promise<string> {
     const rootFolder = path.resolve(__dirname, '../../');
     const exportFolder = path.join(rootFolder, "exports")
 
-    const exportsFolder = getExportsFolder()
+    const htmlFolder = getHtmlFolder()
     const outputFilePath = path.join(exportFolder, `${portfolioUrl}.zip`);
-    const sourceDir = path.join(exportsFolder, portfolioUrl);
-    console.log(sourceDir)
+    const sourceDir = path.join(htmlFolder, portfolioUrl);
 
 
     return new Promise((resolve, reject) => {

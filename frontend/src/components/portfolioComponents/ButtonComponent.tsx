@@ -10,7 +10,6 @@ export default function ButtonComponent({buttonComponent}: TextComponentProps) {
     return (
         <Button
             style={{backgroundColor: buttonComponent.color}}
-            onClick={() => window.location.href = buttonComponent.url}
         >
             {buttonComponent.text}
         </Button>

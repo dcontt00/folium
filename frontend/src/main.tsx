@@ -13,11 +13,11 @@ import Home from "./routes/home";
 import Edit from "~/routes/edit";
 import Login from "~/routes/login";
 import Register from "~/routes/register";
-import PortfolioRoute from "~/routes/portfolio";
 import GithubCallback from "~/routes/githubCallback";
 import Profile from "~/routes/profile";
 import Index from "~/routes/index";
 import Errors from "~/components/errors";
+import PortfolioRoute from "~/routes/portfolio";
 
 
 async function getPortfolios() {
@@ -64,6 +64,7 @@ async function renderPortfolio(params: { portfolioUrl?: string }) {
     }
     const portfolio: string = await axiosInstance.get(`/portfolio/${portfolioUrl}/view`)
         .then((response: AxiosResponse) => {
+            console.log(response.data)
             return response.data.data;
         }).catch((error) => {
             const responseError = error.response;
@@ -86,16 +87,16 @@ const router = createBrowserRouter([
                 Component: Home,
                 loader: async () => await getPortfolios()
             },
+            /* {
+                 path: "view/:portfolioUrl",
+                 Component: PortfolioRoute,
+                 loader: async ({params}) => await getPortfolio(params)
+             },*/
             {
                 path: "view/:portfolioUrl",
                 Component: PortfolioRoute,
-                loader: async ({params}) => await getPortfolio(params)
+                loader: async ({params}) => params.portfolioUrl
             },
-            /*{
-                path: "view/:portfolioUrl",
-                Component: PortfolioRoute,
-                loader: async ({params}) => await renderPortfolio(params)
-            },*/
             {
                 path: "edit/:portfolioUrl",
                 Component: Edit,

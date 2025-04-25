@@ -1,21 +1,18 @@
 import {useLoaderData} from "react-router";
-import {Center, Loader} from "@mantine/core";
-import ComponentsSection from "~/components/ComponentsSection"
-import type Portfolio from "~/interfaces/portfolio";
-
-
-// HydrateFallback is rendered while the client loader is running
-export function HydrateFallback() {
-    return (
-        <Center style={{height: '100vh', width: '100vw'}} bg="var(--mantine-color-gray-light)">
-            <Loader color="blue" size="xl" type="dots"/>
-        </Center>
-    );
-}
+import config from "~/config";
 
 export default function PortfolioRoute() {
+    const portfolioUrl = useLoaderData() as string; // Assuming the loader returns the portfolio URL
 
-    const portfolio: Portfolio = useLoaderData();
-    return <ComponentsSection components={portfolio.components}/>
-
+    return (
+        <iframe
+            src={`${config.BACKEND_URL}/view/${portfolioUrl}`}
+            style={{
+                width: "100%",
+                height: "100vh",
+                border: "none",
+            }}
+            title="Portfolio Viewer"
+        />
+    );
 }
