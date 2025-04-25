@@ -12,15 +12,16 @@ import ContainerComponent from "~/components/portfolioComponents/ContainerCompon
 
 interface Props {
     component: ComponentType;
+    fontFamily: string;
 }
 
-export default function Component({component}: Props) {
+export default function Component({component, fontFamily}: Props) {
     function renderComponent(component: ComponentType) {
 
         switch (component.__t) {
             case "TextComponent":
                 const textComponent = component as TextComponentType;
-                return <TextComponent textComponent={textComponent}/>
+                return <TextComponent fontFamily={fontFamily} textComponent={textComponent}/>
 
             case "ButtonComponent":
                 const buttonComponent = component as ButtonComponentType;

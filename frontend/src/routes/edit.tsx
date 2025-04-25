@@ -1,7 +1,7 @@
 import {ActionIcon, Alert, AppShell, Button, Stack, Text} from "@mantine/core";
 import {IconInfoCircle, IconX} from "@tabler/icons-react";
 import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useDisclosure, useHotkeys} from "@mantine/hooks";
 import {useLoaderData, useNavigate} from "react-router";
 import EditComponentSection from "~/components/edit/EditComponentSection";
@@ -41,10 +41,22 @@ export default function Edit() {
     // State for the portfolio
     const [portfolioState, setPortfolioState] = useState(portfolio);
     const rootStyle = portfolioState.style.classes.find(cls => cls.identifier === "root");
-    const [description, setDescription] = useState(portfolioState.description);
     const [title, setTitle] = useState(portfolioState.title);
+    const [description, setDescription] = useState(portfolioState.description);
     const [fontFamily, setFontFamily] = useState(rootStyle?.textFont || "Arial");
     const [backgroundColor, setBackgroundColor] = useState(rootStyle?.backgroudColor || "var(--mantine-color-body)");
+
+    // Effect to set the portfolio state when the portfolio changes
+    const isFirstRender = useRef(true);
+    useEffect(() => {
+
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+        setUnsaved(true);
+
+    }, [portfolioState, title, description, fontFamily, backgroundColor]);
 
     // State for components that can be shown or hidden
     const [openedEditComponent, {toggle: toggleOpenedEditComponent}] = useDisclosure(false);
@@ -78,7 +90,6 @@ export default function Edit() {
         const newPortfolio = {...portfolioState};
         newPortfolio.components[index] = component;
         setPortfolioState(newPortfolio);
-        setUnsaved(true);
     }
 
     function onRemoveComponent(component: ComponentType) {
@@ -91,7 +102,6 @@ export default function Edit() {
         }
         setPortfolioState(newPortfolio);
         setEditComponent(undefined);
-        setUnsaved(true);
     }
 
     function onSelectEditComponent(component: ComponentType) {
@@ -240,7 +250,7 @@ export default function Edit() {
                         <ActionIcon onClick={() => setPreviewEnabled(false)}>
                             <IconX/>
                         </ActionIcon>
-                        <ComponentsSection components={portfolioState.components}/>
+                        <ComponentsSection fontFamily={fontFamily} components={portfolioState.components}/>
                     </>
                     :
                     <ComponentsDnD

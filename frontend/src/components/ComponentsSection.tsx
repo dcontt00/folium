@@ -3,9 +3,10 @@ import Component from "~/components/portfolioComponents/Component";
 
 interface Props {
     components: ComponentType[];
+    fontFamily: string;
 }
 
-export default function ComponentsSection({components}: Props) {
+export default function ComponentsSection({components, fontFamily}: Props) {
     return (
         <div
             className="container"
@@ -15,7 +16,7 @@ export default function ComponentsSection({components}: Props) {
                     <div
                         key={index}
                     >
-                        <Component component={component}/>
+                        <Component fontFamily={fontFamily} component={component}/>
                     </div>
                 ))
             }

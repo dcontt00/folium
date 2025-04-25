@@ -1,15 +1,16 @@
 import {Accordion, ColorInput, Stack} from "@mantine/core";
 import {IconBrush} from "@tabler/icons-react";
-import type Portfolio from "~/interfaces/portfolio";
 import FontsComboBox from "./FontsCombobox";
 
 interface Props {
-    portfolio: Portfolio
+    backgroundColor: string;
+    setBackgroundColor: (color: string) => void;
+    fontFamily: string;
+    setFontFamily: (fontFamily: string) => void;
 }
 
 
-export default function PortfolioStyle({portfolio}: Props) {
-    const rootStyle = portfolio.style.classes.find(cls => cls.identifier === "root");
+export default function PortfolioStyle({backgroundColor, setBackgroundColor, fontFamily, setFontFamily}: Props) {
 
 
     return (
@@ -24,9 +25,10 @@ export default function PortfolioStyle({portfolio}: Props) {
                     <Stack>
                         <ColorInput
                             label="Background color"
-                            value={rootStyle?.backgroudColor}
+                            value={backgroundColor}
+                            onChange={setBackgroundColor}
                         />
-                        <FontsComboBox portfolio={portfolio}/>
+                        <FontsComboBox fontFamily={fontFamily} setFontFamily={setFontFamily}/>
                     </Stack>
                 </Accordion.Panel>
             </Accordion.Item>

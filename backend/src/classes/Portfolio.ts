@@ -10,14 +10,16 @@ export default class Portfolio {
     url: string;
     user: mongoose.Schema.Types.ObjectId;
     components: Component[];
+    style: mongoose.Schema.Types.ObjectId;
 
-    constructor(_id: mongoose.Types.ObjectId, title: string, description: string, url: string, user: mongoose.Schema.Types.ObjectId, components: Component[]) {
+    constructor(_id: mongoose.Types.ObjectId, title: string, description: string, url: string, user: mongoose.Schema.Types.ObjectId, components: Component[], style: mongoose.Schema.Types.ObjectId) {
         this._id = _id;
         this.title = title;
         this.description = description;
         this.components = components;
         this.url = url;
         this.user = user;
+        this.style = style;
     }
 
     toHtml() {

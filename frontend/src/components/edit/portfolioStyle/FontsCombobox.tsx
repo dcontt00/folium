@@ -1,10 +1,10 @@
 import {Combobox, Text, TextInput, useCombobox} from "@mantine/core";
 import {useState} from "react";
-import type Portfolio from "~/interfaces/portfolio";
 
 
 interface Props {
-    portfolio: Portfolio
+    fontFamily: string;
+    setFontFamily: (fontFamily: string) => void;
 }
 
 const fonts = [
@@ -19,10 +19,8 @@ const fonts = [
     'Verdana'
 ]
 
-export default function FontsCombobox({portfolio}: Props) {
-    const rootStyle = portfolio.style.classes.find(cls => cls.identifier === "root");
+export default function FontsCombobox({fontFamily, setFontFamily}: Props) {
     const [search, setSearch] = useState('');
-    const [font, setFont] = useState(rootStyle?.textFont || fonts[0]);
     const combobox = useCombobox({
         onDropdownClose: () => {
             combobox.resetSelectedOption();
@@ -47,7 +45,7 @@ export default function FontsCombobox({portfolio}: Props) {
 
         <Combobox
             onOptionSubmit={(optionValue) => {
-                setFont(optionValue);
+                setFontFamily(optionValue);
                 combobox.closeDropdown();
             }}
             store={combobox}
@@ -56,9 +54,9 @@ export default function FontsCombobox({portfolio}: Props) {
                 <TextInput
                     label="Pick value or type anything"
                     placeholder="Pick value or type anything"
-                    value={font}
+                    value={fontFamily}
                     onChange={(event) => {
-                        setFont(event.currentTarget.value);
+                        setFontFamily(event.currentTarget.value);
                         combobox.openDropdown();
                         combobox.updateSelectedOptionIndex();
                     }}

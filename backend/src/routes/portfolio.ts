@@ -15,6 +15,9 @@ import {IPortfolio} from "@/interfaces";
 import {componentsAreEquals, createComponent} from "@/services/componentService";
 import {createVersion, deleteOlderVersions, getVersionById, getVersionsByPortfolioId} from "@/services/versionService";
 import Component from "@/classes/components/Component";
+import styleModel from "@/models/StyleModel";
+import styleClassModel from "@/models/StyleClassModel";
+import mongoose from "mongoose";
 
 
 const router = express.Router();
@@ -192,7 +195,7 @@ router.put("/:url", authHandler, async (req, res) => {
             populate: {
                 path: "components",
             }
-        });
+        })
 
     if (!portfolio) {
         throw new ApiError(404, "Portfolio not found");
@@ -215,29 +218,54 @@ router.put("/:url", authHandler, async (req, res) => {
         }
     }
 
-    await PortfolioModel.findOneAndUpdate(
-        {url: req.params.url, user: user.id},
-        {...req.body, components: components},
-        {new: true}
-    ).populate({
-        path: "components",
-        populate: {
-            path: "components",
-        }
-    }).then(async (updatedPortfolio) => {
-        res.status(200).json({
-            status: 200,
-            success: true,
-            data: updatedPortfolio,
-        });
-
-        if (updatedPortfolio == null) {
-            throw new ApiError(404, "Portfolio not found");
+    await styleModel.findById(portfolio.style).then(async (style) => {
+        if (style == null) {
+            throw new ApiError(404, "Style not found");
         }
 
-        await createVersion(portfolio, updatedPortfolio)
-        await generateHtmlFiles(portfolio.url)
+        const styleClasses = style.classes.map(async (styleClassId: mongoose.Types.ObjectId) => {
+            await styleClassModel.findOneAndUpdate({
+                    _id: styleClassId,
+                },
+                {
+                    ...req.body.style,
+                }, {new: true})
+        })
     })
+
+
+    await PortfolioModel
+        .findOneAndUpdate(
+            {url: req.params.url, user: user.id},
+            {...req.body, components: components},
+            {new: true}
+        )
+        .populate({
+            path: "components",
+            populate: {
+                path: "components",
+            }
+        })
+        .populate({
+            path: "style",
+            populate: {
+                path: "classes"
+            }
+        })
+        .then(async (updatedPortfolio) => {
+            res.status(200).json({
+                status: 200,
+                success: true,
+                data: updatedPortfolio,
+            });
+
+            if (updatedPortfolio == null) {
+                throw new ApiError(404, "Portfolio not found");
+            }
+
+            await createVersion(portfolio, updatedPortfolio)
+            await generateHtmlFiles(portfolio.url)
+        })
 
 })
 
