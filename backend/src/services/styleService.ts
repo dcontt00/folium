@@ -8,7 +8,9 @@ async function createPortfolioStyle() {
         }
     )
     return await StyleModel.create({
-        classes: [rootStyleClass._id],
+        classes: {
+            "root": rootStyleClass._id
+        },
     });
 
 }

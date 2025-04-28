@@ -4,7 +4,7 @@ import {useState} from "react";
 
 interface Props {
     fontFamily: string;
-    setFontFamily: (fontFamily: string) => void;
+    onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
 const fonts = [
@@ -19,7 +19,7 @@ const fonts = [
     'Verdana'
 ]
 
-export default function FontsCombobox({fontFamily, setFontFamily}: Props) {
+export default function FontsCombobox({fontFamily, onStyleChange}: Props) {
     const [search, setSearch] = useState('');
     const combobox = useCombobox({
         onDropdownClose: () => {
@@ -45,7 +45,7 @@ export default function FontsCombobox({fontFamily, setFontFamily}: Props) {
 
         <Combobox
             onOptionSubmit={(optionValue) => {
-                setFontFamily(optionValue);
+                onStyleChange("root", "textFont", optionValue);
                 combobox.closeDropdown();
             }}
             store={combobox}
@@ -56,7 +56,7 @@ export default function FontsCombobox({fontFamily, setFontFamily}: Props) {
                     placeholder="Pick value or type anything"
                     value={fontFamily}
                     onChange={(event) => {
-                        setFontFamily(event.currentTarget.value);
+                        onStyleChange("root", "textFont", event.currentTarget.value);
                         combobox.openDropdown();
                         combobox.updateSelectedOptionIndex();
                     }}

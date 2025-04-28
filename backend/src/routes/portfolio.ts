@@ -17,7 +17,7 @@ import {createVersion, deleteOlderVersions, getVersionById, getVersionsByPortfol
 import Component from "@/classes/components/Component";
 import styleModel from "@/models/StyleModel";
 import styleClassModel from "@/models/StyleClassModel";
-import mongoose from "mongoose";
+import StyleClass from "@/interfaces/styleClass";
 
 
 const router = express.Router();
@@ -222,16 +222,20 @@ router.put("/:url", authHandler, async (req, res) => {
         if (style == null) {
             throw new ApiError(404, "Style not found");
         }
+        const updatedClasses = req.body.style?.classes || {};
+        for (const styleClass of Object.values(updatedClasses) as StyleClass[]) {
 
-        const styleClasses = style.classes.map(async (styleClassId: mongoose.Types.ObjectId) => {
             await styleClassModel.findOneAndUpdate({
-                    _id: styleClassId,
+                    _id: styleClass._id,
                 },
                 {
-                    ...req.body.style,
-                }, {new: true})
-        })
-    })
+                    ...styleClass
+                }, {
+                    new: true,
+                    upsert: true
+                })
+        }
+    });
 
 
     await PortfolioModel

@@ -4,13 +4,12 @@ import FontsComboBox from "./FontsCombobox";
 
 interface Props {
     backgroundColor: string;
-    setBackgroundColor: (color: string) => void;
     fontFamily: string;
-    setFontFamily: (fontFamily: string) => void;
+    onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
 
-export default function PortfolioStyle({backgroundColor, setBackgroundColor, fontFamily, setFontFamily}: Props) {
+export default function PortfolioStyle({backgroundColor, fontFamily, onStyleChange}: Props) {
 
 
     return (
@@ -26,9 +25,9 @@ export default function PortfolioStyle({backgroundColor, setBackgroundColor, fon
                         <ColorInput
                             label="Background color"
                             value={backgroundColor}
-                            onChange={setBackgroundColor}
+                            onChange={(color) => onStyleChange("root", "backgroundColor", color)}
                         />
-                        <FontsComboBox fontFamily={fontFamily} setFontFamily={setFontFamily}/>
+                        <FontsComboBox fontFamily={fontFamily} onStyleChange={onStyleChange}/>
                     </Stack>
                 </Accordion.Panel>
             </Accordion.Item>

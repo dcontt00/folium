@@ -23,6 +23,7 @@ export function HydrateFallback() {
 
 export default function Edit() {
     const portfolio: Portfolio = useLoaderData();
+    console.log(portfolio);
 
     const openModal = () => modals.openConfirmModal({
         title: 'Please confirm your action',
@@ -114,7 +115,7 @@ export default function Edit() {
         newPortfolio.title = title;
         newPortfolio.description = description;
         await axiosInstance.put(`/portfolio/${newPortfolio.url}`, newPortfolio).then((response) => {
-            console.log(response);
+            console.log(response.data.data);
             const updatedPortfolio = response.data.data;
             setPortfolioState(updatedPortfolio);
             // Update the editComponent if it exists
@@ -166,15 +167,15 @@ export default function Edit() {
         setUnsaved(true);
     }
 
-    function onStyleChange(identifier: string, attribute: "backgroundColor" | "textFont", value: any) {
+    function onStyleChange(identifier: string, attribute: string, value: string) {
         const newPortfolio = {...portfolioState};
-        const styleClass = newPortfolio.style.classes.get(identifier)
+        const styleClass = newPortfolio.style.classes?.[identifier]
         if (styleClass == null) {
             return
         }
 
-        styleClass[attribute] = value
-        newPortfolio.style.classes.set(identifier, styleClass)
+        styleClass[attribute as keyof typeof styleClass] = value
+        newPortfolio.style.classes[identifier] = styleClass
         setPortfolioState(newPortfolio);
 
     }
@@ -225,10 +226,9 @@ export default function Edit() {
                         )
                     }
                     <PortfolioStyle
-                        fontFamily={portfolioState.style.classes.get("root")?.textFont!!}
-                        setFontFamily={setFontFamily}
-                        backgroundColor={portfolioState.style.classes.get("root")?.backgroundColor!!}
-                        setBackgroundColor={setBackgroundColor}
+                        fontFamily={portfolioState.style.classes?.["root"].textFont!!}
+                        backgroundColor={portfolioState.style.classes?.["root"].backgroundColor!!}
+                        onStyleChange={onStyleChange}
                     />
                     <Button hiddenFrom="sm" onClick={toggleOpenedEditComponent}>Close</Button>
                 </Stack>
@@ -248,7 +248,7 @@ export default function Edit() {
             </AppShell.Aside>
             <AppShell.Main
                 style={{
-                    backgroundColor: portfolioState.style.classes.get("root")?.backgroundColor!!,
+                    backgroundColor: portfolioState.style.classes?.["root"].backgroundColor!!,
                 }}
 
 
@@ -258,8 +258,9 @@ export default function Edit() {
                         <ActionIcon onClick={() => setPreviewEnabled(false)}>
                             <IconX/>
                         </ActionIcon>
-                        <ComponentsSection fontFamily={portfolioState.style.classes.get("root")?.textFont!!}
-                                           components={portfolioState.components}/>
+                        <ComponentsSection
+                            fontFamily={portfolioState.style.classes?.["root"].textFont!!}
+                            components={portfolioState.components}/>
                     </>
                     :
                     <ComponentsDnD
@@ -268,7 +269,7 @@ export default function Edit() {
                         onRemoveComponent={onRemoveComponent}
                         onDragEnd={onDragEnd}
                         onEditComponent={onEditComponent}
-                        fontFamily={portfolioState.style.classes.get("root")?.textFont!!}
+                        fontFamily={portfolioState.style.classes?.["root"].textFont!!}
                     />
                 }
             </AppShell.Main>
