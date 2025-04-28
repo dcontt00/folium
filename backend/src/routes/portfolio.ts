@@ -223,6 +223,7 @@ router.put("/:url", authHandler, async (req, res) => {
             throw new ApiError(404, "Style not found");
         }
         const updatedClasses = req.body.style?.classes || {};
+        console.log(updatedClasses)
         for (const styleClass of Object.values(updatedClasses) as StyleClass[]) {
 
             await styleClassModel.findOneAndUpdate({

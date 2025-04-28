@@ -10,7 +10,7 @@ const StyleClassSchema = new mongoose.Schema(
             type: String,
             default: "Arial",
         },
-        backgroudColor: {
+        backgroundColor: {
             type: String,
             default: "#242424",
         },

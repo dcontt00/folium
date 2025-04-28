@@ -51,7 +51,12 @@ export default function Edit() {
             isFirstRender.current = false;
             return;
         }
+        if (gotUpdatedPortfolio) {
+            setGotUpdatedPortfolio(false)
+            return;
+        }
         setUnsaved(true);
+
 
     }, [portfolioState, title, description]);
 
@@ -69,6 +74,7 @@ export default function Edit() {
     const [unsaved, setUnsaved] = useState(false);
     const [editComponent, setEditComponent] = useState<ComponentType | undefined>(undefined);
     const [previewEnabled, setPreviewEnabled] = useState(false);
+    const [gotUpdatedPortfolio, setGotUpdatedPortfolio] = useState(false);
 
 
     // Navigate
@@ -117,6 +123,7 @@ export default function Edit() {
         await axiosInstance.put(`/portfolio/${newPortfolio.url}`, newPortfolio).then((response) => {
             console.log(response.data.data);
             const updatedPortfolio = response.data.data;
+            setGotUpdatedPortfolio(true);
             setPortfolioState(updatedPortfolio);
             // Update the editComponent if it exists
             if (editComponent) {
