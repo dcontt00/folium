@@ -7,6 +7,10 @@ const ComponentSchema = new mongoose.Schema(
             type: Number,
             default: () => Math.floor(Math.random() * 1000000), // Autogenerate a random number
         },
+        className: {
+            type: String,
+            required: true,
+        },
         index: {
             type: mongoose.Schema.Types.Int32,
             required: true,

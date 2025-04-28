@@ -9,6 +9,7 @@ import TextComponent from "~/components/portfolioComponents/TextComponent";
 import ButtonComponent from "~/components/portfolioComponents/ButtonComponent";
 import ImageComponent from "~/components/portfolioComponents/ImageComponent";
 import EditContainerComponent from "~/components/edit/editComponents/EditContainerComponent";
+import type StyleClass from "~/interfaces/styleClass";
 
 
 interface Props {
@@ -16,9 +17,16 @@ interface Props {
     onEditComponent: (component: ComponentType) => void;
     onSelectEditComponent: (component: ComponentType) => void;
     fontFamily: string;
+    styleClass: StyleClass
 }
 
-export default function EditComponent({component, onEditComponent, onSelectEditComponent, fontFamily}: Props) {
+export default function EditComponent({
+                                          component,
+                                          onEditComponent,
+                                          onSelectEditComponent,
+                                          fontFamily,
+                                          styleClass
+                                      }: Props) {
     function renderComponent(component: ComponentType) {
 
         switch (component.__t) {

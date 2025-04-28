@@ -45,6 +45,7 @@ export default function ComponentsDnD({
                                             onSelectEditComponent={onSelectEditComponent}
                                             onEditComponent={onEditComponent}
                                             fontFamily={fontFamily}
+                                            styleClass={portfolioState.style.classes?.[component.className]}
                                         />
 
                                         {component.__t != "ContainerComponent" && (

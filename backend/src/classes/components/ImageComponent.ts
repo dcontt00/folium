@@ -7,8 +7,8 @@ export default class ImageComponent extends Component {
     overlayTransparency: number;
     width: number;
 
-    constructor(_id: string, __t: string, componentId: number, index: number, parent_id: string, url: string, caption: string, overlayText: string, overlayTransparency: number, width: number) {
-        super(_id, __t, componentId, index, parent_id);
+    constructor(_id: string, __t: string, componentId: number, index: number, parent_id: string, className: string, url: string, caption: string, overlayText: string, overlayTransparency: number, width: number) {
+        super(_id, __t, componentId, index, parent_id, className);
         this.url = url;
         this.caption = caption;
         this.overlayText = overlayText;

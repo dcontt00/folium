@@ -79,10 +79,8 @@ async function createInitialPortfolio(
 ) {
     const style = await createPortfolioStyle()
     const newPortfolio = await createPortfolio(title, url, userId, description, style._id)
-
-    const titleComponent = await createTextComponent(0, "Welcome to your new portfolio", TextType.H1, newPortfolio._id)
-
-    const textComponent = await createTextComponent(1, "You can add components from left menu", TextType.P, newPortfolio._id)
+    const titleComponent = await createTextComponent(0, "Welcome to your new portfolio", TextType.H1, newPortfolio._id, style._id)
+    const textComponent = await createTextComponent(1, "You can add components from left menu", TextType.P, newPortfolio._id, style._id)
 
 
     await PortfolioModel

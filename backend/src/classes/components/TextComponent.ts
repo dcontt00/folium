@@ -6,8 +6,8 @@ export default class TextComponent extends Component {
     fontSize: number;
     type: TextType
 
-    constructor(_id: string, __t: string, componentId: number, index: number, parent_id: string, text: string, fontSize: number, textType: TextType) {
-        super(_id, __t, componentId, index, parent_id);
+    constructor(_id: string, __t: string, componentId: number, index: number, parent_id: string, className: string, text: string, fontSize: number, textType: TextType) {
+        super(_id, __t, componentId, index, parent_id, className);
         this.text = text;
         this.fontSize = fontSize;
         this.type = textType;

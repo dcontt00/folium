@@ -10,6 +10,8 @@ import mongoose from "mongoose";
 import {ApiError} from "@/classes";
 import Component from "@/classes/components/Component";
 import TextType from "@/interfaces/TextType";
+import styleModel from "@/models/StyleModel";
+import styleClassModel from "@/models/StyleClassModel";
 
 async function removeOrphanComponents() {
     try {
@@ -110,13 +112,35 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
     }
 }
 
-async function createTextComponent(index: number, text: string, type: TextType, parent_id: mongoose.Types.ObjectId) {
-    return await TextComponentModel.create({
+async function createTextComponent(index: number, text: string, type: TextType, parent_id: mongoose.Types.ObjectId, styleId: mongoose.Types.ObjectId) {
+    const className = generateRandomClassName();
+
+    const textComponent = await TextComponentModel.create({
         index: index,
         text: text,
         type: type,
-        parent_id: parent_id
+        parent_id: parent_id,
+        className: className
     })
+
+    const styleClass = await styleClassModel.create({identifier: className})
+
+    await styleModel.findByIdAndUpdate(
+        {_id: styleId},
+        {
+            $set: {
+                //@ts-ignore
+                [`classes.${textComponent.className}`]: styleClass._id,
+            },
+        }
+    );
+    return textComponent;
+}
+
+
+function generateRandomClassName(prefix: string = "class"): string {
+    const randomString = Math.random().toString(36).substring(2, 10);
+    return `${prefix}-${randomString}`;
 }
 
 function componentsAreEquals(componentA: any, componentB: any): boolean {

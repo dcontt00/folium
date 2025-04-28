@@ -5,8 +5,8 @@ export default class ButtonComponent extends Component {
     color: string;
     url: string;
 
-    constructor(_id: string, __t: string, componentId: number, index: number, parent_id: string, text: string, color: string, url: string) {
-        super(_id, __t, componentId, index, parent_id);
+    constructor(_id: string, __t: string, componentId: number, index: number, parent_id: string, className: string, text: string, color: string, url: string) {
+        super(_id, __t, componentId, index, parent_id, className);
         this.text = text;
         this.color = color;
         this.url = url;
