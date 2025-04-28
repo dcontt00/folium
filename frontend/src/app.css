@@ -27,7 +27,7 @@ body {
     display: flex;
     align-items: center;
     gap: 1em;
-    background: #181e30;
+    /*background: #181e30;*/
 }
 
 .dnd-draggable .icon {
@@ -35,7 +35,7 @@ body {
 }
 
 .dnd-draggable:hover {
-    background: #222B45;
+    background: rgba(34, 43, 69, 0.9);
 }
 
 .dnd-draggable:hover .icon {

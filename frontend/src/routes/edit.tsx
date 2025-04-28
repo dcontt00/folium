@@ -121,7 +121,6 @@ export default function Edit() {
         newPortfolio.title = title;
         newPortfolio.description = description;
         await axiosInstance.put(`/portfolio/${newPortfolio.url}`, newPortfolio).then((response) => {
-            console.log(response.data.data);
             const updatedPortfolio = response.data.data;
             setGotUpdatedPortfolio(true);
             setPortfolioState(updatedPortfolio);
