@@ -14,9 +14,7 @@ const fonts = [
     'Georgia',
     'Helvetica',
     'Impact',
-    'Tahoma',
     'Times New Roman',
-    'Verdana'
 ]
 
 export default function FontsCombobox({fontFamily, onStyleChange}: Props) {
@@ -29,7 +27,9 @@ export default function FontsCombobox({fontFamily, onStyleChange}: Props) {
         },
 
         onDropdownOpen: () => {
-            combobox.focusSearchInput();
+            if (combobox.focusSearchInput && combobox.searchRef?.current) {
+                combobox.focusSearchInput();
+            }
         },
     });
 
