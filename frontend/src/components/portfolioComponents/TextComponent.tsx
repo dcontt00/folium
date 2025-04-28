@@ -3,31 +3,33 @@ import type {TextComponentType} from "~/interfaces/interfaces";
 
 import {Text, Title} from "@mantine/core";
 import {TextType} from "~/interfaces/textComponent";
+import type StyleClass from "~/interfaces/styleClass";
 
 interface TextComponentProps {
     textComponent: TextComponentType;
-    fontFamily: string;
+    styleClass: StyleClass
 }
 
-export default function TextComponent({textComponent, fontFamily}: TextComponentProps) {
-    console.log(fontFamily)
+export default function TextComponent({textComponent, styleClass}: TextComponentProps) {
+    console.log(
+        "textComponent", styleClass)
 
     switch (textComponent.type) {
         case TextType.H1:
-            return <Title style={{fontSize: "40px", fontFamily: fontFamily}}>{textComponent.text}</Title>
+            return <Title style={{fontSize: "40px", fontFamily: styleClass.textFont}}>{textComponent.text}</Title>
         case TextType.H2:
-            return <Title style={{fontSize: "36px", fontFamily: fontFamily}}>{textComponent.text}</Title>
+            return <Title style={{fontSize: "36px", fontFamily: styleClass.textFont}}>{textComponent.text}</Title>
         case TextType.H3:
-            return <Title style={{fontSize: "34px", fontFamily: fontFamily}}>{textComponent.text}</Title>
+            return <Title style={{fontSize: "34px", fontFamily: styleClass.textFont}}>{textComponent.text}</Title>
         case TextType.H4:
-            return <Title style={{fontSize: "30px", fontFamily: fontFamily}}>{textComponent.text}</Title>
+            return <Title style={{fontSize: "30px", fontFamily: styleClass.textFont}}>{textComponent.text}</Title>
         case TextType.H5:
-            return <Title style={{fontSize: "28px", fontFamily: fontFamily}}>{textComponent.text}</Title>
+            return <Title style={{fontSize: "28px", fontFamily: styleClass.textFont}}>{textComponent.text}</Title>
         case TextType.H6:
-            return <Title style={{fontSize: "26px", fontFamily: fontFamily}}>{textComponent.text}</Title>
+            return <Title style={{fontSize: "26px", fontFamily: styleClass.textFont}}>{textComponent.text}</Title>
         default:
             return (
-                <Text style={{fontFamily: fontFamily}}>{textComponent.text}</Text>
+                <Text style={{fontFamily: styleClass.textFont}}>{textComponent.text}</Text>
             )
     }
 

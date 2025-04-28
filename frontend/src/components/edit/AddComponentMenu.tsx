@@ -1,4 +1,4 @@
-import {ActionIcon, Button, Menu} from "@mantine/core";
+import {Button, Menu} from "@mantine/core";
 import {IconContainer, IconHandClick, IconPhoto, IconPlus, IconTextCaption} from "@tabler/icons-react";
 import type {
     ButtonComponentType,
@@ -8,6 +8,8 @@ import type {
     TextComponentType
 } from "~/interfaces/interfaces";
 import {TextStyle, TextType} from "~/interfaces/textComponent";
+import {generateRandomClassName} from "~/utils";
+import type StyleClass from "~/interfaces/styleClass";
 
 
 interface Props {
@@ -15,8 +17,7 @@ interface Props {
     portfolioComponentsLength: number;
     onAddComponent: (component: ComponentType) => void;
     allowContainerComponent?: boolean,
-    largeButton?: boolean,
-    className?: string
+    onStyleClassAdd: (styleClass: StyleClass) => void
 }
 
 export default function AddComponentMenu({
@@ -24,11 +25,16 @@ export default function AddComponentMenu({
                                              parent_id,
                                              portfolioComponentsLength,
                                              allowContainerComponent = true,
-                                             largeButton = true,
-                                             className = ""
+                                             onStyleClassAdd,
                                          }: Props) {
 
     function onAddTextComponent() {
+        const className = generateRandomClassName();
+        const styleClass: StyleClass = {
+            identifier: className,
+            backgroundColor: "#ffffff",
+            color: "#000000",
+        }
         const newComponent: TextComponentType = {
             _id: null,
             __t: "TextComponent",
@@ -37,12 +43,18 @@ export default function AddComponentMenu({
             parent_id: parent_id,
             text: "Hello World",
             type: TextType.P,
-            style: TextStyle.NORMAL
+            style: TextStyle.NORMAL,
+            className: className
         }
+        onStyleClassAdd(styleClass)
         onAddComponent(newComponent);
     }
 
     function onAddButtonComponent() {
+        const className = generateRandomClassName();
+        const styleClass: StyleClass = {
+            identifier: className,
+        }
         const newComponent: ButtonComponentType = {
             _id: null,
             __t: "ButtonComponent",
@@ -52,11 +64,19 @@ export default function AddComponentMenu({
             text: "Button",
             url: "/",
             color: "blue",
+            className: generateRandomClassName()
         }
+        onStyleClassAdd(styleClass)
         onAddComponent(newComponent);
     }
 
     function onAddImageComponent() {
+        const className = generateRandomClassName();
+        const styleClass: StyleClass = {
+            identifier: className,
+            backgroundColor: "#ffffff",
+            color: "#000000",
+        }
         const newComponent: ImageComponentType = {
             _id: null,
             __t: "ImageComponent",
@@ -67,12 +87,21 @@ export default function AddComponentMenu({
             overlayText: null,
             caption: null,
             overlayTransparency: 0,
-            width: 1
+            width: 1,
+            className: generateRandomClassName()
+
         }
+        onStyleClassAdd(styleClass)
         onAddComponent(newComponent);
     }
 
     function onAddContainerComponent() {
+        const className = generateRandomClassName();
+        const styleClass: StyleClass = {
+            identifier: className,
+            backgroundColor: "#ffffff",
+            color: "#000000",
+        }
         const newComponent: ContainerComponentType = {
             _id: null,
             __t: "ContainerComponent",
@@ -80,19 +109,17 @@ export default function AddComponentMenu({
             index: portfolioComponentsLength - 1,
             parent_id: parent_id,
             components: [],
+            className: generateRandomClassName()
+
         }
+        onStyleClassAdd(styleClass)
         onAddComponent(newComponent);
     }
 
     return (
         <Menu shadow="md" width={200}>
             <Menu.Target>
-                {largeButton ?
-                    <Button className={className} leftSection={<IconPlus/>}>Add Component</Button>
-                    : <ActionIcon className={className}>
-                        <IconPlus/>
-                    </ActionIcon>
-                }
+                <Button leftSection={<IconPlus/>}>Add Component</Button>
             </Menu.Target>
             <Menu.Dropdown>
                 <Menu.Item onClick={onAddTextComponent} leftSection={<IconTextCaption/>}>

@@ -53,7 +53,8 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
                 type: component.type,
                 index: component.index,
                 text: component.text,
-                parent_id: parent_id
+                parent_id: parent_id,
+                className: component.className,
             })
 
         case "ButtonComponent":
@@ -66,7 +67,8 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
                 index: component.index,
                 text: component.text,
                 url: component.url,
-                parent_id: parent_id
+                parent_id: parent_id,
+                className: component.className,
             })
         case "ImageComponent":
             if (!component.url) {
@@ -81,6 +83,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
                 width: component.width,
                 caption: component.caption,
                 overlayText: component.overlayText,
+                className: component.className,
             })
         case "ContainerComponent":
             const containerComponents: Array<any> = [];
@@ -90,6 +93,7 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
                 componentId: component.componentId,
                 parent_id: parent_id,
                 index: component.index,
+                className: component.className,
             })
 
 

@@ -3,13 +3,17 @@ import {Combobox, Input, InputBase, Stack, Textarea, useCombobox} from "@mantine
 import {useEffect, useState} from "react";
 import {TextType} from "~/interfaces/textComponent";
 import {capitalize} from "~/utils";
+import type StyleClass from "~/interfaces/styleClass";
+import FontsCombobox from "~/components/edit/portfolioStyle/FontsCombobox";
 
 interface Props {
     component: TextComponentType;
     onEditComponent: (component: TextComponentType) => void;
+    styleClass: StyleClass,
+    onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
-export default function EditTextComponent({component, onEditComponent}: Props) {
+export default function EditTextComponent({component, onEditComponent, styleClass, onStyleChange}: Props) {
     const [text, setText] = useState(component.text);
     const [textType, setTextType] = useState<string | null>(component.type);
     const combobox = useCombobox({
@@ -36,6 +40,12 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
 
         // Change the text type of the component
         component.type = value as TextType;
+        onEditComponent(component);
+    }
+
+    function handleStyleChange(identifier: string, attribute: string, value: string) {
+        console.log("handleStyleChange", component.className, attribute, value);
+        onStyleChange(identifier, attribute, value);
         onEditComponent(component);
     }
 
@@ -75,6 +85,11 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
                 label="Text"
                 value={text}
                 onChange={(event) => onTextChange(event)}
+            />
+            <FontsCombobox
+                fontFamily={styleClass.textFont}
+                onStyleChange={handleStyleChange}
+                identifier={component.className}
             />
         </Stack>
     );

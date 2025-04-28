@@ -15,6 +15,7 @@ import ComponentsSection from "~/components/ComponentsSection";
 import HistoryModal from "~/components/edit/HistoryModal";
 import {modals} from "@mantine/modals";
 import PortfolioStyle from "~/components/edit/portfolioStyle";
+import type StyleClass from "~/interfaces/styleClass";
 
 
 export function HydrateFallback() {
@@ -174,6 +175,7 @@ export default function Edit() {
     }
 
     function onStyleChange(identifier: string, attribute: string, value: string) {
+        console.log(identifier, attribute, value);
         const newPortfolio = {...portfolioState};
         const styleClass = newPortfolio.style.classes?.[identifier]
         if (styleClass == null) {
@@ -183,7 +185,14 @@ export default function Edit() {
         styleClass[attribute as keyof typeof styleClass] = value
         newPortfolio.style.classes[identifier] = styleClass
         setPortfolioState(newPortfolio);
+        console.log("newportfolio", newPortfolio)
 
+    }
+
+    function onStyleClassAdd(styleClass: StyleClass) {
+        const newPortfolio = {...portfolioState};
+        newPortfolio.style.classes[styleClass.identifier] = styleClass
+        setPortfolioState(newPortfolio);
     }
 
     return (
@@ -219,11 +228,14 @@ export default function Edit() {
                         portfolioComponentsLength={portfolio.components.length}
                         onAddComponent={onAddComponent}
                         allowContainerComponent={true}
+                        onStyleClassAdd={onStyleClassAdd}
                     />
                     {editComponent ? (
                             <EditComponentSection
                                 component={editComponent}
                                 onEditComponent={onEditComponent}
+                                styleClass={portfolioState.style.classes?.[editComponent.className]}
+                                onStyleChange={onStyleChange}
                             />
                         ) :
                         (
@@ -275,7 +287,7 @@ export default function Edit() {
                         onRemoveComponent={onRemoveComponent}
                         onDragEnd={onDragEnd}
                         onEditComponent={onEditComponent}
-                        fontFamily={portfolioState.style.classes?.["root"].textFont!!}
+                        styleClasses={portfolioState.style.classes}
                     />
                 }
             </AppShell.Main>

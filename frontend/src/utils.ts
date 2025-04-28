@@ -5,4 +5,9 @@ function capitalize(string: string | null) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
-export {capitalize};
+function generateRandomClassName(prefix: string = "class"): string {
+    const randomString = Math.random().toString(36).substring(2, 10);
+    return `${prefix}-${randomString}`;
+}
+
+export {capitalize, generateRandomClassName};

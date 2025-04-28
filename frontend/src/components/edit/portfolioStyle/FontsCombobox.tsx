@@ -5,6 +5,7 @@ import {useState} from "react";
 interface Props {
     fontFamily: string;
     onStyleChange: (identifier: string, attribute: string, value: string) => void;
+    identifier: string;
 }
 
 const fonts = [
@@ -17,7 +18,7 @@ const fonts = [
     'Times New Roman',
 ]
 
-export default function FontsCombobox({fontFamily, onStyleChange}: Props) {
+export default function FontsCombobox({fontFamily, onStyleChange, identifier}: Props) {
     const [search, setSearch] = useState('');
     const combobox = useCombobox({
         onDropdownClose: () => {
@@ -45,7 +46,7 @@ export default function FontsCombobox({fontFamily, onStyleChange}: Props) {
 
         <Combobox
             onOptionSubmit={(optionValue) => {
-                onStyleChange("root", "textFont", optionValue);
+                onStyleChange(identifier, "textFont", optionValue);
                 combobox.closeDropdown();
             }}
             store={combobox}
@@ -56,7 +57,7 @@ export default function FontsCombobox({fontFamily, onStyleChange}: Props) {
                     placeholder="Pick value or type anything"
                     value={fontFamily}
                     onChange={(event) => {
-                        onStyleChange("root", "textFont", event.currentTarget.value);
+                        onStyleChange(identifier, "textFont", event.currentTarget.value);
                         combobox.openDropdown();
                         combobox.updateSelectedOptionIndex();
                     }}

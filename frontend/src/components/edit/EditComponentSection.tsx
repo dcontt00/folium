@@ -2,21 +2,27 @@ import type {ButtonComponentType, ComponentType, ImageComponentType, TextCompone
 import EditTextComponent from "~/components/edit/editComponents/EditTextComponent";
 import EditButtonComponent from "~/components/edit/editComponents/EditButtonComponent";
 import EditImageComponent from "~/components/edit/editComponents/EditImageComponent";
+import type StyleClass from "~/interfaces/styleClass";
 
 
 interface Props {
     component: ComponentType;
     onEditComponent: (component: ComponentType) => void;
+    styleClass: StyleClass,
+    onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
-export default function EditComponentSection({component, onEditComponent}: Props) {
-
-
+export default function EditComponentSection({component, onEditComponent, styleClass, onStyleChange}: Props) {
     function renderComponent(component: ComponentType, onEditComponent: (component: ComponentType) => void) {
         switch (component.__t) {
             case "TextComponent":
                 const textComponent = component as TextComponentType;
-                return <EditTextComponent component={textComponent} onEditComponent={onEditComponent}/>
+                return <EditTextComponent
+                    component={textComponent}
+                    onEditComponent={onEditComponent}
+                    styleClass={styleClass}
+                    onStyleChange={onStyleChange}
+                />
 
             case "ButtonComponent":
                 const buttonComponent = component as ButtonComponentType;

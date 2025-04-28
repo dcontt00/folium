@@ -27,7 +27,7 @@ export default function PortfolioStyle({backgroundColor, fontFamily, onStyleChan
                             value={backgroundColor}
                             onChange={(color) => onStyleChange("root", "backgroundColor", color)}
                         />
-                        <FontsComboBox fontFamily={fontFamily} onStyleChange={onStyleChange}/>
+                        <FontsComboBox fontFamily={fontFamily} onStyleChange={onStyleChange} identifier="root"/>
                     </Stack>
                 </Accordion.Panel>
             </Accordion.Item>

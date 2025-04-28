@@ -16,7 +16,6 @@ interface Props {
     component: ComponentType;
     onEditComponent: (component: ComponentType) => void;
     onSelectEditComponent: (component: ComponentType) => void;
-    fontFamily: string;
     styleClass: StyleClass
 }
 
@@ -24,7 +23,6 @@ export default function EditComponent({
                                           component,
                                           onEditComponent,
                                           onSelectEditComponent,
-                                          fontFamily,
                                           styleClass
                                       }: Props) {
     function renderComponent(component: ComponentType) {
@@ -32,7 +30,7 @@ export default function EditComponent({
         switch (component.__t) {
             case "TextComponent":
                 const textComponent = component as TextComponentType;
-                return <TextComponent fontFamily={fontFamily} textComponent={textComponent}/>
+                return <TextComponent textComponent={textComponent} styleClass={styleClass}/>
 
             case "ButtonComponent":
                 const buttonComponent = component as ButtonComponentType;

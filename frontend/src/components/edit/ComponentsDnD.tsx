@@ -4,6 +4,7 @@ import type {ComponentType} from "~/interfaces/interfaces";
 import type Portfolio from "~/interfaces/portfolio";
 import {IconEdit, IconMenu2, IconTrash} from "@tabler/icons-react";
 import {ActionIcon} from "@mantine/core";
+import type StyleClass from "~/interfaces/styleClass";
 
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
     onDragEnd: (result: DropResult) => void;
     onRemoveComponent: (component: ComponentType) => void;
     onEditComponent: (component: ComponentType) => void;
-    fontFamily: string;
+    styleClasses: Record<string, StyleClass>
 }
 
 export default function ComponentsDnD({
@@ -21,7 +22,7 @@ export default function ComponentsDnD({
                                           onDragEnd,
                                           onRemoveComponent,
                                           onEditComponent,
-                                          fontFamily
+                                          styleClasses
                                       }: Props) {
 
     return (
@@ -44,7 +45,6 @@ export default function ComponentsDnD({
                                             component={component}
                                             onSelectEditComponent={onSelectEditComponent}
                                             onEditComponent={onEditComponent}
-                                            fontFamily={fontFamily}
                                             styleClass={portfolioState.style.classes?.[component.className]}
                                         />
 
