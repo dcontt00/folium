@@ -289,6 +289,7 @@ export default function Edit() {
                         onRemoveComponent={onRemoveComponent}
                         onDragEnd={onDragEnd}
                         onEditComponent={onEditComponent}
+                        onStyleClassAdd={onStyleClassAdd}
                     />
                 }
             </AppShell.Main>

@@ -115,7 +115,7 @@ export default function AddComponentMenu({
     return (
         <Menu shadow="md" width={200}>
             <Menu.Target>
-                <Button leftSection={<IconPlus/>}>Add Component</Button>
+                <Button variant="outline" leftSection={<IconPlus/>}>Add Component</Button>
             </Menu.Target>
             <Menu.Dropdown>
                 <Menu.Item onClick={onAddTextComponent} leftSection={<IconTextCaption/>}>

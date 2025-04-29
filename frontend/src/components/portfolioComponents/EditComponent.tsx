@@ -16,14 +16,16 @@ interface Props {
     component: ComponentType;
     onEditComponent: (component: ComponentType) => void;
     onSelectEditComponent: (component: ComponentType) => void;
-    styleClass: StyleClass
+    styleClass: StyleClass,
+    onStyleClassAdd: (styleClass: StyleClass) => void
 }
 
 export default function EditComponent({
                                           component,
                                           onEditComponent,
                                           onSelectEditComponent,
-                                          styleClass
+                                          styleClass,
+                                          onStyleClassAdd
                                       }: Props) {
     function renderComponent(component: ComponentType) {
 
@@ -42,9 +44,13 @@ export default function EditComponent({
 
             case "ContainerComponent":
                 const containerComponent = component as ContainerComponentType;
-                return <EditContainerComponent onSelectEditComponent={onSelectEditComponent}
-                                               onEditComponent={onEditComponent}
-                                               containerComponent={containerComponent}/>
+                return <EditContainerComponent
+                    onSelectEditComponent={onSelectEditComponent}
+                    onEditComponent={onEditComponent}
+                    containerComponent={containerComponent}
+                    onStyleClassAdd={onStyleClassAdd}
+                    styleClass={styleClass}
+                />
             default:
                 console.log(component.__t)
                 return <div>Component not found</div>

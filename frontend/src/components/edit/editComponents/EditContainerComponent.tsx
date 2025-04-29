@@ -5,14 +5,24 @@ import {IconEdit, IconMenu2, IconTrash} from "@tabler/icons-react";
 import {ActionIcon} from "@mantine/core";
 import {useState} from "react";
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
+import type StyleClass from "~/interfaces/styleClass";
 
 interface Props {
     containerComponent: ContainerComponentType,
     onEditComponent: (component: ComponentType) => void;
     onSelectEditComponent: (component: ComponentType) => void;
+    styleClass: StyleClass,
+    onStyleClassAdd: (styleClass: StyleClass) => void
+
 }
 
-export default function EditContainerComponent({containerComponent, onEditComponent, onSelectEditComponent}: Props) {
+export default function EditContainerComponent({
+                                                   containerComponent,
+                                                   onEditComponent,
+                                                   onSelectEditComponent,
+                                                   styleClass,
+                                                   onStyleClassAdd
+                                               }: Props) {
 
     const [containerState, setContainerState] = useState(containerComponent);
 
@@ -57,14 +67,21 @@ export default function EditContainerComponent({containerComponent, onEditCompon
     }
 
     return (
-        <div style={{display: 'flex', flexDirection: 'row', gap: 20, alignItems: 'center'}}>
+        <div style={{
+            display: 'flex',
+            justifyContent: "space-between",
+            flexDirection: 'row',
+            gap: 20,
+            alignItems: 'center',
+            width: '100%',
+        }}>
             <DragDropContext onDragEnd={handleDragEnd}>
                 <Droppable droppableId="containerComponents" direction="horizontal">
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef}
                              style={{display: 'flex', flexDirection: 'row', gap: "1em"}}>
                             {containerState.components.map((component: ComponentType, index: number) => (
-                                <Draggable key={component._id} draggableId={index.toString()} index={index}>
+                                <Draggable key={component.componentId} draggableId={index.toString()} index={index}>
                                     {(provided) => (
                                         <div
                                             ref={provided.innerRef}
@@ -74,8 +91,12 @@ export default function EditContainerComponent({containerComponent, onEditCompon
                                             <div {...provided.dragHandleProps} className="container-icon">
                                                 <IconMenu2/>
                                             </div>
+
                                             <EditComponent component={component} onEditComponent={onEditComponent}
-                                                           onSelectEditComponent={onSelectEditComponent}/>
+                                                           onSelectEditComponent={onSelectEditComponent}
+                                                           onStyleClassAdd={onStyleClassAdd}
+                                                           styleClass={styleClass}
+                                            />
                                             <ActionIcon className="container-icon"
                                                         onClick={() => onSelectEditComponent(component)}>
                                                 <IconEdit/>
@@ -98,8 +119,7 @@ export default function EditContainerComponent({containerComponent, onEditCompon
                 portfolioComponentsLength={containerComponent.components.length}
                 onAddComponent={onAddComponent}
                 allowContainerComponent={false}
-                largeButton={false}
-                className="icon"
+                onStyleClassAdd={onStyleClassAdd}
             />
         </div>
     )
