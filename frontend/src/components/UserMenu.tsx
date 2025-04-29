@@ -19,7 +19,10 @@ export default function UserMenu() {
     useEffect(() => {
         const fetchUser = async () => {
             await axiosInstance.get("/user").then((response) => {
-                setAvatar(`${config.BACKEND_URL}/images/${response.data.user._id}/avatar.jpg`);
+
+                // Need to add a timestamp to the URL to prevent caching
+                const timestamp = new Date().getTime(); // Generate a unique timestamp
+                setAvatar(`${config.BACKEND_URL}/images/${response.data.user._id}.jpg?t=${timestamp}`);
                 console.log(response);
             }).catch((error) => {
                 console.log(error);

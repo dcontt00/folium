@@ -44,10 +44,6 @@ export default function Profile() {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
-                params: {
-                    type: 'avatar',
-                }
-
             }).then(async (response) => {
                 console.log(response);
             }).catch((error) => {
@@ -95,7 +91,7 @@ export default function Profile() {
                                     }
                                 >
                                     <Avatar size={"10rem"}
-                                            src={avatar ? URL.createObjectURL(avatar) : `${config.BACKEND_URL}/images/${user._id}/avatar.jpg`}
+                                            src={avatar ? URL.createObjectURL(avatar) : `${config.BACKEND_URL}/images/${user._id}.jpg`}
                                     />
                                 </Indicator>
                             </Stack>
