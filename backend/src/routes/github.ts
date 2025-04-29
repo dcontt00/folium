@@ -1,7 +1,7 @@
 import express from "express"
 import path from "path";
 import fs from "fs";
-import {getExportsFolder} from "@/utils/directories";
+import {getHtmlFolder} from "@/utils/directories";
 import {authHandler} from "@/middleware";
 import {exchangeCodeForToken, getUserFromToken, uploadFilesToGithubPages} from "@/services/githubService";
 import {generateHtmlFiles} from "@/services/portfolioService";
@@ -98,17 +98,17 @@ router.get('/upload', authHandler, async (req, res, next) => {
         throw new ApiError(400, "Missing required parameters: portfolioUrl");
         return;
     }
+    // Generate HTML files
+    await generateHtmlFiles(portfolioUrl as string)
 
-    const exportFolder = getExportsFolder();
-    const portfolioDir = path.join(exportFolder, portfolioUrl as string);
+    const htmlFolder = getHtmlFolder();
+    const portfolioDir = path.join(htmlFolder, portfolioUrl as string);
 
     if (!fs.existsSync(portfolioDir)) {
         res.status(404).send("Portfolio directory not found.");
         return;
     }
 
-    // Generate HTML files
-    await generateHtmlFiles(portfolioUrl as string)
 
     const {
         githubToken,

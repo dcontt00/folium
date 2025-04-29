@@ -129,16 +129,19 @@ export default function SettingsSection({
                             "Success" :
                             "Export to Github"}
                     </Button>
-                {url != "" &&
-                    <Stack gap="xs">
-                        <Text>Your site is on:
-                        </Text>
+                    {url != "" &&
+                        <Stack gap="xs">
+                            <Text>Your site is on:
+                            </Text>
 
-                        <Anchor href={url} target="_blank" rel="noreferrer">
-                            {url}
-                        </Anchor>
-                    </Stack>
-                }
+                            <Anchor href={url} target="_blank" rel="noreferrer">
+                                {url}
+                            </Anchor>
+                            <Text>
+                                It may take a few minutes to be available or updated
+                            </Text>
+                        </Stack>
+                    }
                 </>
                 :
                 <GithubLogin/>
