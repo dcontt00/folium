@@ -8,12 +8,13 @@ import type StyleClass from "~/interfaces/styleClass";
 
 interface Props {
     component: ImageComponentType;
+    portfolioUrl: string;
     onEditComponent: (component: ImageComponentType) => void;
     styleClass: StyleClass,
     onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
-export default function EditTextComponent({component, onEditComponent, styleClass, onStyleChange}: Props) {
+export default function EditTextComponent({component, onEditComponent, styleClass, onStyleChange, portfolioUrl}: Props) {
     const [url, setUrl] = useState(component.url);
     const [file, setFile] = useState<File | null>(null);
     const [caption, setCaption] = useState(component.caption);
@@ -95,10 +96,14 @@ export default function EditTextComponent({component, onEditComponent, styleClas
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
+                params:{
+                    portfolioUrl: portfolioUrl,
+                }
             });
 
             const url = `${config.BACKEND_URL}${response.data.url}`;
             setUrl(url);
+            console.log("Image uploaded successfully:", url);
             component.url = url;
             onEditComponent(component);
         } catch (error) {

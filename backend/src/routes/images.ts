@@ -5,11 +5,12 @@ import fs from "node:fs";
 import {ApiError, AuthenticationError} from "@/classes";
 import {getImagesFolder} from "@/utils/directories";
 import sharp from "sharp";
+import portfolio from "@/routes/portfolio";
 
 const router = express.Router();
 
 
-router.post("/", async (req, res) => {
+router.post("/", authHandler, async (req, res) => {
     const user = req.user;
     if (!user) {
         throw new AuthenticationError("User not found");
@@ -28,19 +29,29 @@ router.post("/", async (req, res) => {
         return;
     }
 
+    const portfolioUrl = req.query.portfolioUrl as string | undefined;
+
     const imagesPath = getImagesFolder();
     const upload = req.files.upload;
-    const uploadFolder = path.join(imagesPath, user.id);
 
-    // Check if the folder exists, if not, create it
-    if (!fs.existsSync(uploadFolder)) {
-        fs.mkdirSync(uploadFolder, {recursive: true});
+
+    let url = `/images/`;
+    let imagesFolder = imagesPath;
+    let filename = `${user.id}.jpg`;
+    if (portfolioUrl) {
+        imagesFolder = path.join(imagesPath, portfolioUrl);
+        url = `/images/${portfolioUrl}/`;
+        filename = `${Date.now().toString()}.jpg`;
     }
 
-    const type = req.query.type;
-    const outputFilename = type === "avatar" ? "avatar.jpg" : `${Date.now().toString()}.jpg`;
-    const outputPath = path.join(uploadFolder, outputFilename);
-    const url = `/images/${user.id}/${outputFilename}`;
+
+    // Check if the folder exists, if not, create it
+    if (!fs.existsSync(imagesFolder)) {
+        fs.mkdirSync(imagesFolder, {recursive: true});
+    }
+
+    const outputPath = path.join(imagesFolder, filename);
+    url += filename;
 
     try {
         // Use sharp to process the image
@@ -53,11 +64,10 @@ router.post("/", async (req, res) => {
         res.status(500).send("Error processing image");
     }
 });
-router.get('/:userId/:filename', authHandler, (req, res) => {
-    const user = req.user;
-    if (!user) {
-        throw new Error("User not found");
-    }
+
+router.use(express.static(getImagesFolder()));
+
+/*router.get('/:userId/:filename', (req, res) => {
     const {userId, filename} = req.params;
     const imagesPath = getImagesFolder();
     const filePath = path.join(imagesPath, userId, filename);
@@ -71,6 +81,6 @@ router.get('/:userId/:filename', authHandler, (req, res) => {
             });
         }
     });
-});
+});*/
 
 export default router;

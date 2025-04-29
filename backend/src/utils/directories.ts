@@ -40,6 +40,7 @@ export {
     getExportsFolder,
     createDirectories,
     getImagesFolder,
-    getHtmlFolder
+    getHtmlFolder,
+
 }
 

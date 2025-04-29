@@ -233,6 +233,7 @@ export default function Edit() {
                     />
                     {editComponent ? (
                             <EditComponentSection
+                                portfolioUrl={portfolio.url}
                                 component={editComponent}
                                 onEditComponent={onEditComponent}
                                 styleClass={portfolioState.style.classes?.[editComponent.className]}

@@ -7,10 +7,11 @@ import TextType from "@/interfaces/TextType";
 import path from "path";
 import fs from "fs";
 import archiver from "archiver"
-import {getHtmlFolder} from "@/utils/directories";
+import {getHtmlFolder, getImagesFolder} from "@/utils/directories";
 import {createPortfolioStyle} from "@/services/styleService";
 import mongoose from "mongoose";
 import styleModel from "@/models/StyleModel";
+import imageComponentModel from "@/models/components/ImageComponentModel";
 
 
 async function generateHtmlFiles(portfolioUrl: string) {
@@ -47,6 +48,15 @@ async function generateHtmlFiles(portfolioUrl: string) {
     fs.writeFileSync(htmlFilePath, htmlContent, 'utf-8');
     fs.writeFileSync(cssFilePath, cssContent, 'utf-8');
     console.log(`HTML and CSS files created at: ${htmlFilePath}, ${cssFilePath} `);
+
+    // Copy images to the output directory
+    const portfolioImages= path.join(getImagesFolder(), portfolioUrl)
+    const images = fs.readdirSync(portfolioImages);
+    for (const image of images) {
+        const sourcePath = path.join(portfolioImages, image);
+        const destPath = path.join(outputDir, image);
+        fs.copyFileSync(sourcePath, destPath);
+    }
 }
 
 // Create portfolio

@@ -13,7 +13,8 @@ import githubRouter from "@/routes/github"
 import fileUpload from "express-fileupload";
 import connectDB from "@/db";
 import {authHandler, errorHandler} from "@/middleware";
-import {createDirectories, getHtmlFolder} from "@/utils/directories";
+import {createDirectories, getHtmlFolder, getImagesFolder} from "@/utils/directories";
+import router from "@/routes/images";
 
 
 const app: Express = express();
@@ -38,7 +39,6 @@ app.use("/api/images", imagesRouter);
 app.use("/api/github", githubRouter);
 
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 // Serve portfolios in HTML
 app.get("/api/view/:portfolioUrl", authHandler, async (req, res) => {
