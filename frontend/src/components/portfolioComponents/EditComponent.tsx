@@ -34,7 +34,7 @@ export default function EditComponent({
 
             case "ButtonComponent":
                 const buttonComponent = component as ButtonComponentType;
-                return <ButtonComponent buttonComponent={buttonComponent}/>
+                return <ButtonComponent buttonComponent={buttonComponent} styleClass={styleClass}/>
 
             case "ImageComponent":
                 const imageComponent = component as ImageComponentType;

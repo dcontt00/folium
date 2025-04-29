@@ -63,7 +63,6 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
             }
             return await ButtonComponentModel.create({
                 componentId: component.componentId,
-                color: component.color,
                 index: component.index,
                 text: component.text,
                 url: component.url,

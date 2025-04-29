@@ -6,8 +6,9 @@ export default class StyleClass {
     display: string;
     imageWidth: number;
     imageOverlayTransparency: number;
+    buttonColor: string;
 
-    constructor(_id: string, identifier: string, textFont: string, backgroundColor: string, display: string, imageWidth: number, imageOverlayTransparency: number) {
+    constructor(_id: string, identifier: string, textFont: string, backgroundColor: string, display: string, imageWidth: number, imageOverlayTransparency: number,buttonColor: string) {
         this._id = _id;
         this.backgroundColor = backgroundColor;
         this.display = display;
@@ -15,6 +16,7 @@ export default class StyleClass {
         this.textFont = textFont;
         this.imageWidth = imageWidth;
         this.imageOverlayTransparency = imageOverlayTransparency;
+        this.buttonColor = buttonColor;
     }
 
 
@@ -35,6 +37,9 @@ export default class StyleClass {
         }
         if (this.imageOverlayTransparency) {
             style += `backgroundColor:rgba(0, 0, 0, ${this.imageOverlayTransparency / 100} );`
+        }
+        if (this.buttonColor) {
+            style += `background-color: ${this.buttonColor};`
         }
         style += `}`
 

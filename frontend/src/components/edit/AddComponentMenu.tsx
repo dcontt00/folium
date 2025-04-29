@@ -54,6 +54,7 @@ export default function AddComponentMenu({
         const className = generateRandomClassName();
         const styleClass: StyleClass = {
             identifier: className,
+            buttonColor: "#0070f3",
         }
         const newComponent: ButtonComponentType = {
             _id: null,
@@ -63,8 +64,7 @@ export default function AddComponentMenu({
             parent_id: parent_id,
             text: "Button",
             url: "/",
-            color: "blue",
-            className: generateRandomClassName()
+            className: className
         }
         onStyleClassAdd(styleClass)
         onAddComponent(newComponent);
@@ -85,10 +85,7 @@ export default function AddComponentMenu({
             url: "/placeholder.jpg",
             overlayText: null,
             caption: null,
-            overlayTransparency: 0,
-            width: 1,
             className: className
-
         }
         onStyleClassAdd(styleClass)
         onAddComponent(newComponent);

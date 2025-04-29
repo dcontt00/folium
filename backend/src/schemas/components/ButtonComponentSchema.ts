@@ -7,11 +7,6 @@ const buttonComponentSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        color: {
-            type: String,
-            default: "#000000",
-        },
-
         // Url to navigate on click
         url: {
             type: String,

@@ -52,7 +52,6 @@ export default function EditTextComponent({component, onEditComponent, styleClas
         setWidth(value);
 
         // Change the text of the component
-        component.width = value;
         handleOnStyleChange("imageWidth", value.toString());
         onEditComponent(component);
     }
@@ -62,7 +61,6 @@ export default function EditTextComponent({component, onEditComponent, styleClas
         setOverlayTransparency(value);
 
         // Change the text of the component
-        component.overlayTransparency = value;
         handleOnStyleChange("imageOverlayTransparency", value.toString());
         onEditComponent(component);
     }

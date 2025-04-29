@@ -1,20 +1,23 @@
 import type {ButtonComponentType} from "~/interfaces/interfaces";
 import {ColorInput, Stack, TextInput} from "@mantine/core";
 import {useEffect, useState} from "react";
+import type StyleClass from "~/interfaces/styleClass";
 
 
 interface Props {
     component: ButtonComponentType;
     onEditComponent: (component: ButtonComponentType) => void;
+    styleClass:StyleClass,
+    onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
-export default function EditButtonComponent({component, onEditComponent}: Props) {
+export default function EditButtonComponent({component, onEditComponent, styleClass,onStyleChange}: Props) {
     const [text, setText] = useState(component.text);
     const [url, setUrl] = useState(component.url);
-    const [color, setColor] = useState(component.color);
+    const [color, setColor] = useState(styleClass.buttonColor || "#0070f3");
 
     useEffect(() => {
-        setColor(component.color);
+        setColor(styleClass.buttonColor);
         setText(component.text);
         setUrl(component.url);
     }, [component]);
@@ -36,9 +39,10 @@ export default function EditButtonComponent({component, onEditComponent}: Props)
     function onColorChange(value: string) {
         setColor(value);
         // Change the text of the component
-        component.color = value;
+        onStyleChange(component.className, "buttonColor", value);
         onEditComponent(component);
     }
+
 
     return (
         <Stack>

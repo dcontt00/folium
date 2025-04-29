@@ -13,7 +13,13 @@ interface Props {
     onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
-export default function EditComponentSection({component, onEditComponent, styleClass, onStyleChange, portfolioUrl}: Props) {
+export default function EditComponentSection({
+                                                 component,
+                                                 onEditComponent,
+                                                 styleClass,
+                                                 onStyleChange,
+                                                 portfolioUrl
+                                             }: Props) {
     function renderComponent(component: ComponentType, onEditComponent: (component: ComponentType) => void) {
         switch (component.__t) {
             case "TextComponent":
@@ -27,7 +33,12 @@ export default function EditComponentSection({component, onEditComponent, styleC
 
             case "ButtonComponent":
                 const buttonComponent = component as ButtonComponentType;
-                return <EditButtonComponent component={buttonComponent} onEditComponent={onEditComponent}/>
+                return <EditButtonComponent
+                    component={buttonComponent}
+                    onEditComponent={onEditComponent}
+                    styleClass={styleClass}
+                    onStyleChange={onStyleChange}
+                />
             case "ImageComponent":
                 const imageComponent = component as ImageComponentType;
                 return <EditImageComponent
