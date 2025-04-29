@@ -14,8 +14,13 @@ interface Props {
     onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
-export default function EditTextComponent({component, onEditComponent, styleClass, onStyleChange, portfolioUrl}: Props) {
-    const [url, setUrl] = useState(component.url);
+export default function EditTextComponent({
+                                              component,
+                                              onEditComponent,
+                                              styleClass,
+                                              onStyleChange,
+                                              portfolioUrl
+                                          }: Props) {
     const [file, setFile] = useState<File | null>(null);
     const [caption, setCaption] = useState(component.caption);
     const [overlayText, setOverlayText] = useState(component.overlayText);
@@ -26,7 +31,6 @@ export default function EditTextComponent({component, onEditComponent, styleClas
     console.log("overlayTransparency", overlayTransparency)
     // Needed when selecting a different component
     useEffect(() => {
-        setUrl(component.url);
         setCaption(component.caption)
         setOverlayText(component.overlayText)
     }, [component]);
@@ -94,13 +98,12 @@ export default function EditTextComponent({component, onEditComponent, styleClas
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
-                params:{
+                params: {
                     portfolioUrl: portfolioUrl,
                 }
             });
 
             const url = `${config.BACKEND_URL}${response.data.url}`;
-            setUrl(url);
             console.log("Image uploaded successfully:", url);
             component.url = url;
             onEditComponent(component);

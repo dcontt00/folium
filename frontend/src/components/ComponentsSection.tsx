@@ -1,6 +1,5 @@
 import type {ComponentType} from "~/interfaces/interfaces";
 import Component from "~/components/portfolioComponents/Component";
-import type StyleClass from "~/interfaces/styleClass";
 import type Portfolio from "~/interfaces/portfolio";
 
 interface Props {

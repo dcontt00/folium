@@ -4,7 +4,7 @@ import type StyleClass from "~/interfaces/styleClass";
 
 interface Props {
     containerComponent: ContainerComponentType,
-    styleClass:StyleClass
+    styleClass: StyleClass
 }
 
 export default function ContainerComponent({containerComponent, styleClass}: Props) {
@@ -15,6 +15,7 @@ export default function ContainerComponent({containerComponent, styleClass}: Pro
             {containerComponent.components.map((component: ComponentType, index: number) => (
                 <div
                     className="containerComponent"
+                    key={index}
                 >
                     <Component component={component} styleClass={styleClass}/>
                 </div>

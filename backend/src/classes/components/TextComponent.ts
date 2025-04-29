@@ -14,7 +14,6 @@ export default class TextComponent extends Component {
     }
 
     toHtml() {
-        const fontSizeStyle = this.fontSize != 0 ? `font-size: ${this.fontSize};` : "";
         return `<${this.type} class="${this.className}">${this.text}</${this.type}>`;
     }
 }

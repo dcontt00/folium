@@ -5,7 +5,7 @@ export default class ImageComponent extends Component {
     caption: string;
     overlayText: string;
 
-    constructor(_id: string, __t: string, componentId: number, index: number, parent_id: string, className: string, url: string, caption: string, overlayText: string, overlayTransparency: number, width: number) {
+    constructor(_id: string, __t: string, componentId: number, index: number, parent_id: string, className: string, url: string, caption: string, overlayText: string) {
         super(_id, __t, componentId, index, parent_id, className);
         this.url = url;
         this.caption = caption;

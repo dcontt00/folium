@@ -13,8 +13,7 @@ import githubRouter from "@/routes/github"
 import fileUpload from "express-fileupload";
 import connectDB from "@/db";
 import {authHandler, errorHandler} from "@/middleware";
-import {createDirectories, getHtmlFolder, getImagesFolder} from "@/utils/directories";
-import router from "@/routes/images";
+import {createDirectories, getHtmlFolder} from "@/utils/directories";
 
 
 const app: Express = express();

@@ -5,8 +5,6 @@ import fs from "node:fs";
 import {ApiError, AuthenticationError} from "@/classes";
 import {getImagesFolder} from "@/utils/directories";
 import sharp from "sharp";
-import portfolio from "@/routes/portfolio";
-
 const router = express.Router();
 
 

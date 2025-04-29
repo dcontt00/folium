@@ -4,7 +4,6 @@ import type {ComponentType} from "~/interfaces/interfaces";
 import type Portfolio from "~/interfaces/portfolio";
 import {IconEdit, IconMenu2, IconTrash} from "@tabler/icons-react";
 import {ActionIcon} from "@mantine/core";
-import type StyleClass from "~/interfaces/styleClass";
 
 
 interface Props {
