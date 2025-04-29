@@ -1,4 +1,4 @@
-import {Anchor, Button, Divider, Stack, Text, Textarea, TextInput, Title} from "@mantine/core";
+import {Alert, Anchor, Button, Divider, Stack, Text, Textarea, TextInput, Title} from "@mantine/core";
 import axiosInstance from "~/axiosInstance";
 import GithubLogin from "~/components/GithubLogin";
 import {useEffect, useState} from "react";
@@ -130,17 +130,20 @@ export default function SettingsSection({
                             "Export to Github"}
                     </Button>
                     {url != "" &&
-                        <Stack gap="xs">
-                            <Text>Your site is on:
-                            </Text>
+                        <Alert color="green" icon={<IconCheck size={16}/>} title="Success!">
 
-                            <Anchor href={url} target="_blank" rel="noreferrer">
-                                {url}
-                            </Anchor>
-                            <Text>
-                                It may take a few minutes to be available or updated
-                            </Text>
-                        </Stack>
+                            <Stack gap="xs">
+                                <Text>Your site is on:
+                                </Text>
+
+                                <Anchor href={url} target="_blank" rel="noreferrer">
+                                    {url}
+                                </Anchor>
+                                <Text>
+                                    It may take a few minutes to be available or updated
+                                </Text>
+                            </Stack>
+                        </Alert>
                     }
                 </>
                 :
