@@ -13,7 +13,6 @@ interface Props {
     onDragEnd: (result: DropResult) => void;
     onRemoveComponent: (component: ComponentType) => void;
     onEditComponent: (component: ComponentType) => void;
-    styleClasses: Record<string, StyleClass>
 }
 
 export default function ComponentsDnD({
@@ -22,7 +21,6 @@ export default function ComponentsDnD({
                                           onDragEnd,
                                           onRemoveComponent,
                                           onEditComponent,
-                                          styleClasses
                                       }: Props) {
 
     return (

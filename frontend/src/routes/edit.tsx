@@ -24,7 +24,7 @@ export function HydrateFallback() {
 
 export default function Edit() {
     const portfolio: Portfolio = useLoaderData();
-    console.log(portfolio);
+    console.log("portfolio", portfolio);
 
     const openModal = () => modals.openConfirmModal({
         title: 'Please confirm your action',
@@ -125,6 +125,7 @@ export default function Edit() {
             const updatedPortfolio = response.data.data;
             setGotUpdatedPortfolio(true);
             setPortfolioState(updatedPortfolio);
+            console.log("updatedPortfolio", updatedPortfolio);
             // Update the editComponent if it exists
             if (editComponent) {
                 const updatedComponent = updatedPortfolio.components.find(
@@ -276,9 +277,9 @@ export default function Edit() {
                         <ActionIcon onClick={() => setPreviewEnabled(false)}>
                             <IconX/>
                         </ActionIcon>
-                        <ComponentsSection
-                            fontFamily={portfolioState.style.classes?.["root"].textFont!!}
-                            components={portfolioState.components}/>
+                        {/*<ComponentsSection
+                            portfolioState={portfolioState}
+                        />*/}
                     </>
                     :
                     <ComponentsDnD
@@ -287,7 +288,6 @@ export default function Edit() {
                         onRemoveComponent={onRemoveComponent}
                         onDragEnd={onDragEnd}
                         onEditComponent={onEditComponent}
-                        styleClasses={portfolioState.style.classes}
                     />
                 }
             </AppShell.Main>

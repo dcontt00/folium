@@ -29,7 +29,12 @@ export default function EditComponentSection({component, onEditComponent, styleC
                 return <EditButtonComponent component={buttonComponent} onEditComponent={onEditComponent}/>
             case "ImageComponent":
                 const imageComponent = component as ImageComponentType;
-                return <EditImageComponent component={imageComponent} onEditComponent={onEditComponent}/>
+                return <EditImageComponent
+                    component={imageComponent}
+                    onEditComponent={onEditComponent}
+                    styleClass={styleClass}
+                    onStyleChange={onStyleChange}
+                />
             default:
                 return <div>Component not found</div>
         }

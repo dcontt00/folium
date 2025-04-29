@@ -4,13 +4,16 @@ import {useEffect, useState} from "react";
 import {IconUpload} from "@tabler/icons-react";
 import config from "~/config";
 import axiosInstance from "~/axiosInstance";
+import type StyleClass from "~/interfaces/styleClass";
 
 interface Props {
     component: ImageComponentType;
     onEditComponent: (component: ImageComponentType) => void;
+    styleClass: StyleClass,
+    onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
-export default function EditTextComponent({component, onEditComponent}: Props) {
+export default function EditTextComponent({component, onEditComponent, styleClass, onStyleChange}: Props) {
     const [url, setUrl] = useState(component.url);
     const [file, setFile] = useState<File | null>(null);
     const [caption, setCaption] = useState(component.caption);
@@ -40,11 +43,16 @@ export default function EditTextComponent({component, onEditComponent}: Props) {
 
     }, [file]);
 
+    function handleOnStyleChange(attribute: string, value: string) {
+        onStyleChange(component.className, attribute, value);
+    }
+
     function onWidthChange(value: number) {
         setWidth(value);
 
         // Change the text of the component
         component.width = value;
+        handleOnStyleChange( "imageWidth", value.toString());
         onEditComponent(component);
     }
 

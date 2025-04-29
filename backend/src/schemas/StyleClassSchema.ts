@@ -17,6 +17,14 @@ const StyleClassSchema = new mongoose.Schema(
         display: {
             type: String,
         },
+        imageWidth: {
+            type: Number,
+        },
+        imageOverlayTransparency: {
+            type: Number,
+            min: 0,
+            max: 1,
+        }
 
     },
     {timestamps: true}

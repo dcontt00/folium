@@ -203,6 +203,7 @@ router.put("/:url", authHandler, async (req, res) => {
 
 
     if (req.body.components) {
+        console.log("components", req.body.components)
         for (const reqComponent of req.body.components) {
             const portfolioComponent = portfolio.components.find((component: any) => component.componentId === reqComponent.componentId);
 
@@ -223,18 +224,33 @@ router.put("/:url", authHandler, async (req, res) => {
             throw new ApiError(404, "Style not found");
         }
         const updatedClasses = req.body.style?.classes || {};
-        console.log(updatedClasses)
+        console.log("styles", updatedClasses)
         for (const styleClass of Object.values(updatedClasses) as StyleClass[]) {
-
-            await styleClassModel.findOneAndUpdate({
-                    _id: styleClass._id,
-                },
-                {
+            if (styleClass._id == null) {
+                // Create a new style class
+                const newStyleClass = await styleClassModel.create({
                     ...styleClass
+                });
+                styleClass._id = newStyleClass._id.toString();
+                await styleModel.findByIdAndUpdate(style._id, {
+                    $set: {
+                        [`classes.${styleClass.identifier}`]: newStyleClass._id,
+                    },
                 }, {
-                    new: true,
-                    upsert: true
+                    new: true
                 })
+            } else {
+                // Check if the class already exists in the database
+                await styleClassModel.findOneAndUpdate({
+                        _id: styleClass._id,
+                    },
+                    {
+                        ...styleClass
+                    }, {
+                        new: true,
+                        upsert: true
+                    })
+            }
         }
     });
 
@@ -263,6 +279,7 @@ router.put("/:url", authHandler, async (req, res) => {
                 success: true,
                 data: updatedPortfolio,
             });
+            console.log("updatedPortfolio", updatedPortfolio)
 
             if (updatedPortfolio == null) {
                 throw new ApiError(404, "Portfolio not found");

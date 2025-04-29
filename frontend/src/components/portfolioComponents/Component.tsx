@@ -9,19 +9,20 @@ import TextComponent from "~/components/portfolioComponents/TextComponent";
 import ButtonComponent from "~/components/portfolioComponents/ButtonComponent";
 import ImageComponent from "~/components/portfolioComponents/ImageComponent";
 import ContainerComponent from "~/components/portfolioComponents/ContainerComponent";
+import type StyleClass from "~/interfaces/styleClass";
 
 interface Props {
     component: ComponentType;
-    fontFamily: string;
+    styleClass:StyleClass
 }
 
-export default function Component({component, fontFamily}: Props) {
+export default function Component({component, styleClass}: Props) {
     function renderComponent(component: ComponentType) {
 
         switch (component.__t) {
             case "TextComponent":
                 const textComponent = component as TextComponentType;
-                return <TextComponent fontFamily={fontFamily} textComponent={textComponent}/>
+                return <TextComponent styleClass={styleClass} textComponent={textComponent}/>
 
             case "ButtonComponent":
                 const buttonComponent = component as ButtonComponentType;
@@ -29,11 +30,11 @@ export default function Component({component, fontFamily}: Props) {
 
             case "ImageComponent":
                 const imageComponent = component as ImageComponentType;
-                return <ImageComponent imageComponent={imageComponent}/>
+                return <ImageComponent imageComponent={imageComponent} styleClass={styleClass}/>
 
             case "ContainerComponent":
                 const containerComponent = component as ContainerComponentType;
-                return <ContainerComponent containerComponent={containerComponent}/>
+                return <ContainerComponent containerComponent={containerComponent} styleClass={styleClass}/>
             default:
                 console.log(component)
                 return <div>Component not found</div>

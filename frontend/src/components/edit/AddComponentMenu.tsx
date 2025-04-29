@@ -74,8 +74,7 @@ export default function AddComponentMenu({
         const className = generateRandomClassName();
         const styleClass: StyleClass = {
             identifier: className,
-            backgroundColor: "#ffffff",
-            color: "#000000",
+            imageWidth: "100",
         }
         const newComponent: ImageComponentType = {
             _id: null,
@@ -88,7 +87,7 @@ export default function AddComponentMenu({
             caption: null,
             overlayTransparency: 0,
             width: 1,
-            className: generateRandomClassName()
+            className: className
 
         }
         onStyleClassAdd(styleClass)
@@ -109,7 +108,7 @@ export default function AddComponentMenu({
             index: portfolioComponentsLength - 1,
             parent_id: parent_id,
             components: [],
-            className: generateRandomClassName()
+            className: className
 
         }
         onStyleClassAdd(styleClass)

@@ -26,6 +26,8 @@ export default function EditComponent({
                                           styleClass
                                       }: Props) {
     function renderComponent(component: ComponentType) {
+        console.log("EditComponent", styleClass)
+        console.log("Editcomponent", component.className)
 
         switch (component.__t) {
             case "TextComponent":
@@ -38,7 +40,7 @@ export default function EditComponent({
 
             case "ImageComponent":
                 const imageComponent = component as ImageComponentType;
-                return <ImageComponent imageComponent={imageComponent}/>
+                return <ImageComponent imageComponent={imageComponent} styleClass={styleClass}/>
 
             case "ContainerComponent":
                 const containerComponent = component as ContainerComponentType;

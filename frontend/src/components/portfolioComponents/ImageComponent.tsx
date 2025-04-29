@@ -1,11 +1,14 @@
 import React from 'react';
 import type {ImageComponentType} from "~/interfaces/interfaces";
+import type StyleClass from "~/interfaces/styleClass";
 
 interface Props {
     imageComponent: ImageComponentType;
+    styleClass: StyleClass,
 }
 
-export default function ImageComponent({imageComponent}: Props) {
+export default function ImageComponent({imageComponent, styleClass}: Props) {
+    console.log(styleClass)
     return (
         <div style={{
             display: 'flex',
@@ -13,7 +16,7 @@ export default function ImageComponent({imageComponent}: Props) {
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: '#2d3748',
-            width: `${imageComponent.width * 100}%`
+            width: `${styleClass.imageWidth as unknown as number * 100}%`
         }}>
             <div style={{position: 'relative', width: '100%'}}>
                 <img style={{width: '100%'}} src={imageComponent.url} alt={imageComponent.url}/>
@@ -27,7 +30,7 @@ export default function ImageComponent({imageComponent}: Props) {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: `rgba(0, 0, 0, ${imageComponent.overlayTransparency} )`,
+                        backgroundColor: `rgba(0, 0, 0, ${styleClass.imageOverlayTransparency} )`,
                     }}>
                         <span style={{color: 'white', fontSize: '1.125rem'}}>{imageComponent.overlayText}</span>
                     </div>
