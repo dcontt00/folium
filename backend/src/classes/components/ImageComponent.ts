@@ -4,28 +4,25 @@ export default class ImageComponent extends Component {
     url: string;
     caption: string;
     overlayText: string;
-    overlayTransparency: number;
-    width: number;
 
     constructor(_id: string, __t: string, componentId: number, index: number, parent_id: string, className: string, url: string, caption: string, overlayText: string, overlayTransparency: number, width: number) {
         super(_id, __t, componentId, index, parent_id, className);
         this.url = url;
         this.caption = caption;
         this.overlayText = overlayText;
-        this.overlayTransparency = overlayTransparency;
-        this.width = width;
 
     }
 
     toHtml() {
         return `
-         <div style={{
+         <div
+          className="${this.className}"
+          style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: '#2d3748',
-            width: ${this.width * 100}%
         }}>
             <div style={{position: 'relative', width: '100%'}}>
                 <img style={{width: '100%'}} src=${this.url} alt=${this.url}/>
@@ -38,8 +35,7 @@ export default class ImageComponent extends Component {
                         bottom: 0,
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'rgba(0, 0, 0, ${this.overlayTransparency})',
+                        justifyContent: 'center'
                     }}>
                         <span style={{color: 'white', fontSize: '1.125rem'}}>${this.overlayText}</span>
                     </div>

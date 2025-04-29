@@ -80,7 +80,6 @@ async function createComponent(component: any, parent_id: mongoose.Types.ObjectI
                 parent_id: parent_id,
                 index: component.index,
                 url: component.url,
-                width: component.width,
                 caption: component.caption,
                 overlayText: component.overlayText,
                 className: component.className,
