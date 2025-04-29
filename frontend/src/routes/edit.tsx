@@ -277,9 +277,9 @@ export default function Edit() {
                         <ActionIcon onClick={() => setPreviewEnabled(false)}>
                             <IconX/>
                         </ActionIcon>
-                        {/*<ComponentsSection
+                        <ComponentsSection
                             portfolioState={portfolioState}
-                        />*/}
+                        />
                     </>
                     :
                     <ComponentsDnD

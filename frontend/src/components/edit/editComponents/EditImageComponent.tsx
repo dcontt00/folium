@@ -18,16 +18,16 @@ export default function EditTextComponent({component, onEditComponent, styleClas
     const [file, setFile] = useState<File | null>(null);
     const [caption, setCaption] = useState(component.caption);
     const [overlayText, setOverlayText] = useState(component.overlayText);
-    const [overlayTransparency, setOverlayTransparency] = useState(component.overlayTransparency);
-    const [width, setWidth] = useState(component.width);
+    const [overlayTransparency, setOverlayTransparency] = useState(Number(styleClass.imageOverlayTransparency || 0.5));
+    const [width, setWidth] = useState(Number(styleClass.imageWidth) || 1);
 
+    console.log("editimagecomponent", styleClass)
+    console.log("overlayTransparency", overlayTransparency)
     // Needed when selecting a different component
     useEffect(() => {
         setUrl(component.url);
         setCaption(component.caption)
         setOverlayText(component.overlayText)
-        setOverlayTransparency(component.overlayTransparency)
-        setWidth(component.width);
     }, [component]);
 
     useEffect(() => {
@@ -52,15 +52,17 @@ export default function EditTextComponent({component, onEditComponent, styleClas
 
         // Change the text of the component
         component.width = value;
-        handleOnStyleChange( "imageWidth", value.toString());
+        handleOnStyleChange("imageWidth", value.toString());
         onEditComponent(component);
     }
 
     function onOverlayTransparencyChange(value: number) {
+        console.log("onOverlayTransparencyChange", value)
         setOverlayTransparency(value);
 
         // Change the text of the component
         component.overlayTransparency = value;
+        handleOnStyleChange("imageOverlayTransparency", value.toString());
         onEditComponent(component);
     }
 
@@ -115,7 +117,7 @@ export default function EditTextComponent({component, onEditComponent, styleClas
                 <Text>Width</Text>
                 <Slider
                     color="blue"
-                    min={0} max={1} step={0.01} defaultValue={0.5}
+                    min={0} max={1} step={0.01}
                     label={(value) => `${Math.round(value * 100)} %`}
                     value={width} onChange={onWidthChange}
                     marks={[
@@ -144,9 +146,10 @@ export default function EditTextComponent({component, onEditComponent, styleClas
                     <Text>Overlay Transparency</Text>
                     <Slider
                         color="blue"
-                        min={0} max={1} step={0.01} defaultValue={0.5}
+                        min={0} max={1} step={0.01}
                         label={(value) => `${Math.round(value * 100)} %`}
-                        value={overlayTransparency} onChange={onOverlayTransparencyChange}
+                        value={overlayTransparency}
+                        onChange={onOverlayTransparencyChange}
                     />
                 </div>
             )}

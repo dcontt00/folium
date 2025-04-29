@@ -26,8 +26,6 @@ export default function EditComponent({
                                           styleClass
                                       }: Props) {
     function renderComponent(component: ComponentType) {
-        console.log("EditComponent", styleClass)
-        console.log("Editcomponent", component.className)
 
         switch (component.__t) {
             case "TextComponent":
