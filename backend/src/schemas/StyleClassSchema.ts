@@ -13,11 +13,9 @@ const StyleClassSchema = new mongoose.Schema(
         },
         backgroundColor: {
             type: String,
-            default: "#242424",
         },
         display: {
             type: String,
-            default: "block"
         },
 
     },

@@ -15,7 +15,7 @@ export default class StyleClass {
 
 
    toString() {
-        return `.${this.identifier}: {
+        return `.${this.identifier} {
             background-color: ${this.backgroundColor};
             font-family: ${this.textFont};
             display: ${this.display};

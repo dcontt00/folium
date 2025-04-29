@@ -26,13 +26,11 @@ export default class Portfolio {
         const componentsHtml = this.components.map(component => component.toHtml()).join("");
         const rawHtml = `
         <html>
-
             <head>
                 <title>Express</title>
                 <link href="styles.css" rel="stylesheet">
             </head>
-            <body>
-
+            <body class="root">
                 <div class="container">
                     ${componentsHtml}
                 </div>
