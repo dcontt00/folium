@@ -29,7 +29,7 @@ export default class Portfolio {
 
             <head>
                 <title>Express</title>
-                <link href="/stylesheets/style.css" rel="stylesheet">
+                <link href="styles.css" rel="stylesheet">
             </head>
             <body>
 

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import StyleClass from "@/classes/StyleClass";
 
 const StyleClassSchema = new mongoose.Schema(
     {
@@ -22,5 +23,6 @@ const StyleClassSchema = new mongoose.Schema(
     },
     {timestamps: true}
 );
+StyleClassSchema.loadClass(StyleClass);
 
 export default StyleClassSchema;

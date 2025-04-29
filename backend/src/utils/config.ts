@@ -8,7 +8,7 @@ configDotenv();
 
 config = {
     JWT_SECRET: process.env.JWT_SECRET || "secret",
-    MONGODB_URI: process.env.MONGODB_URI || "mongodb://localhost:27017",
+    MONGODB_URI: process.env.MONGODB_URI || "mongodb://192.168.0.14:27017",
     GITHUB_OAUTH_CLIENT_ID: process.env.GITHUB_OAUTH_CLIENT_ID || "your-client-id",
     GITHUB_OAUTH_CLIENT_SECRET: process.env.GITHUB_OAUTH_CLIENT_SECRET || "your-client-secret",
 };

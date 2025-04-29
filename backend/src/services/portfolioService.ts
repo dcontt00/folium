@@ -10,6 +10,7 @@ import archiver from "archiver"
 import {getHtmlFolder} from "@/utils/directories";
 import {createPortfolioStyle} from "@/services/styleService";
 import mongoose from "mongoose";
+import styleModel from "@/models/StyleModel";
 
 
 async function generateHtmlFiles(portfolioUrl: string) {
@@ -20,22 +21,32 @@ async function generateHtmlFiles(portfolioUrl: string) {
         },
     });
 
+
     if (!portfolio) {
         throw new Error('Portfolio not found');
     }
 
+    const style = await styleModel.findById(portfolio.style).populate("classes")
+
+    if (!style) {
+        throw new Error('Style not found');
+    }
+
     // Generate the HTML using the toHtml method
+    const cssContent = style.toString()
     const htmlContent = portfolio.toHtml();
     const htmlFolder = getHtmlFolder()
 
     // Define the output directory and file path
     const outputDir = path.join(htmlFolder, portfolioUrl);
     fs.mkdirSync(outputDir, {recursive: true}); // Create the directory if it doesn't exist
-    const outputFilePath = path.join(outputDir, 'index.html');
+    const htmlFilePath = path.join(outputDir, 'index.html');
+    const cssFilePath = path.join(outputDir, 'styles.css');
 
     // Write the HTML content to the file
-    fs.writeFileSync(outputFilePath, htmlContent, 'utf-8');
-    console.log(`HTML file created at: ${outputFilePath}`);
+    fs.writeFileSync(htmlFilePath, htmlContent, 'utf-8');
+    fs.writeFileSync(cssFilePath, cssContent, 'utf-8');
+    console.log(`HTML and CSS files created at: ${htmlFilePath}, ${cssFilePath} `);
 }
 
 // Create portfolio

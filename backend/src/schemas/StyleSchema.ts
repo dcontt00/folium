@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Style from "@/classes/Style";
 
 const StyleSchema = new mongoose.Schema(
     {
@@ -14,4 +15,5 @@ const StyleSchema = new mongoose.Schema(
     {timestamps: true}
 );
 
+StyleSchema.loadClass(Style);
 export default StyleSchema;

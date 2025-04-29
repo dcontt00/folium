@@ -53,8 +53,7 @@ export default function FontsCombobox({fontFamily, onStyleChange, identifier}: P
         >
             <Combobox.Target>
                 <TextInput
-                    label="Pick value or type anything"
-                    placeholder="Pick value or type anything"
+                    label="Select font"
                     value={fontFamily}
                     onChange={(event) => {
                         onStyleChange(identifier, "textFont", event.currentTarget.value);
