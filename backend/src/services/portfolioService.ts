@@ -309,6 +309,13 @@ async function removePortfolioByUrl(url: string) {
         await PortfolioModel.deleteOne({url: url})
         await VersionModel.deleteMany({portfolioId: portfolio._id})
         await removeOrphanComponents()
+
+        // Remove images folder
+        const imagesFolder = path.join(getImagesFolder(), portfolio.url);
+        if (fs.existsSync(imagesFolder)) {
+            fs.rmSync(imagesFolder, {recursive: true, force: true});
+        }
+
     } catch (error) {
         console.log("Error deleting portfolio", error)
         throw new ApiError(500, "Error deleting portfolio");
