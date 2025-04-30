@@ -84,6 +84,9 @@ const StyleClassSchema = new mongoose.Schema(
         },
         gap: {
             type: String,
+        },
+        color: {
+            type: String,
         }
 
     },

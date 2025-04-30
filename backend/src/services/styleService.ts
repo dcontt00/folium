@@ -8,7 +8,8 @@ async function createPortfolioStyle() {
             backgroundColor: "#242424",
             display: "flex",
             flexDirection: "column",
-            gap: "1"
+            gap: "1",
+            color: "white"
         }
     )
     return await StyleModel.create({
