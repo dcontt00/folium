@@ -17,6 +17,12 @@ export default class StyleClass {
     left: string;
     right: string;
     bottom: string;
+    border: string;
+    padding: string;
+    transition: string;
+    transform: string;
+    cursor: string;
+    borderRadius: string;
 
     constructor(
         _id: string,
@@ -36,7 +42,13 @@ export default class StyleClass {
         top: string,
         left: string,
         right: string,
-        bottom: string
+        bottom: string,
+        border: string,
+        padding: string,
+        transition: string,
+        transform: string,
+        cursor: string,
+        borderRadius: string,
     ) {
         this._id = _id;
         this.backgroundColor = backgroundColor;
@@ -56,6 +68,12 @@ export default class StyleClass {
         this.left = left;
         this.right = right;
         this.bottom = bottom;
+        this.border = border;
+        this.padding = padding;
+        this.transition = transition;
+        this.transform = transform;
+        this.cursor = cursor;
+        this.borderRadius = borderRadius;
     }
 
 
@@ -110,6 +128,25 @@ export default class StyleClass {
         if (this.bottom) {
             style += `bottom: ${this.bottom};`
         }
+        if (this.border) {
+            style += `border: ${this.border};`
+        }
+        if (this.padding) {
+            style += `padding: ${this.padding};`
+        }
+        if (this.transition) {
+            style += `transition: ${this.transition};`
+        }
+        if (this.transform) {
+            style += `transform: ${this.transform};`
+        }
+        if (this.cursor) {
+            style += `cursor: ${this.cursor};`
+        }
+        if (this.borderRadius) {
+            style += `border-radius: ${this.borderRadius};`
+        }
+
         style += `}`
         return style
     }

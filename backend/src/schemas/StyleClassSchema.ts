@@ -64,6 +64,24 @@ const StyleClassSchema = new mongoose.Schema(
         bottom: {
             type: String,
         },
+        border: {
+            type: String,
+        },
+        padding: {
+            type: String,
+        },
+        transition: {
+            type: String,
+        },
+        transform: {
+            type: String,
+        },
+        cursor: {
+            type: String,
+        },
+        borderRadius: {
+            type: String,
+        }
 
     },
     {timestamps: true}

@@ -21,7 +21,7 @@ export default class ButtonComponent extends Component {
 
     toHtml() {
         return `
-            <button class="${this.className}" onclick=${this.url}> ${this.text}</button>
+            <button class="${this.className}" onclick="window.open('${this.url}')"> ${this.text}</button>
         `;
     }
 }

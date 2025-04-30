@@ -204,7 +204,6 @@ router.put("/:url", authHandler, async (req, res) => {
 
 
     if (req.body.components) {
-        console.log("components", req.body.components)
         for (const reqComponent of req.body.components) {
             const portfolioComponent = portfolio.components.find((component: any) => component.componentId === reqComponent.componentId);
 
@@ -226,7 +225,6 @@ router.put("/:url", authHandler, async (req, res) => {
         }
         const updatedClasses = req.body.style?.classes || {};
         const newClasses: any[] = [];
-        console.log("styles", updatedClasses)
         for (const styleClass of Object.values(updatedClasses) as StyleClass[]) {
             // Create a new style class
             // @ts-ignore
@@ -237,12 +235,13 @@ router.put("/:url", authHandler, async (req, res) => {
             });
 
             newClasses.push(newStyleClass)
+            console.log(styleClass)
         }
+
         const classesMap = newClasses.reduce((map, newStyleClass) => {
             map[`${newStyleClass.identifier}`] = newStyleClass._id;
             return map;
         }, {});
-        console.log("classesMap", classesMap)
 
         portfolioStyle = await styleModel.create({
             classes: classesMap,
@@ -274,7 +273,6 @@ router.put("/:url", authHandler, async (req, res) => {
                 success: true,
                 data: updatedPortfolio,
             });
-            console.log("updatedPortfolio", updatedPortfolio)
 
             if (updatedPortfolio == null) {
                 throw new ApiError(404, "Portfolio not found");

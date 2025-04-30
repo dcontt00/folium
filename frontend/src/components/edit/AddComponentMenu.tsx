@@ -54,6 +54,17 @@ export default function AddComponentMenu({
         const styleClass: StyleClass = {
             identifier: className,
             backgroundColor: "#0070f3",
+            border: "none",
+            fontSize: "1rem",
+            padding: "15px 32px",
+            transition: "transform 0.2s ease",
+            cursor: "pointer",
+            borderRadius: "5px",
+        }
+
+        const animationStyleClass: StyleClass = {
+            identifier: className + ":active",
+            transform: "scale(0.95)"
         }
         const newComponent: ButtonComponentType = {
             _id: null,
@@ -66,6 +77,7 @@ export default function AddComponentMenu({
             className: className
         }
         onStyleClassAdd(styleClass)
+        onStyleClassAdd(animationStyleClass)
         onAddComponent(newComponent);
     }
 
