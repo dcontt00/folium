@@ -219,7 +219,9 @@ export default function Edit() {
                     openHistoryModal={openHistoryModal}
                 />
             </AppShell.Header>
-            <AppShell.Navbar>
+            <AppShell.Navbar
+                style={{overflowY: "auto"}}
+            >
                 <Stack p="sm" gap="md">
                     <AddComponentMenu
                         parent_id={portfolio._id}
@@ -250,7 +252,9 @@ export default function Edit() {
                     <Button hiddenFrom="sm" onClick={toggleOpenedEditComponent}>Close</Button>
                 </Stack>
             </AppShell.Navbar>
-            <AppShell.Aside>
+            <AppShell.Aside
+                style={{overflowY: "auto"}}
+            >
                 <Stack p="sm">
                     <SettingsSection
                         toggleOpenedSettings={toggleOpenedSettings}
