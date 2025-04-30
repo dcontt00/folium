@@ -1,4 +1,5 @@
 import StyleClass from "@/classes/StyleClass";
+import {css as beautifyCss} from "js-beautify";
 
 export default class Style {
     _id: string;
@@ -12,9 +13,9 @@ export default class Style {
     toString() {
         let styleString = "";
         this.classes.forEach((styleClass) => {
-           styleString+= styleClass.toString();
+            styleString += styleClass.toString();
         });
-        return styleString;
+        return beautifyCss(styleString, {indent_size: 2});
     }
 
 }

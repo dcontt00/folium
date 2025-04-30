@@ -81,6 +81,9 @@ const StyleClassSchema = new mongoose.Schema(
         },
         borderRadius: {
             type: String,
+        },
+        gap: {
+            type: String,
         }
 
     },

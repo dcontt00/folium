@@ -23,6 +23,7 @@ export default class StyleClass {
     transform: string;
     cursor: string;
     borderRadius: string;
+    gap: string;
 
     constructor(
         _id: string,
@@ -49,6 +50,7 @@ export default class StyleClass {
         transform: string,
         cursor: string,
         borderRadius: string,
+        gap: string
     ) {
         this._id = _id;
         this.backgroundColor = backgroundColor;
@@ -74,6 +76,7 @@ export default class StyleClass {
         this.transform = transform;
         this.cursor = cursor;
         this.borderRadius = borderRadius;
+        this.gap = gap;
     }
 
 
@@ -145,6 +148,9 @@ export default class StyleClass {
         }
         if (this.borderRadius) {
             style += `border-radius: ${this.borderRadius};`
+        }
+        if (this.gap) {
+            style += `gap: ${this.gap};`
         }
 
         style += `}`
