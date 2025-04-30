@@ -90,14 +90,14 @@ export default function Edit() {
         setEditComponent(component);
         console.log(component)
 
-        const index = portfolioState.components.findIndex((c) => c._id === component._id);
+        const index = portfolioState.components.findIndex((c) => c.componentId === component.componentId);
         const newPortfolio = {...portfolioState};
         newPortfolio.components[index] = component;
         setPortfolioState(newPortfolio);
     }
 
     function onRemoveComponent(component: ComponentType) {
-        const index = portfolioState.components.findIndex((c) => c._id === component._id);
+        const index = portfolioState.components.findIndex((c) => c.componentId === component.componentId);
         const newPortfolio = {...portfolioState};
         newPortfolio.components.splice(index, 1);
 

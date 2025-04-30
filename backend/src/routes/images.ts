@@ -5,6 +5,8 @@ import fs from "node:fs";
 import {ApiError, AuthenticationError} from "@/classes";
 import {getImagesFolder} from "@/utils/directories";
 import sharp from "sharp";
+import * as crypto from "node:crypto";
+
 const router = express.Router();
 
 
@@ -39,7 +41,8 @@ router.post("/", authHandler, async (req, res) => {
     if (portfolioUrl) {
         imagesFolder = path.join(imagesPath, portfolioUrl);
         url = `/images/${portfolioUrl}/`;
-        filename = `${Date.now().toString()}.jpg`;
+        const hash = crypto.createHash('sha256').update(upload.data).digest('hex');
+        filename = `${hash}.jpg`;
     }
 
 

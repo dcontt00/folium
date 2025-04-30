@@ -54,7 +54,7 @@ async function generateHtmlFiles(portfolioUrl: string) {
         console.log("No images to copy");
         return;
     }
-    
+
     const images = fs.readdirSync(portfolioImages);
     for (const image of images) {
         const sourcePath = path.join(portfolioImages, image);
@@ -318,6 +318,12 @@ async function removePortfolioByUrl(url: string) {
         const imagesFolder = path.join(getImagesFolder(), portfolio.url);
         if (fs.existsSync(imagesFolder)) {
             fs.rmSync(imagesFolder, {recursive: true, force: true});
+        }
+
+        // Remove html folder
+        const htmlFolder = path.join(getHtmlFolder(), portfolio.url);
+        if (fs.existsSync(htmlFolder)) {
+            fs.rmSync(htmlFolder, {recursive: true, force: true});
         }
 
     } catch (error) {
