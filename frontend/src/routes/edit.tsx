@@ -266,6 +266,7 @@ export default function Edit() {
             <AppShell.Main
                 style={{
                     backgroundColor: portfolioState.style.classes?.["root"].backgroundColor!!,
+                    color: portfolioState.style.classes?.["root"].color!!,
                 }}
             >
                 {previewEnabled ?
