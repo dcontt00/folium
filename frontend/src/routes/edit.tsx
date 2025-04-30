@@ -270,8 +270,6 @@ export default function Edit() {
                 style={{
                     backgroundColor: portfolioState.style.classes?.["root"].backgroundColor!!,
                 }}
-
-
             >
                 {previewEnabled ?
                     <>

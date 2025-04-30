@@ -50,6 +50,11 @@ async function generateHtmlFiles(portfolioUrl: string) {
 
     // Copy images to the output directory
     const portfolioImages = path.join(getImagesFolder(), portfolioUrl)
+    if (!fs.existsSync(portfolioImages)) {
+        console.log("No images to copy");
+        return;
+    }
+    
     const images = fs.readdirSync(portfolioImages);
     for (const image of images) {
         const sourcePath = path.join(portfolioImages, image);

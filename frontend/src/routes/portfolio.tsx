@@ -6,7 +6,7 @@ export default function PortfolioRoute() {
 
     return (
         <iframe
-            src={`${config.BACKEND_URL}/view/${portfolioUrl}`}
+            src={`${config.BACKEND_URL}/portfolio/view/${portfolioUrl}`}
             style={{
                 width: "100%",
                 height: "100vh",

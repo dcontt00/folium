@@ -18,6 +18,7 @@ import Component from "@/classes/components/Component";
 import styleModel from "@/models/StyleModel";
 import styleClassModel from "@/models/StyleClassModel";
 import StyleClass from "@/interfaces/styleClass";
+import {getHtmlFolder} from "@/utils/directories";
 
 
 const router = express.Router();
@@ -150,18 +151,8 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
 
 })
 
-router.get("/:portfolioUrl/view", authHandler, async (req, res) => {
-
-    const portfolio = await getPortfolioByUrl(req.params.portfolioUrl);
-
-    if (portfolio == null) {
-        throw new ApiError(404, "Portfolio not found");
-    }
-
-    res.send(portfolio.toHtml())
-
-
-})
+// Serve static files from the HTML folder. Used to serve the generated HTML files.
+router.use("/view", express.static(getHtmlFolder()))
 
 
 router.get("/:url", authHandler, async (req, res) => {
