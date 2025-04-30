@@ -24,7 +24,6 @@ export function HydrateFallback() {
 
 export default function Edit() {
     const portfolio: Portfolio = useLoaderData();
-    console.log("portfolio", portfolio);
 
     const openModal = () => modals.openConfirmModal({
         title: 'Please confirm your action',
@@ -88,7 +87,6 @@ export default function Edit() {
 
     function onEditComponent(component: ComponentType) {
         setEditComponent(component);
-        console.log(component)
 
         const index = portfolioState.components.findIndex((c) => c.componentId === component.componentId);
         const newPortfolio = {...portfolioState};
@@ -125,7 +123,6 @@ export default function Edit() {
             const updatedPortfolio = response.data.data;
             setGotUpdatedPortfolio(true);
             setPortfolioState(updatedPortfolio);
-            console.log("updatedPortfolio", updatedPortfolio);
             // Update the editComponent if it exists
             if (editComponent) {
                 const updatedComponent = updatedPortfolio.components.find(
@@ -288,6 +285,7 @@ export default function Edit() {
                         onDragEnd={onDragEnd}
                         onEditComponent={onEditComponent}
                         onStyleClassAdd={onStyleClassAdd}
+                        style={portfolioState.style}
                     />
                 }
             </AppShell.Main>

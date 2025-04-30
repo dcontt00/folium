@@ -10,6 +10,7 @@ import ButtonComponent from "~/components/portfolioComponents/ButtonComponent";
 import ImageComponent from "~/components/portfolioComponents/ImageComponent";
 import EditContainerComponent from "~/components/edit/editComponents/EditContainerComponent";
 import type StyleClass from "~/interfaces/styleClass";
+import type Style from "~/interfaces/style";
 
 
 interface Props {
@@ -17,7 +18,8 @@ interface Props {
     onEditComponent: (component: ComponentType) => void;
     onSelectEditComponent: (component: ComponentType) => void;
     styleClass: StyleClass,
-    onStyleClassAdd: (styleClass: StyleClass) => void
+    onStyleClassAdd: (styleClass: StyleClass) => void,
+    style: Style
 }
 
 export default function EditComponent({
@@ -25,7 +27,8 @@ export default function EditComponent({
                                           onEditComponent,
                                           onSelectEditComponent,
                                           styleClass,
-                                          onStyleClassAdd
+                                          onStyleClassAdd,
+                                          style
                                       }: Props) {
     function renderComponent(component: ComponentType) {
 
@@ -49,7 +52,7 @@ export default function EditComponent({
                     onEditComponent={onEditComponent}
                     containerComponent={containerComponent}
                     onStyleClassAdd={onStyleClassAdd}
-                    styleClass={styleClass}
+                    style={style}
                 />
             default:
                 console.log(component.__t)

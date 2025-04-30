@@ -6,25 +6,27 @@ import {ActionIcon} from "@mantine/core";
 import {useState} from "react";
 import AddComponentMenu from "~/components/edit/AddComponentMenu";
 import type StyleClass from "~/interfaces/styleClass";
+import type Style from "~/interfaces/style";
 
 interface Props {
     containerComponent: ContainerComponentType,
     onEditComponent: (component: ComponentType) => void;
     onSelectEditComponent: (component: ComponentType) => void;
-    styleClass: StyleClass,
-    onStyleClassAdd: (styleClass: StyleClass) => void
-
+    onStyleClassAdd: (styleClass: StyleClass) => void,
+    style: Style
 }
 
 export default function EditContainerComponent({
                                                    containerComponent,
                                                    onEditComponent,
                                                    onSelectEditComponent,
-                                                   styleClass,
-                                                   onStyleClassAdd
+                                                   onStyleClassAdd,
+                                                   style
                                                }: Props) {
 
     const [containerState, setContainerState] = useState(containerComponent);
+    const styleClass = style.classes[containerComponent.className]
+    console.log("editConta", styleClass)
 
     const handleDragEnd = (result: DropResult) => {
         if (!result.destination) {
@@ -92,10 +94,12 @@ export default function EditContainerComponent({
                                                 <IconMenu2/>
                                             </div>
 
-                                            <EditComponent component={component} onEditComponent={onEditComponent}
+                                            <EditComponent component={component}
+                                                           onEditComponent={onEditComponent}
                                                            onSelectEditComponent={onSelectEditComponent}
                                                            onStyleClassAdd={onStyleClassAdd}
-                                                           styleClass={styleClass}
+                                                           styleClass={style.classes[component.className]}
+                                                           style={style}
                                             />
                                             <ActionIcon className="container-icon"
                                                         onClick={() => onSelectEditComponent(component)}>

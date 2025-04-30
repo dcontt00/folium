@@ -11,8 +11,6 @@ interface TextComponentProps {
 }
 
 export default function TextComponent({textComponent, styleClass}: TextComponentProps) {
-    console.log(
-        "textComponent", styleClass)
 
     switch (textComponent.type) {
         case TextType.H1:

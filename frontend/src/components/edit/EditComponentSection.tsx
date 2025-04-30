@@ -21,6 +21,8 @@ export default function EditComponentSection({
                                                  portfolioUrl
                                              }: Props) {
     function renderComponent(component: ComponentType, onEditComponent: (component: ComponentType) => void) {
+        console.log("EditComponentSection", component, styleClass)
+
         switch (component.__t) {
             case "TextComponent":
                 const textComponent = component as TextComponentType;

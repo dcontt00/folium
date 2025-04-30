@@ -8,7 +8,7 @@ interface TextComponentProps {
 }
 
 export default function ButtonComponent({buttonComponent, styleClass}: TextComponentProps) {
-
+    console.log("ButtonComponent", styleClass)
     return (
         <Button
             style={{backgroundColor: styleClass.backgroundColor}}

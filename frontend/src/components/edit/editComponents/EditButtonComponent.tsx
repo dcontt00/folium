@@ -37,6 +37,7 @@ export default function EditButtonComponent({component, onEditComponent, styleCl
 
     function onColorChange(value: string) {
         // Change the text of the component
+        console.log("onColorChange", component.className)
         onStyleChange(component.className, "backgroundColor", value);
         onEditComponent(component);
     }
