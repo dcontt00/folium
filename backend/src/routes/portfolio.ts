@@ -17,8 +17,8 @@ import {createVersion, deleteOlderVersions, getVersionById, getVersionsByPortfol
 import Component from "@/classes/components/Component";
 import styleModel from "@/models/StyleModel";
 import styleClassModel from "@/models/StyleClassModel";
-import StyleClass from "@/interfaces/styleClass";
 import {getHtmlFolder} from "@/utils/directories";
+import StyleClass from "@/classes/StyleClass";
 
 
 const router = express.Router();
@@ -108,8 +108,6 @@ router.get("/:portfolioId/versions", authHandler, async (req, res) => {
 
 
 router.get("/version/:versionId", authHandler, async (req, res) => {
-
-
     const versionId = req.params.versionId;
 
     if (!versionId) {
@@ -123,9 +121,12 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
     }
 
     const components: Component[] = await ComponentModel.find({_id: {$in: version.components}})
+    const style = await styleModel
+        .findById(version.style)
+        .populate("classes")
 
     if (req.query.restore == 'true') {
-        const restoredPortfolio = await restorePortfolio(version, components)
+        const restoredPortfolio = await restorePortfolio(version, components, style)
         res.status(200).json({
             status: 200,
             success: true,
@@ -140,6 +141,8 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
             description: version.description,
             url: version.url,
             components: components,
+            // @ts-ignore
+            style: style,
         }
         res.status(200).json({
             status: 200,
@@ -186,11 +189,18 @@ router.put("/:url", authHandler, async (req, res) => {
             populate: {
                 path: "components",
             }
+        }).populate({
+            path: "style",
+            populate: {
+                path: "classes"
+            }
         })
 
     if (!portfolio) {
         throw new ApiError(404, "Portfolio not found");
     }
+
+    let portfolioStyle = undefined
 
 
     if (req.body.components) {
@@ -198,7 +208,6 @@ router.put("/:url", authHandler, async (req, res) => {
         for (const reqComponent of req.body.components) {
             const portfolioComponent = portfolio.components.find((component: any) => component.componentId === reqComponent.componentId);
 
-            // If portfolioComponent===undefined -> Created new component
 
             if (!componentsAreEquals(reqComponent, portfolioComponent)) {
                 await createComponent(reqComponent, portfolio._id).then((c) => {
@@ -210,46 +219,41 @@ router.put("/:url", authHandler, async (req, res) => {
         }
     }
 
+
     await styleModel.findById(portfolio.style).then(async (style) => {
         if (style == null) {
             throw new ApiError(404, "Style not found");
         }
         const updatedClasses = req.body.style?.classes || {};
+        const newClasses: any[] = [];
         console.log("styles", updatedClasses)
         for (const styleClass of Object.values(updatedClasses) as StyleClass[]) {
-            if (styleClass._id == null) {
-                // Create a new style class
-                const newStyleClass = await styleClassModel.create({
-                    ...styleClass
-                });
-                styleClass._id = newStyleClass._id.toString();
-                await styleModel.findByIdAndUpdate(style._id, {
-                    $set: {
-                        [`classes.${styleClass.identifier}`]: newStyleClass._id,
-                    },
-                }, {
-                    new: true
-                })
-            } else {
-                // Check if the class already exists in the database
-                await styleClassModel.findOneAndUpdate({
-                        _id: styleClass._id,
-                    },
-                    {
-                        ...styleClass
-                    }, {
-                        new: true,
-                        upsert: true
-                    })
-            }
+            // Create a new style class
+            // @ts-ignore
+            delete styleClass._id;
+
+            const newStyleClass = await styleClassModel.create({
+                ...styleClass
+            });
+
+            newClasses.push(newStyleClass)
         }
+        const classesMap = newClasses.reduce((map, newStyleClass) => {
+            map[`${newStyleClass.identifier}`] = newStyleClass._id;
+            return map;
+        }, {});
+        console.log("classesMap", classesMap)
+
+        portfolioStyle = await styleModel.create({
+            classes: classesMap,
+        });
     });
 
 
     await PortfolioModel
         .findOneAndUpdate(
             {url: req.params.url, user: user.id},
-            {...req.body, components: components},
+            {...req.body, components: components, style: portfolioStyle!!._id},
             {new: true}
         )
         .populate({

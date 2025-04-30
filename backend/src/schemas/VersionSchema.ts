@@ -21,6 +21,7 @@ const VersionSchema: Schema<IVersion> = new Schema({
         ],
         description: {type: String},
         url: {type: String, required: true},
+        style: {type: Schema.Types.ObjectId, ref: "Style", required: true},
     },
     {
         toJSON: {

@@ -12,4 +12,5 @@ export default interface IVersion extends Document {
     title: string;
     description: string;
     url: string;
+    style: mongoose.Types.ObjectId;
 }

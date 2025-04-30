@@ -27,6 +27,8 @@ async function createVersion(
         components: newPortfolio.components,
         description: newPortfolio.description,
         url: newPortfolio.url,
+        title: newPortfolio.title,
+        style: newPortfolio.style,
     }).then((version) => {
         return version;
     })
