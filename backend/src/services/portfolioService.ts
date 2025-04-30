@@ -11,6 +11,7 @@ import {getHtmlFolder, getImagesFolder} from "@/utils/directories";
 import {createPortfolioStyle} from "@/services/styleService";
 import mongoose from "mongoose";
 import styleModel from "@/models/StyleModel";
+import Style from "@/classes/Style";
 
 
 async function generateHtmlFiles(portfolioUrl: string) {
@@ -121,7 +122,6 @@ async function createInitialPortfolio(
             }
         })
         .then(async (portfolio) => {
-            console.log(portfolio);
             if (portfolio == null) {
                 throw new ApiError(404, "Portfolio not found");
             }
@@ -153,10 +153,8 @@ async function getPortfoliosByUserId(userId: string) {
 }
 
 
-async function getComponentUpdatesAndRemovals(prevPortfolio: Portfolio, currentPortfolio: Portfolio): Promise<IChange[]> {
+async function getComponentUpdatesAndRemovals(previousComponents: Component[], currentComponents: Component[], prevStyle: Style, currentStyle: Style): Promise<IChange[]> {
     const changes: IChange[] = [];
-    const previousComponents = prevPortfolio.components;
-    const currentComponents = currentPortfolio.components;
     for (const prevComponent of previousComponents) {
         const currentComponent = currentComponents.find(
             (component) => component.componentId === prevComponent.componentId
@@ -179,14 +177,16 @@ async function getComponentUpdatesAndRemovals(prevPortfolio: Portfolio, currentP
                 const containerComponentAdditions = getComponentAdditions(prevComponent.components, currentComponent.components)
 
                 // @ts-ignore
-                const containerComponentUpdatesAndRemovals = await getComponentUpdatesAndRemovals(prevComponent.components, currentComponent.components);
+                const containerComponentUpdatesAndRemovals = await getComponentUpdatesAndRemovals(prevComponent.components, currentComponent.components, prevStyle, currentStyle);
 
                 const allContainerChanges = [...containerComponentAdditions, ...containerComponentUpdatesAndRemovals]
-                changes.push({
-                    type: ChangeType.UPDATE,
-                    message: `Changes to ContainerComponent ${currentComponent.componentId}: ${allContainerChanges.map((change) => change.message).join("\n")}`
-                })
-
+                const allContainerChangesMessages = allContainerChanges.map((change) => change.message).join(", ")
+                if (allContainerChanges.length > 0) {
+                    changes.push({
+                        type: ChangeType.UPDATE,
+                        message: `ContainerComponent ${currentComponent.componentId} was updated: ${allContainerChangesMessages}`
+                    })
+                }
                 continue;
             }
 
@@ -209,8 +209,6 @@ async function getComponentUpdatesAndRemovals(prevPortfolio: Portfolio, currentP
             }
 
             // Get style changes
-            const prevStyle = prevPortfolio.style
-            const currentStyle = currentPortfolio.style
 
             if (prevStyle && currentStyle) {
                 // @ts-ignore
@@ -221,7 +219,6 @@ async function getComponentUpdatesAndRemovals(prevPortfolio: Portfolio, currentP
 
                 if (prevStyleClass && currentStyleClass) {
                     const styleChanges = compareStyles(prevStyleClass, currentStyleClass);
-                    console.log(styleChanges)
                     if (styleChanges.length > 0) {
                         changes.push({
                             type: ChangeType.UPDATE,
@@ -249,12 +246,9 @@ function compareStyles(styleA: any, styleB: any): string[] {
     for (const key of keysToRemove) {
         keys.delete(key);
     }
-    console.log(keys)
 
 
     for (const key of keys) {
-        console.log(styleA[key]?.toString())
-        console.log(styleB[key]?.toString())
         if (styleA[key]?.toString() !== styleB[key]?.toString()) {
             changes.push(`Property "${key}" changed from "${styleA[key]}" to "${styleB[key]}"`);
         }
@@ -291,7 +285,7 @@ function getComponentAdditions(previousComponents: Component[], currentComponent
 }
 
 
-async function getComponentChanges(prevPortfolio: Portfolio, currentPortfolio: Portfolio): Promise<IChange[]> {
+async function getComponentChanges2(prevPortfolio: Portfolio, currentPortfolio: Portfolio): Promise<IChange[]> {
     const changes: IChange[] = [];
     const previousComponents = prevPortfolio.components;
     const currentComponents = currentPortfolio.components;
@@ -300,8 +294,12 @@ async function getComponentChanges(prevPortfolio: Portfolio, currentPortfolio: P
     const componentAdditions = getComponentAdditions(previousComponents, currentComponents);
     changes.push(...componentAdditions);
 
+    const prevStyle = await styleModel.findById(prevPortfolio.style).populate("classes");
+    const currentStyle = await styleModel.findById(currentPortfolio.style).populate("classes");
+
     // Detect changes and removals
-    const updateAndRemovalChanges = await getComponentUpdatesAndRemovals(prevPortfolio, currentPortfolio);
+    // @ts-ignore
+    const updateAndRemovalChanges = await getComponentUpdatesAndRemovals(prevPortfolio.components, currentPortfolio.components, prevStyle, currentStyle);
     changes.push(...updateAndRemovalChanges);
 
     return changes;
@@ -334,7 +332,7 @@ async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portf
     }
 
 
-    const componentChanges = await getComponentChanges(prevPortfolio, newPortfolio);
+    const componentChanges = await getComponentChanges2(prevPortfolio, newPortfolio);
     changes.push(...componentChanges);
 
 

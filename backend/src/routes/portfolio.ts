@@ -235,7 +235,6 @@ router.put("/:url", authHandler, async (req, res) => {
             });
 
             newClasses.push(newStyleClass)
-            console.log(styleClass)
         }
 
         const classesMap = newClasses.reduce((map, newStyleClass) => {
