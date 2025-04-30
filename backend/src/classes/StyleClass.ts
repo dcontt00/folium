@@ -6,7 +6,6 @@ export default class StyleClass {
     display: string;
     imageWidth: number;
     imageOverlayTransparency: number;
-    buttonColor: string;
     flexDirection: string;
     alignItems: string;
     justifyContent: string;
@@ -19,7 +18,26 @@ export default class StyleClass {
     right: string;
     bottom: string;
 
-    constructor(_id: string, identifier: string, textFont: string, backgroundColor: string, display: string, imageWidth: number, imageOverlayTransparency: number, buttonColor: string, flexDirection: string, alignItems: string, justifyContent: string, marginTop: string, textAlign: string, fontSize: string, position: string, top: string, left: string, right: string, bottom: string) {
+    constructor(
+        _id: string,
+        identifier: string,
+        textFont: string,
+        backgroundColor: string,
+        display: string,
+        imageWidth: number,
+        imageOverlayTransparency: number,
+        flexDirection: string,
+        alignItems: string,
+        justifyContent: string,
+        marginTop: string,
+        textAlign: string,
+        fontSize: string,
+        position: string,
+        top: string,
+        left: string,
+        right: string,
+        bottom: string
+    ) {
         this._id = _id;
         this.backgroundColor = backgroundColor;
         this.display = display;
@@ -27,7 +45,6 @@ export default class StyleClass {
         this.textFont = textFont;
         this.imageWidth = imageWidth;
         this.imageOverlayTransparency = imageOverlayTransparency;
-        this.buttonColor = buttonColor;
         this.flexDirection = flexDirection;
         this.alignItems = alignItems;
         this.justifyContent = justifyContent;
@@ -59,9 +76,6 @@ export default class StyleClass {
         }
         if (this.imageOverlayTransparency) {
             style += `backgroundColor:rgba(0, 0, 0, ${this.imageOverlayTransparency / 100} );`
-        }
-        if (this.buttonColor) {
-            style += `background-color: ${this.buttonColor};`
         }
         if (this.flexDirection) {
             style += `flex-direction: ${this.flexDirection};`

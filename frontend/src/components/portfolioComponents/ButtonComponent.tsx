@@ -4,14 +4,14 @@ import type StyleClass from "~/interfaces/styleClass";
 
 interface TextComponentProps {
     buttonComponent: ButtonComponentType;
-    styleClass:StyleClass
+    styleClass: StyleClass
 }
 
-export default function ButtonComponent({buttonComponent,styleClass}: TextComponentProps) {
+export default function ButtonComponent({buttonComponent, styleClass}: TextComponentProps) {
 
     return (
         <Button
-            style={{backgroundColor: styleClass.buttonColor}}
+            style={{backgroundColor: styleClass.backgroundColor}}
         >
             {buttonComponent.text}
         </Button>

@@ -7,17 +7,16 @@ import type StyleClass from "~/interfaces/styleClass";
 interface Props {
     component: ButtonComponentType;
     onEditComponent: (component: ButtonComponentType) => void;
-    styleClass:StyleClass,
+    styleClass: StyleClass,
     onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
-export default function EditButtonComponent({component, onEditComponent, styleClass,onStyleChange}: Props) {
+export default function EditButtonComponent({component, onEditComponent, styleClass, onStyleChange}: Props) {
     const [text, setText] = useState(component.text);
     const [url, setUrl] = useState(component.url);
-    const [color, setColor] = useState(styleClass.buttonColor || "#0070f3");
+    console.log("styleClass", styleClass)
 
     useEffect(() => {
-        setColor(styleClass.buttonColor);
         setText(component.text);
         setUrl(component.url);
     }, [component]);
@@ -37,9 +36,8 @@ export default function EditButtonComponent({component, onEditComponent, styleCl
     }
 
     function onColorChange(value: string) {
-        setColor(value);
         // Change the text of the component
-        onStyleChange(component.className, "buttonColor", value);
+        onStyleChange(component.className, "backgroundColor", value);
         onEditComponent(component);
     }
 
@@ -58,7 +56,7 @@ export default function EditButtonComponent({component, onEditComponent, styleCl
             />
             <ColorInput
                 label="Button color"
-                value={color}
+                value={styleClass.backgroundColor}
                 onChange={(event) => onColorChange(event)}
             />
         </Stack>

@@ -25,9 +25,6 @@ const StyleClassSchema = new mongoose.Schema(
             min: 0,
             max: 1,
         },
-        buttonColor: {
-            type: String,
-        },
         flexDirection: {
             type: String,
             enum: ["row", "column"],

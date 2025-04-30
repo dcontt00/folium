@@ -32,7 +32,6 @@ export default function AddComponentMenu({
         const className = generateRandomClassName();
         const styleClass: StyleClass = {
             identifier: className,
-            backgroundColor: "#ffffff",
             color: "#000000",
         }
         const newComponent: TextComponentType = {
@@ -54,7 +53,7 @@ export default function AddComponentMenu({
         const className = generateRandomClassName();
         const styleClass: StyleClass = {
             identifier: className,
-            buttonColor: "#0070f3",
+            backgroundColor: "#0070f3",
         }
         const newComponent: ButtonComponentType = {
             _id: null,
