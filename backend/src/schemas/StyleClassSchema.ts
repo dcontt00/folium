@@ -27,7 +27,46 @@ const StyleClassSchema = new mongoose.Schema(
         },
         buttonColor: {
             type: String,
-        }
+        },
+        flexDirection: {
+            type: String,
+            enum: ["row", "column"],
+        },
+        alignItems: {
+            type: String,
+            enum: ["flex-start", "flex-end", "center", "baseline", "stretch"],
+
+        },
+        justifyContent: {
+            type: String,
+            enum: ["flex-start", "flex-end", "center", "space-between", "space-around", "space-evenly"],
+        },
+        marginTop: {
+            type: String,
+        },
+        textAlign: {
+            type: String,
+            enum: ["left", "right", "center"],
+        },
+        fontSize: {
+            type: String,
+        },
+        position: {
+            type: String,
+            enum: ["absolute", "relative", "fixed", "sticky", "static"],
+        },
+        top: {
+            type: String,
+        },
+        left: {
+            type: String,
+        },
+        right: {
+            type: String,
+        },
+        bottom: {
+            type: String,
+        },
 
     },
     {timestamps: true}

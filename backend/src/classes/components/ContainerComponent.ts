@@ -10,16 +10,16 @@ export default class ContainerComponent extends Component {
     }
 
     toHtml() {
+        const componentsHtml = this.components.map((component: Component) => {
+            return component.toHtml();
+        })
+        console.log(componentsHtml);
+
+
         return `
          <div
-            style={{display: 'flex', flexDirection: 'row', gap: "1em"}}>
-            {this.components.map((component: ComponentType, index: number) => (
-                <div
-                    className="containerComponent"
-                >
-                    {component.toHtml()}
-                </div>
-            ))}
+            style="display: flex; flexDirection: row; gap: 1em">
+            ${componentsHtml.join('\n')}
         </div>
         
         `;

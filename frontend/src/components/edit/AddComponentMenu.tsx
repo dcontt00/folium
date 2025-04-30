@@ -76,6 +76,36 @@ export default function AddComponentMenu({
             identifier: className,
             imageWidth: "100",
         }
+
+        const imageContainerClass: StyleClass = {
+            identifier: className + "-container",
+            flexDirection: "column",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#2d3748",
+        }
+
+        const overlayTextClass: StyleClass = {
+            identifier: className + "-overlay",
+            position: "absolute",
+            top: "0",
+            left: "0",
+            right: "0",
+            bottom: "0",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+        }
+
+        const imageCaptionClass: StyleClass = {
+            identifier: className + "-caption",
+            marginTop: "0.5rem",
+            textAlign: "center",
+            fontSize: "0.875rem",
+            color: "#ffffff"
+        }
+
         const newComponent: ImageComponentType = {
             _id: null,
             __t: "ImageComponent",
@@ -88,6 +118,9 @@ export default function AddComponentMenu({
             className: className
         }
         onStyleClassAdd(styleClass)
+        onStyleClassAdd(imageContainerClass)
+        onStyleClassAdd(overlayTextClass)
+        onStyleClassAdd(imageCaptionClass)
         onAddComponent(newComponent);
     }
 

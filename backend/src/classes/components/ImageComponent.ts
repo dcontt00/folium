@@ -16,39 +16,21 @@ export default class ImageComponent extends Component {
     toHtml() {
         return `
          <div
-          className="${this.className}"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#2d3748',
-        }}>
-            <div style={{position: 'relative', width: '100%'}}>
-                <img style={{width: '100%'}} src=${this.url} alt=${this.url}/>
+          class="${this.className}-container">
+            <div style="position: relative; width: 100%">
+                <img style="width: 100%" src=${this.url} alt=${this.url}/>
                 ${this.overlayText ? `
-                    <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <span style={{color: 'white', fontSize: '1.125rem'}}>${this.overlayText}</span>
+                    <div class="${this.className}-overlay">
+                        <span style="color: white;">${this.overlayText}</span>
                     </div>
                  ` : ''}
             </div>
             ${this.caption ? `
-                <div style={{marginTop: '0.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'white'}}>
+                <div class="${this.className}-caption">
                     ${this.caption}
                 </div>
             ` : ''}
         </div>
-        
-        
         `;
     }
 }
