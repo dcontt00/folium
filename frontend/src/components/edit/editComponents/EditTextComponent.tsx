@@ -84,6 +84,7 @@ export default function EditTextComponent({component, onEditComponent, styleClas
             <Textarea
                 label="Text"
                 value={text}
+                autosize
                 onChange={(event) => onTextChange(event)}
             />
             <FontsCombobox
