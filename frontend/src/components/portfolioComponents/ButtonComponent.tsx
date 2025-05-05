@@ -11,7 +11,7 @@ export default function ButtonComponent({buttonComponent, styleClass}: TextCompo
     console.log("ButtonComponent", styleClass)
     return (
         <Button
-            style={{backgroundColor: styleClass.backgroundColor}}
+            style={{backgroundColor: styleClass.backgroundColor, color: styleClass.color}}
         >
             {buttonComponent.text}
         </Button>

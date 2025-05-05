@@ -2,6 +2,7 @@ import type {ButtonComponentType} from "~/interfaces/interfaces";
 import {ColorInput, Stack, TextInput} from "@mantine/core";
 import {useEffect, useState} from "react";
 import type StyleClass from "~/interfaces/styleClass";
+import {getContrastColor} from "~/utils";
 
 
 interface Props {
@@ -39,6 +40,8 @@ export default function EditButtonComponent({component, onEditComponent, styleCl
         // Change the text of the component
         console.log("onColorChange", component.className)
         onStyleChange(component.className, "backgroundColor", value);
+        const contrastedTextColor = getContrastColor(value);
+        onStyleChange(component.className, "color", contrastedTextColor);
         onEditComponent(component);
     }
 

@@ -6,15 +6,25 @@ async function createPortfolioStyle() {
         {
             identifier: "root",
             backgroundColor: "#242424",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1",
             color: "white"
         }
     )
+
+    const containerStyleClass = await StyleClassModel.create(
+        {
+            identifier: "container",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            color: "white",
+            alignItems: "flex-start"
+        }
+    )
+
     return await StyleModel.create({
         classes: {
-            "root": rootStyleClass._id
+            "root": rootStyleClass._id,
+            "container": containerStyleClass._id
         },
     });
 

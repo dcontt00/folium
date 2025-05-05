@@ -56,7 +56,7 @@ export default function AddComponentMenu({
             backgroundColor: "#0070f3",
             border: "none",
             fontSize: "1rem",
-            padding: "15px 32px",
+            padding: "15px 18px",
             transition: "transform 0.2s ease",
             cursor: "pointer",
             borderRadius: "5px",
