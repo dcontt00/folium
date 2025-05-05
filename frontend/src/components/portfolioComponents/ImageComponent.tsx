@@ -1,14 +1,19 @@
 import React from 'react';
 import type {ImageComponentType} from "~/interfaces/interfaces";
-import type StyleClass from "~/interfaces/styleClass";
+import type Style from "~/interfaces/style";
 
 interface Props {
     imageComponent: ImageComponentType;
-    styleClass: StyleClass,
+    style: Style,
 }
 
-export default function ImageComponent({imageComponent, styleClass}: Props) {
-    console.log(styleClass)
+export default function ImageComponent({imageComponent, style}: Props) {
+
+    const imgContainerClass = style.classes[`${imageComponent.className}-container`];
+    const imgOverlayClass = style.classes[`${imageComponent.className}-overlay`];
+    console.log("imgContainerClass", imgContainerClass)
+    console.log("imgOverlayClass", imgOverlayClass)
+
     return (
         <div style={{
             display: 'flex',
@@ -16,7 +21,8 @@ export default function ImageComponent({imageComponent, styleClass}: Props) {
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: '#2d3748',
-            width: `${styleClass.imageWidth as unknown as number * 100}%`
+            // @ts-ignore
+            width: imgContainerClass.imageWidth,
         }}>
             <div style={{position: 'relative', width: '100%'}}>
                 <img style={{width: '100%'}} src={imageComponent.url} alt={imageComponent.url}/>
@@ -30,7 +36,7 @@ export default function ImageComponent({imageComponent, styleClass}: Props) {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: `rgba(0, 0, 0, ${styleClass.imageOverlayTransparency} )`,
+                        backgroundColor: `rgba(0, 0, 0, ${imgOverlayClass.imageOverlayTransparency} )`,
                     }}>
                         <span style={{color: 'white', fontSize: '1.125rem'}}>{imageComponent.overlayText}</span>
                     </div>

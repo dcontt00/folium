@@ -26,6 +26,7 @@ export default function EditTextComponent({
     const [overlayText, setOverlayText] = useState(component.overlayText);
     const [overlayTransparency, setOverlayTransparency] = useState(Number(styleClass.imageOverlayTransparency || 0.5));
     const [width, setWidth] = useState(Number(styleClass.imageWidth) || 1);
+    console.log("width", width)
 
     console.log("editimagecomponent", styleClass)
     console.log("overlayTransparency", overlayTransparency)
@@ -48,15 +49,11 @@ export default function EditTextComponent({
 
     }, [file]);
 
-    function handleOnStyleChange(attribute: string, value: string) {
-        onStyleChange(component.className, attribute, value);
-    }
-
     function onWidthChange(value: number) {
         setWidth(value);
 
-        // Change the text of the component
-        handleOnStyleChange("imageWidth", value.toString());
+        onStyleChange(`${component.className}-container`, 'imageWidth', `${value * 100}%`);
+        //handleOnStyleChange("imageWidth", value.toString());
         onEditComponent(component);
     }
 
@@ -64,8 +61,7 @@ export default function EditTextComponent({
         console.log("onOverlayTransparencyChange", value)
         setOverlayTransparency(value);
 
-        // Change the text of the component
-        handleOnStyleChange("imageOverlayTransparency", value.toString());
+        onStyleChange(`${component.className}-overlay`, 'imageOverlayTransparency', value.toString());
         onEditComponent(component);
     }
 

@@ -43,7 +43,7 @@ export default function EditComponent({
 
             case "ImageComponent":
                 const imageComponent = component as ImageComponentType;
-                return <ImageComponent imageComponent={imageComponent} styleClass={styleClass}/>
+                return <ImageComponent imageComponent={imageComponent} style={style}/>
 
             case "ContainerComponent":
                 const containerComponent = component as ContainerComponentType;

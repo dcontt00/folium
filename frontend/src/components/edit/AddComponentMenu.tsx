@@ -85,7 +85,6 @@ export default function AddComponentMenu({
         const className = generateRandomClassName();
         const styleClass: StyleClass = {
             identifier: className,
-            imageWidth: "100",
         }
 
         const imageContainerClass: StyleClass = {
@@ -95,6 +94,7 @@ export default function AddComponentMenu({
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#2d3748",
+            imageWidth: '100%',
         }
 
         const overlayTextClass: StyleClass = {

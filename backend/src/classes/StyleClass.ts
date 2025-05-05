@@ -96,7 +96,7 @@ export default class StyleClass {
             style += `display: ${this.display};`
         }
         if (this.imageWidth) {
-            style += `width: ${this.imageWidth}%;`
+            style += `width: ${this.imageWidth};`
         }
         if (this.imageOverlayTransparency) {
             style += `backgroundColor:rgba(0, 0, 0, ${this.imageOverlayTransparency / 100} );`
