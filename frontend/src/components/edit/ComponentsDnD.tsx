@@ -33,9 +33,9 @@ export default function ComponentsDnD({
             <Droppable droppableId="components">
                 {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef} className="dnd-droppable"
-                         style={{alignItems: style.classes["root"].alignItems}}>
+                         style={{alignItems: style.classes["container"].alignItems}}>
                         {portfolioState.components.map((component, index) => (
-                            <Draggable key={component._id} draggableId={index.toString()} index={index}>
+                            <Draggable key={component._id} draggableId={component.componentId.toString()} index={index}>
                                 {(provided) => (
                                     <div
                                         ref={provided.innerRef}
