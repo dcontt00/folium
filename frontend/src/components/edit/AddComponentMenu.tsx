@@ -32,7 +32,7 @@ export default function AddComponentMenu({
         const className = generateRandomClassName();
         const styleClass: StyleClass = {
             identifier: className,
-            color: "#000000",
+            textFont: "Arial"
         }
         const newComponent: TextComponentType = {
             _id: null,
