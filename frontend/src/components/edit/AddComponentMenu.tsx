@@ -73,7 +73,7 @@ export default function AddComponentMenu({
             index: portfolioComponentsLength - 1,
             parent_id: parent_id,
             text: "Button",
-            url: "/",
+            url: window.location.origin,
             className: className
         }
         onStyleClassAdd(styleClass)
