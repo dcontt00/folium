@@ -5,31 +5,45 @@ import {IconUpload} from "@tabler/icons-react";
 import config from "~/config";
 import axiosInstance from "~/axiosInstance";
 import type StyleClass from "~/interfaces/styleClass";
+import type Style from "~/interfaces/style";
 
 interface Props {
     component: ImageComponentType;
     portfolioUrl: string;
     onEditComponent: (component: ImageComponentType) => void;
     styleClass: StyleClass,
+    style: Style,
     onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
-export default function EditTextComponent({
-                                              component,
-                                              onEditComponent,
-                                              styleClass,
-                                              onStyleChange,
-                                              portfolioUrl
-                                          }: Props) {
+export default function EditImageComponent({
+                                               component,
+                                               onEditComponent,
+                                               styleClass,
+                                               onStyleChange,
+                                               portfolioUrl,
+                                               style
+                                           }: Props) {
     const [file, setFile] = useState<File | null>(null);
     const [caption, setCaption] = useState(component.caption);
     const [overlayText, setOverlayText] = useState(component.overlayText);
-    const [overlayTransparency, setOverlayTransparency] = useState(Number(styleClass.imageOverlayTransparency || 0.5));
-    const [width, setWidth] = useState(Number(styleClass.imageWidth) || 1);
-    console.log("width", width)
+    const [overlayTransparency, setOverlayTransparency] = useState(0.5);
+    const [width, setWidth] = useState(1);
 
-    console.log("editimagecomponent", styleClass)
-    console.log("overlayTransparency", overlayTransparency)
+
+    useEffect(() => {
+
+        if (!style) {
+            return
+        }
+
+        const styleImageWidth = style.classes[`${component.className}-container`].imageWidth;
+        const styleOverlayTransparency = style.classes[`${component.className}-overlay`].imageOverlayTransparency;
+
+        setWidth(Number(styleImageWidth.replace("%", "")) / 100);
+        setOverlayTransparency(Number(styleOverlayTransparency));
+    }, [style.classes[`${component.className}-container`], style.classes[`${component.className}-overlay`]]);
+
     // Needed when selecting a different component
     useEffect(() => {
         setCaption(component.caption)

@@ -236,6 +236,7 @@ export default function Edit() {
                                 component={editComponent}
                                 onEditComponent={onEditComponent}
                                 styleClass={portfolioState.style.classes?.[editComponent.className]}
+                                style={portfolioState.style}
                                 onStyleChange={onStyleChange}
                             />
                         ) :

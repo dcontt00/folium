@@ -107,6 +107,7 @@ export default function AddComponentMenu({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            imageOverlayTransparency: "0"
         }
 
         const imageCaptionClass: StyleClass = {

@@ -3,6 +3,7 @@ import EditTextComponent from "~/components/edit/editComponents/EditTextComponen
 import EditButtonComponent from "~/components/edit/editComponents/EditButtonComponent";
 import EditImageComponent from "~/components/edit/editComponents/EditImageComponent";
 import type StyleClass from "~/interfaces/styleClass";
+import type Style from "~/interfaces/style";
 
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
     component: ComponentType;
     onEditComponent: (component: ComponentType) => void;
     styleClass: StyleClass,
+    style: Style,
     onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
@@ -18,7 +20,8 @@ export default function EditComponentSection({
                                                  onEditComponent,
                                                  styleClass,
                                                  onStyleChange,
-                                                 portfolioUrl
+                                                 portfolioUrl,
+                                                 style
                                              }: Props) {
     function renderComponent(component: ComponentType, onEditComponent: (component: ComponentType) => void) {
         console.log("EditComponentSection", component, styleClass)
@@ -48,6 +51,7 @@ export default function EditComponentSection({
                     component={imageComponent}
                     onEditComponent={onEditComponent}
                     styleClass={styleClass}
+                    style={style}
                     onStyleChange={onStyleChange}
                 />
             default:
