@@ -99,7 +99,7 @@ export default class StyleClass {
             style += `width: ${this.imageWidth};`
         }
         if (this.imageOverlayTransparency) {
-            style += `backgroundColor:rgba(0, 0, 0, ${this.imageOverlayTransparency / 100} );`
+            style += `background-color:rgba(0, 0, 0, ${this.imageOverlayTransparency} );`
         }
         if (this.flexDirection) {
             style += `flex-direction: ${this.flexDirection};`
