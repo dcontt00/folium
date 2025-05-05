@@ -6,7 +6,8 @@ async function createPortfolioStyle() {
         {
             identifier: "root",
             backgroundColor: "#242424",
-            color: "white"
+            color: "white",
+            alignItems: "flex-start"
         }
     )
 

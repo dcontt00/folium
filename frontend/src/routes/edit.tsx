@@ -245,8 +245,7 @@ export default function Edit() {
                         )
                     }
                     <PortfolioStyle
-                        fontFamily={portfolioState.style.classes?.["root"].textFont!!}
-                        backgroundColor={portfolioState.style.classes?.["root"].backgroundColor!!}
+                        style={portfolioState.style}
                         onStyleChange={onStyleChange}
                     />
                     <Button hiddenFrom="sm" onClick={toggleOpenedEditComponent}>Close</Button>
