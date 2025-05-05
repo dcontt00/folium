@@ -1,5 +1,5 @@
-import {ActionIcon, Alert, AppShell, Button, Stack, Text} from "@mantine/core";
-import {IconInfoCircle, IconX} from "@tabler/icons-react";
+import {Alert, AppShell, Button, Stack, Text} from "@mantine/core";
+import {IconInfoCircle} from "@tabler/icons-react";
 import type {ComponentType, Portfolio} from "~/interfaces/interfaces";
 import {useEffect, useRef, useState} from "react";
 import {useDisclosure, useHotkeys} from "@mantine/hooks";
@@ -11,7 +11,6 @@ import HeaderButtons from "~/components/edit/HeaderButtons";
 import {type DropResult} from "@hello-pangea/dnd";
 import ComponentsDnD from "~/components/edit/ComponentsDnD";
 import axiosInstance from "~/axiosInstance";
-import ComponentsSection from "~/components/ComponentsSection";
 import HistoryModal from "~/components/edit/HistoryModal";
 import {modals} from "@mantine/modals";
 import PortfolioStyle from "~/components/edit/portfolioStyle";
@@ -274,7 +273,7 @@ export default function Edit() {
                     color: portfolioState.style.classes?.["root"].color!!,
                 }}
             >
-                {previewEnabled ?
+                {/*{previewEnabled ?
                     <>
                         <ActionIcon onClick={() => setPreviewEnabled(false)}>
                             <IconX/>
@@ -293,7 +292,16 @@ export default function Edit() {
                         onStyleClassAdd={onStyleClassAdd}
                         style={portfolioState.style}
                     />
-                }
+                }*/}
+                <ComponentsDnD
+                    onSelectEditComponent={onSelectEditComponent}
+                    portfolioState={portfolioState}
+                    onRemoveComponent={onRemoveComponent}
+                    onDragEnd={onDragEnd}
+                    onEditComponent={onEditComponent}
+                    onStyleClassAdd={onStyleClassAdd}
+                    style={portfolioState.style}
+                />
             </AppShell.Main>
 
             <HistoryModal

@@ -70,12 +70,12 @@ export default function HeaderButtons({
                         Save
                     </Button>
                 </Tooltip>
-                <Button
+                {/* <Button
                     leftSection={<IconDeviceDesktop/>}
                     onClick={onPreview}
                 >
                     Preview
-                </Button>
+                </Button>*/}
                 <Button
                     leftSection={<IconHistory/>}
                     onClick={openHistoryModal}
