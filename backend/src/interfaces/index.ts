@@ -4,6 +4,7 @@ import IVersion from "@/interfaces/IVersion";
 import IContainerComponent from "@/interfaces/IContainerComponent";
 import IPortfolio from "@/interfaces/IPortfolio";
 import IUser from "@/interfaces/IUser";
+import StyleClass from "@/interfaces/styleClass";
 
 
 export {
@@ -13,5 +14,6 @@ export {
     IContainerComponent,
     IPortfolio,
     IUser,
-    ChangeType
+    ChangeType,
+    StyleClass
 }

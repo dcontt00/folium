@@ -12,6 +12,7 @@ import {createPortfolioStyle} from "@/services/styleService";
 import mongoose from "mongoose";
 import styleModel from "@/models/StyleModel";
 import Style from "@/classes/Style";
+import StyleClass from "@/classes/StyleClass";
 
 
 async function generateHtmlFiles(portfolioUrl: string) {
@@ -207,51 +208,49 @@ async function getComponentUpdatesAndRemovals(previousComponents: Component[], c
                     });
                 }
             }
-
-            // Get style changes
-
-            if (prevStyle && currentStyle) {
-                // @ts-ignore
-                const prevStyleClass = prevStyle.classes.get(currentComponent.className)
-
-                // @ts-ignore
-                const currentStyleClass = currentStyle.classes.get(currentComponent.className)
-
-                if (prevStyleClass && currentStyleClass) {
-                    const styleChanges = compareStyles(prevStyleClass, currentStyleClass);
-                    if (styleChanges.length > 0) {
-                        changes.push({
-                            type: ChangeType.UPDATE,
-                            message: `Changes to ${currentComponent.__t} ${currentComponent.componentId} styles: ${styleChanges.join(", ")}`,
-                        });
-                    }
-                }
-            }
-
-
         }
+
+
+        // Compare styles
+        const styleChanges = compareStyles(prevStyle.classes, currentStyle.classes);
+        changes.push(...styleChanges)
     }
     return changes;
 }
 
-function compareStyles(styleA: any, styleB: any): string[] {
-    const changes: string[] = [];
-    // Convert Mongoose documents to plain objects
-    const plainStyleA = styleA.toObject();
-    const plainStyleB = styleB.toObject();
-
-    const keys = new Set([...Object.keys(plainStyleA), ...Object.keys(plainStyleB)]);
+function compareStyles(styleA: Map<string, StyleClass>, styleB: Map<string, StyleClass>): IChange[] {
+    const changes: IChange[] = [];
+    const keys = new Set([...styleA.keys(), ...styleB.keys()]);
     // Remove keys that are not in the style
     const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__"];
     for (const key of keysToRemove) {
         keys.delete(key);
     }
 
-
     for (const key of keys) {
-        if (styleA[key]?.toString() !== styleB[key]?.toString()) {
-            changes.push(`Property "${key}" changed from "${styleA[key]}" to "${styleB[key]}"`);
+        const prevClass = styleA.get(key);
+        const currentClass = styleB.get(key);
+
+        if (!prevClass || !currentClass) {
+            continue;
         }
+
+        const currentClassKeyValues = Object.entries(currentClass).filter(([key]) => !keysToRemove.includes(key));
+        const currentClassKeyValueObject = Object.fromEntries(currentClassKeyValues);
+        const prevClassKeyValues = Object.entries(prevClass).filter(([key]) => !keysToRemove.includes(key));
+        const prevClassKeyValueObject = Object.fromEntries(prevClassKeyValues);
+
+        for (const key2 of Object.keys(currentClassKeyValueObject)) {
+            console.log(key, key2, prevClassKeyValueObject[key2])
+            if (prevClassKeyValueObject[key2] !== currentClassKeyValueObject[key2]) {
+                changes.push({
+                    type: ChangeType.UPDATE,
+                    message: `Style ${key2} changed from "${prevClassKeyValueObject[key2]}" to "${currentClassKeyValueObject[key2]}".`,
+                });
+            }
+        }
+
+
     }
 
     return changes;
@@ -285,7 +284,7 @@ function getComponentAdditions(previousComponents: Component[], currentComponent
 }
 
 
-async function getComponentChanges2(prevPortfolio: Portfolio, currentPortfolio: Portfolio): Promise<IChange[]> {
+async function getComponentChanges(prevPortfolio: Portfolio, currentPortfolio: Portfolio): Promise<IChange[]> {
     const changes: IChange[] = [];
     const previousComponents = prevPortfolio.components;
     const currentComponents = currentPortfolio.components;
@@ -294,8 +293,8 @@ async function getComponentChanges2(prevPortfolio: Portfolio, currentPortfolio: 
     const componentAdditions = getComponentAdditions(previousComponents, currentComponents);
     changes.push(...componentAdditions);
 
-    const prevStyle = await styleModel.findById(prevPortfolio.style).populate("classes");
-    const currentStyle = await styleModel.findById(currentPortfolio.style).populate("classes");
+    const prevStyle = await styleModel.findById(prevPortfolio.style).populate("classes").lean();
+    const currentStyle = await styleModel.findById(currentPortfolio.style).populate("classes").lean();
 
     // Detect changes and removals
     // @ts-ignore
@@ -332,13 +331,14 @@ async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portf
     }
 
 
-    const componentChanges = await getComponentChanges2(prevPortfolio, newPortfolio);
+    const componentChanges = await getComponentChanges(prevPortfolio, newPortfolio);
     changes.push(...componentChanges);
 
+    const prevStyle = await styleModel.findById(prevPortfolio.style).populate("classes").lean();
+    const newStyle = await styleModel.findById(newPortfolio.style).populate("classes").lean();
 
     return changes;
 }
-
 
 async function getPortfolioByUrl(url: string) {
     return PortfolioModel.findOne({url: url})

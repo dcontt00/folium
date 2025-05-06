@@ -20,6 +20,9 @@ async function createVersion(
     newPortfolio: Portfolio,
 ) {
 
+    console.log("Prev Style", prevPortfolio.style)
+    console.log("New Style", newPortfolio.style)
+
     const changes = await getPortfolioChanges(prevPortfolio, newPortfolio)
     return await VersionModel.create({
         portfolioId: newPortfolio._id,
