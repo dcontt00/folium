@@ -212,13 +212,15 @@ async function getComponentUpdatesAndRemovals(previousComponents: Component[], c
 
 
         // Compare styles
-        const styleChanges = compareStyles(prevStyle.classes, currentStyle.classes);
+        const styleChanges = compareStyles(prevStyle.classes, currentStyle.classes, prevComponent);
         changes.push(...styleChanges)
     }
     return changes;
 }
 
-function compareStyles(styleA: Map<string, StyleClass>, styleB: Map<string, StyleClass>): IChange[] {
+function compareStyles(styleA: Map<string, StyleClass>, styleB: Map<string, StyleClass>, component: Component): IChange[] {
+
+
     const changes: IChange[] = [];
     const keys = new Set([...styleA.keys(), ...styleB.keys()]);
     // Remove keys that are not in the style
@@ -228,6 +230,11 @@ function compareStyles(styleA: Map<string, StyleClass>, styleB: Map<string, Styl
     }
 
     for (const key of keys) {
+
+        if (!key.includes(component.className)) {
+            continue;
+        }
+
         const prevClass = styleA.get(key);
         const currentClass = styleB.get(key);
 
@@ -241,11 +248,10 @@ function compareStyles(styleA: Map<string, StyleClass>, styleB: Map<string, Styl
         const prevClassKeyValueObject = Object.fromEntries(prevClassKeyValues);
 
         for (const key2 of Object.keys(currentClassKeyValueObject)) {
-            console.log(key, key2, prevClassKeyValueObject[key2])
             if (prevClassKeyValueObject[key2] !== currentClassKeyValueObject[key2]) {
                 changes.push({
                     type: ChangeType.UPDATE,
-                    message: `Style ${key2} changed from "${prevClassKeyValueObject[key2]}" to "${currentClassKeyValueObject[key2]}".`,
+                    message: `Style ${key2} of component ${component.__t} changed from "${prevClassKeyValueObject[key2]}" to "${currentClassKeyValueObject[key2]}".`,
                 });
             }
         }
