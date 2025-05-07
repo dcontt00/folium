@@ -2,6 +2,7 @@ import {VersionModel} from "@/models";
 import mongoose from "mongoose";
 import {getPortfolioChanges} from "@/services/portfolioService";
 import {Portfolio} from "@/classes";
+import Changes from "@/classes/Changes";
 
 
 async function getVersionById(id: string,) {
@@ -20,13 +21,12 @@ async function createVersion(
     newPortfolio: Portfolio,
 ) {
 
-    console.log("Prev Style", prevPortfolio.style)
-    console.log("New Style", newPortfolio.style)
+    const changes2 = new Changes();
 
-    const changes = await getPortfolioChanges(prevPortfolio, newPortfolio)
+    const changes = await getPortfolioChanges(prevPortfolio, newPortfolio, changes2)
     return await VersionModel.create({
         portfolioId: newPortfolio._id,
-        changes: changes,
+        changes: changes2.toJSON(),
         components: newPortfolio.components,
         description: newPortfolio.description,
         url: newPortfolio.url,

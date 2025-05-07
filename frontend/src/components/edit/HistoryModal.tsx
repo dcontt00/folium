@@ -2,7 +2,7 @@ import {Button, Group, List, Modal, Stack, Text, ThemeIcon, Timeline} from "@man
 import {useEffect, useState} from "react";
 import config from "~/config";
 import axiosInstance from "~/axiosInstance";
-import {IconClipboard, IconEdit, IconEye, IconPlus, IconRestore, IconTrash} from "@tabler/icons-react";
+import {IconEdit, IconEye, IconPlus, IconRestore, IconTrash} from "@tabler/icons-react";
 import type IVersion from "~/interfaces/IVersion";
 import type {IChange} from "~/interfaces/IChange";
 
@@ -83,15 +83,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
                             >
                                 <List>
                                     {version.changes.map((change: IChange) => (
-                                        <List.Item
-                                            icon={
-                                                <ChangeIcon change={change}/>
-                                            }
-                                        >
-                                            <Text>
-                                                {change.message}
-                                            </Text>
-                                        </List.Item>
+                                        <ChangeDetails change={change}/>
                                     ))}
                                 </List>
 
@@ -122,39 +114,48 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
     );
 }
 
-
-interface IChangeIconProps {
+interface ChangeDetailsProps {
     change: IChange;
 }
 
-function ChangeIcon({change}: IChangeIconProps) {
-    switch (change.type) {
-        case "NEW_PORTFOLIO":
-            return (
-                <ThemeIcon color="orange" size={24} radius="xl">
-                    <IconClipboard size={16}/>
-                </ThemeIcon>
-            );
-        case "ADD":
-            return (
-                <ThemeIcon color="blue" size={24} radius="xl">
-                    <IconPlus size={16}/>
-                </ThemeIcon>
+function ChangeDetails({change}: ChangeDetailsProps) {
+    return (
+        <List>
+            {change.componentChanges && (
+                <List.Item icon={
+                    <ThemeIcon color="green" size={24} radius="xl">
+                        <IconEdit size={16}/>
+                    </ThemeIcon>
+                }>
+                    <Text>Component Changes: {change.componentChanges}</Text>
+                </List.Item>
+            )}
+            {change.portfolioChanges && (
 
-            );
-        case "REMOVE":
-            return (
-                <ThemeIcon color="red" size={24} radius="xl">
-                    <IconTrash size={16}/>
-                </ThemeIcon>
-            )
-        case "UPDATE":
-            return (
-                <ThemeIcon color="green" size={24} radius="xl">
+                <List.Item icon={<ThemeIcon color="green" size={24} radius="xl">
                     <IconEdit size={16}/>
-                </ThemeIcon>
-            )
-        default:
-            return null;
-    }
+                </ThemeIcon>}>
+                    <Text>Portfolio Changes: {change.portfolioChanges}</Text>
+                </List.Item>
+            )}
+            {change.componentAdditions && (
+                <List.Item icon={
+                    <ThemeIcon color="blue" size={24} radius="xl">
+                        <IconPlus size={16}/>
+                    </ThemeIcon>
+                }>
+                    <Text>Component Additions: {change.componentAdditions}</Text>
+                </List.Item>
+            )}
+            {change.componentRemovals && (
+                <List.Item icon={
+                    <ThemeIcon color="blue" size={24} radius="xl">
+                        <IconTrash size={16}/>
+                    </ThemeIcon>
+                }>
+                    <Text>Component Removals: {change.componentRemovals}</Text>
+                </List.Item>
+            )}
+        </List>
+    );
 }

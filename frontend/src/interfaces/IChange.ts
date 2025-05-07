@@ -6,8 +6,10 @@ enum ChangeType {
 }
 
 interface IChange {
-    type: ChangeType;
-    message: string;
+    componentChanges: string | null;
+    portfolioChanges: string | null;
+    componentAdditions: string | null;
+    componentRemovals: string | null;
 }
 
 export {ChangeType};
