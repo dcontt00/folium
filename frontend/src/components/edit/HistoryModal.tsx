@@ -120,18 +120,32 @@ interface ChangeDetailsProps {
 function ChangeDetails({change}: ChangeDetailsProps) {
     return (
         <List>
-            {change.componentChanges && (
-                <List.Item icon={
-                    <ThemeIcon color="green" size={24} radius="xl">
-                        <IconEdit size={16}/>
-                    </ThemeIcon>
-                }>
-                    <Text>Component Changes </Text>
-                    <Text>
-                        {change.componentChanges}
-                    </Text>
+            {change.portfolioCreated && (
+                <List.Item icon={<ThemeIcon color="green" size={24} radius="xl">
+                    <IconPlus size={16}/>
+                </ThemeIcon>}>
+                    <Text>Portfolio Created</Text>
                 </List.Item>
             )}
+            {change.componentChanges.map((componentChange) => (
+                <List.Item
+                    icon={
+                        <ThemeIcon color="orange" size={24} radius="xl">
+                            <IconEdit size={16}/>
+                        </ThemeIcon>
+                    }
+                >
+                    <Text>{componentChange.component.__t}</Text>
+
+                    <List listStyleType="disc">
+                        {componentChange.changes.map((c) => (
+                            <List.Item>
+                                {c.attribute}: {c.oldValue} -{'>'} {c.newValue}
+                            </List.Item>
+                        ))}
+                    </List>
+                </List.Item>
+            ))}
             {change.portfolioChanges && (
 
                 <List.Item icon={<ThemeIcon color="green" size={24} radius="xl">

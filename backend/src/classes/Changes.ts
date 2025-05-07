@@ -1,11 +1,17 @@
 import Component from "@/classes/components/Component";
 import Change from "@/classes/Change";
 
+interface ComponentChanges {
+    component: Component,
+    changes: Change[]
+}
+
 export default class Changes {
     componentChanges: Map<Component, Change[]>
     portfolioChanges: Change[]
     componentAdditions: Component[]
     componentRemovals: Component[]
+    portfolioCreated: boolean
 
 
     constructor() {
@@ -13,6 +19,11 @@ export default class Changes {
         this.portfolioChanges = [];
         this.componentAdditions = [];
         this.componentRemovals = [];
+        this.portfolioCreated = false;
+    }
+
+    setPortfolioCreated(value: boolean) {
+        this.portfolioCreated = value;
     }
 
     addComponentChange(component: Component, attribute: string, oldValue: string, newValue: string) {
@@ -22,6 +33,7 @@ export default class Changes {
         } else {
             this.componentChanges.set(component, [change]);
         }
+        console.log(this.componentChanges);
     }
 
     addPortfolioChange(attribute: string, oldValue: string, newValue: string) {
@@ -64,10 +76,11 @@ export default class Changes {
     }
 
     toJSON() {
-        let componentChanges: string | null = null
+        let componentChanges: ComponentChanges[] = []
         let portfolioChanges: string | null = null
         let componentAdditions: string | null = null
         let componentRemovals: string | null = null
+        let portfolioCreated: boolean = this.portfolioCreated
 
         if (this.componentAdditions.length > 0) {
             componentAdditions = `${this.componentAdditions.map(component => component.__t).join(", ")}`
@@ -81,9 +94,7 @@ export default class Changes {
 
 
             this.componentChanges.forEach((changes, component) => {
-                const test = {component: component, changes: changes}
-                console.log(component.__t)
-                componentChanges = `${component.__t}, Changes: ${changes.map(change => change.toString()).join(", ")}`
+                componentChanges.push({component: component, changes: changes});
             });
         }
 
@@ -96,6 +107,7 @@ export default class Changes {
             portfolioChanges: portfolioChanges,
             componentAdditions: componentAdditions,
             componentRemovals: componentRemovals,
+            portfolioCreated: portfolioCreated
         }
     }
 

@@ -127,10 +127,13 @@ async function createInitialPortfolio(
             if (portfolio == null) {
                 throw new ApiError(404, "Portfolio not found");
             }
+
+            const changes = new Changes()
+            changes.setPortfolioCreated(true)
             await VersionModel.create(
                 {
                     portfolioId: portfolio._id,
-                    changes: {type: ChangeType.NEW_PORTFOLIO, message: "Created Portfolio"},
+                    changes: changes.toJSON(),
                     components: portfolio.components,
                     title: portfolio.title,
                     description: portfolio.description,
