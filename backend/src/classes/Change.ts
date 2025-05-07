@@ -15,4 +15,12 @@ export default class Change {
         output += `${this.attribute}: ${this.oldValue} -> ${this.newValue}`;
         return output;
     }
+
+    toJSON(): object {
+        return {
+            attribute: this.attribute,
+            oldValue: this.oldValue,
+            newValue: this.newValue
+        }
+    }
 }

@@ -70,22 +70,25 @@ export default class Changes {
         let componentRemovals: string | null = null
 
         if (this.componentAdditions.length > 0) {
-            componentAdditions = `Added Components: ${this.componentAdditions.map(component => component.toString()).join(", ")}`
+            componentAdditions = `${this.componentAdditions.map(component => component.__t).join(", ")}`
         }
 
         if (this.portfolioChanges.length > 0) {
-            portfolioChanges = `Portfolio Changes: ${this.portfolioChanges.map(change => change.toString()).join(", ")}`
+            portfolioChanges = `${this.portfolioChanges.map(change => change.toString()).join(", ")}`
         }
 
         if (this.componentChanges.size > 0) {
-            componentChanges = `Component Changes: `
+
+
             this.componentChanges.forEach((changes, component) => {
-                componentChanges += `${component.__t}, Changes: ${changes.map(change => change.toString()).join(", ")}`
+                const test = {component: component, changes: changes}
+                console.log(component.__t)
+                componentChanges = `${component.__t}, Changes: ${changes.map(change => change.toString()).join(", ")}`
             });
         }
 
         if (this.componentRemovals.length > 0) {
-            componentRemovals = `Removed Components: ${this.componentRemovals.map(component => component.toString()).join(", ")}`
+            componentRemovals = `${this.componentRemovals.map(component => component.toString()).join(", ")}`
         }
 
         return {

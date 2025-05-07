@@ -86,7 +86,6 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
                                         <ChangeDetails change={change}/>
                                     ))}
                                 </List>
-
                                 <Group hidden={index === 0}>
                                     <Button
                                         leftSection={<IconRestore/>}
@@ -127,7 +126,10 @@ function ChangeDetails({change}: ChangeDetailsProps) {
                         <IconEdit size={16}/>
                     </ThemeIcon>
                 }>
-                    <Text>Component Changes: {change.componentChanges}</Text>
+                    <Text>Component Changes </Text>
+                    <Text>
+                        {change.componentChanges}
+                    </Text>
                 </List.Item>
             )}
             {change.portfolioChanges && (
