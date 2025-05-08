@@ -118,8 +118,9 @@ interface ChangeDetailsProps {
 }
 
 function ChangeDetails({change}: ChangeDetailsProps) {
+    console.log(change)
     return (
-        <List>
+        <List spacing="sm">
             {change.portfolioCreated && (
                 <List.Item icon={<ThemeIcon color="green" size={24} radius="xl">
                     <IconPlus size={16}/>
@@ -127,7 +128,7 @@ function ChangeDetails({change}: ChangeDetailsProps) {
                     <Text>Portfolio Created</Text>
                 </List.Item>
             )}
-            {change.componentChanges.map((componentChange) => (
+            {change.componentChanges.length > 0 && (
                 <List.Item
                     icon={
                         <ThemeIcon color="orange" size={24} radius="xl">
@@ -135,17 +136,20 @@ function ChangeDetails({change}: ChangeDetailsProps) {
                         </ThemeIcon>
                     }
                 >
-                    <Text>{componentChange.component.__t}</Text>
-
-                    <List listStyleType="disc">
-                        {componentChange.changes.map((c) => (
-                            <List.Item>
-                                {c.attribute}: {c.oldValue} -{'>'} {c.newValue}
-                            </List.Item>
-                        ))}
-                    </List>
+                    {change.componentChanges.map((componentChange) => (
+                        <>
+                            <Text>{componentChange.component.__t}</Text>
+                            <List listStyleType="disc">
+                                {componentChange.changes.map((c) => (
+                                    <List.Item>
+                                        {c.attribute}: {c.oldValue} -{'>'} {c.newValue}
+                                    </List.Item>
+                                ))}
+                            </List>
+                        </>
+                    ))}
                 </List.Item>
-            ))}
+            )}
             {change.portfolioChanges && (
 
                 <List.Item icon={<ThemeIcon color="green" size={24} radius="xl">

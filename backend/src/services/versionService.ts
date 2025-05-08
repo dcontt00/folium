@@ -1,8 +1,9 @@
 import {VersionModel} from "@/models";
 import mongoose from "mongoose";
-import {getPortfolioChanges} from "@/services/portfolioService";
+import {getComponentAdditions, getComponentUpdatesAndRemovals, getPortfolioChanges} from "@/services/portfolioService";
 import {Portfolio} from "@/classes";
 import Changes from "@/classes/Changes";
+import styleModel from "@/models/StyleModel";
 
 
 async function getVersionById(id: string,) {
@@ -23,7 +24,15 @@ async function createVersion(
 
     const changes2 = new Changes();
 
-    const changes = await getPortfolioChanges(prevPortfolio, newPortfolio, changes2)
+    await getPortfolioChanges(prevPortfolio, newPortfolio, changes2)
+    getComponentAdditions(prevPortfolio.components, newPortfolio.components, changes2);
+    const prevStyle = await styleModel.findById(prevPortfolio.style).populate("classes").lean();
+    const currentStyle = await styleModel.findById(newPortfolio.style).populate("classes").lean();
+
+    // Detect changes and removals
+    // @ts-ignore
+    await getComponentUpdatesAndRemovals(prevPortfolio.components, newPortfolio.components, prevStyle, currentStyle, changes2);
+
     return await VersionModel.create({
         portfolioId: newPortfolio._id,
         changes: changes2.toJSON(),
