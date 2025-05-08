@@ -13,6 +13,10 @@ function getImagesFolder() {
     return path.join(getRootFolder(), "images");
 }
 
+function getPublicFolder() {
+    return path.join(getRootFolder(), "src", "public");
+}
+
 function getHtmlFolder() {
     return path.join(getRootFolder(), "html");
 }
@@ -41,6 +45,7 @@ export {
     createDirectories,
     getImagesFolder,
     getHtmlFolder,
+    getPublicFolder
 
 }
 

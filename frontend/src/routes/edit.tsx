@@ -272,26 +272,6 @@ export default function Edit() {
                     color: portfolioState.style.classes?.["root"].color!!,
                 }}
             >
-                {/*{previewEnabled ?
-                    <>
-                        <ActionIcon onClick={() => setPreviewEnabled(false)}>
-                            <IconX/>
-                        </ActionIcon>
-                        <ComponentsSection
-                            portfolioState={portfolioState}
-                        />
-                    </>
-                    :
-                    <ComponentsDnD
-                        onSelectEditComponent={onSelectEditComponent}
-                        portfolioState={portfolioState}
-                        onRemoveComponent={onRemoveComponent}
-                        onDragEnd={onDragEnd}
-                        onEditComponent={onEditComponent}
-                        onStyleClassAdd={onStyleClassAdd}
-                        style={portfolioState.style}
-                    />
-                }*/}
                 <ComponentsDnD
                     onSelectEditComponent={onSelectEditComponent}
                     portfolioState={portfolioState}

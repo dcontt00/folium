@@ -7,7 +7,7 @@ import TextType from "@/interfaces/TextType";
 import path from "path";
 import fs from "fs";
 import archiver from "archiver"
-import {getHtmlFolder, getImagesFolder} from "@/utils/directories";
+import {getHtmlFolder, getImagesFolder, getPublicFolder} from "@/utils/directories";
 import {createPortfolioStyle} from "@/services/styleService";
 import mongoose from "mongoose";
 import styleModel from "@/models/StyleModel";
@@ -52,15 +52,18 @@ async function generateHtmlFiles(portfolioUrl: string) {
     console.log(`HTML and CSS files created at: ${htmlFilePath}, ${cssFilePath} `);
 
     // Copy images to the output directory
-    const portfolioImages = path.join(getImagesFolder(), portfolioUrl)
-    if (!fs.existsSync(portfolioImages)) {
+    const portfolioImagesPath = path.join(getImagesFolder(), portfolioUrl)
+    const publicPath = getPublicFolder()
+    if (!fs.existsSync(portfolioImagesPath)) {
         console.log("No images to copy");
         return;
     }
 
-    const images = fs.readdirSync(portfolioImages);
+    const images = fs.readdirSync(portfolioImagesPath);
+    const placeholder = fs.readdirSync(publicPath)
+    images.push(...placeholder)
     for (const image of images) {
-        const sourcePath = path.join(portfolioImages, image);
+        const sourcePath = path.join(portfolioImagesPath, image);
         const destPath = path.join(outputDir, image);
         fs.copyFileSync(sourcePath, destPath);
     }
