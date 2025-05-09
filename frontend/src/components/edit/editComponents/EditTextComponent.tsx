@@ -1,11 +1,12 @@
 import type {TextComponentType} from "~/interfaces/interfaces";
-import {Center, Combobox, Input, InputBase, SegmentedControl, Stack, Textarea, useCombobox} from "@mantine/core";
+import {Combobox, Input, InputBase, SegmentedControl, Stack, Text, Textarea, useCombobox} from "@mantine/core";
 import {useEffect, useState} from "react";
 import {TextType} from "~/interfaces/textComponent";
 import {capitalize} from "~/utils";
 import type StyleClass from "~/interfaces/styleClass";
 import FontsCombobox from "~/components/edit/portfolioStyle/FontsCombobox";
-import {IconAlignCenter, IconAlignLeft, IconAlignRight} from "@tabler/icons-react";
+import {IconAlignCenter, IconAlignJustified, IconAlignLeft, IconAlignRight, IconBallpen} from "@tabler/icons-react";
+import FieldLabel from "~/components/FieldLabel";
 
 interface Props {
     component: TextComponentType;
@@ -92,7 +93,9 @@ export default function EditTextComponent({component, onEditComponent, styleClas
                 </Combobox.Dropdown>
             </Combobox>
             <Textarea
-                label="Text"
+                label={
+                    <FieldLabel text={"Text"} icon={<IconBallpen size={16}/>}/>
+                }
                 value={text}
                 autosize
                 onChange={(event) => onTextChange(event)}
@@ -102,38 +105,38 @@ export default function EditTextComponent({component, onEditComponent, styleClas
                 onStyleChange={handleStyleChange}
                 identifier={component.className}
             />
-            <SegmentedControl
-                value={styleClass.textAlign}
-                onChange={handleTextAlignChange}
-                data={[
-                    {
-                        label: (
-                            <Center style={{gap: 10}}>
+            <Stack gap={5}>
+                <Text size={"sm"}>Text Align</Text>
+                <SegmentedControl
+                    value={styleClass.textAlign}
+                    onChange={handleTextAlignChange}
+                    data={[
+                        {
+                            label: (
                                 <IconAlignLeft size={16}/>
-                                <span>Left</span>
-                            </Center>
-                        ), value: 'left'
-                    },
-                    {
-                        label: (
-                            <Center style={{gap: 10}}>
+                            ), value: 'left'
+                        },
+                        {
+                            label: (
                                 <IconAlignCenter size={16}/>
-                                <span>Center</span>
-                            </Center>
-                        ),
-                        value: 'center'
-                    },
-                    {
-                        label: (
-                            <Center style={{gap: 10}}>
+                            ),
+                            value: 'center'
+                        },
+                        {
+                            label: (
                                 <IconAlignRight size={16}/>
-                                <span>Right</span>
-                            </Center>
-                        ),
-                        value: 'right'
-                    },
-                ]}
-            />
+                            ),
+                            value: 'right'
+                        },
+                        {
+                            label: (
+                                <IconAlignJustified size={16}/>
+                            ),
+                            value: 'justify'
+                        },
+                    ]}
+                />
+            </Stack>
         </Stack>
     );
 }

@@ -43,7 +43,7 @@ const StyleClassSchema = new mongoose.Schema(
         },
         textAlign: {
             type: String,
-            enum: ["left", "right", "center"],
+            enum: ["left", "right", "center", "justify"],
         },
         fontSize: {
             type: String,

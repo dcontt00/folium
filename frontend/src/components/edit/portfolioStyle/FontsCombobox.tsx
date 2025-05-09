@@ -1,5 +1,7 @@
 import {Combobox, Text, TextInput, useCombobox} from "@mantine/core";
 import {useState} from "react";
+import {IconLetterCase} from "@tabler/icons-react";
+import FieldLabel from "~/components/FieldLabel";
 
 
 interface Props {
@@ -53,7 +55,9 @@ export default function FontsCombobox({fontFamily, onStyleChange, identifier}: P
         >
             <Combobox.Target>
                 <TextInput
-                    label="Select font"
+                    label={
+                        <FieldLabel text={"Font"} icon={<IconLetterCase size={16}/>}/>
+                    }
                     value={fontFamily}
                     onChange={(event) => {
                         onStyleChange(identifier, "textFont", event.currentTarget.value);
