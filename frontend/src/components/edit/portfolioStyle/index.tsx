@@ -1,8 +1,17 @@
-import {Accordion, Center, ColorInput, SegmentedControl, Stack, Text} from "@mantine/core";
-import {IconAlignCenter, IconAlignLeft, IconAlignRight, IconBrush} from "@tabler/icons-react";
+import {Accordion, ColorInput, SegmentedControl, Slider, Stack, Text} from "@mantine/core";
+import {
+    IconAlignCenter,
+    IconAlignLeft,
+    IconAlignRight,
+    IconBrush,
+    IconSeparatorHorizontal,
+    IconSeparatorVertical
+} from "@tabler/icons-react";
 import FontsComboBox from "./FontsCombobox";
 import {getContrastColor} from "~/utils";
 import type Style from "~/interfaces/style";
+import {useEffect, useState} from "react";
+import FieldLabel from "~/components/FieldLabel";
 
 interface Props {
     style: Style
@@ -11,6 +20,21 @@ interface Props {
 
 
 export default function PortfolioStyle({style, onStyleChange}: Props) {
+
+    const [horizontalPadding, setHorizontalPadding] = useState(1);
+    const [verticalPadding, setVerticalPadding] = useState(0);
+
+    useEffect(() => {
+
+        if (!style) {
+            return
+        }
+
+        const rootHorizontalPadding = style.classes["root"].padding.split(" ")[1] || "100%";
+        const rootVerticalPadding = style.classes["root"].padding.split(" ")[0] || "0";
+        setHorizontalPadding(Number(rootHorizontalPadding.replace("%", "")) / 100);
+        setVerticalPadding(Number(rootVerticalPadding.replace("%", "")) / 100);
+    }, [style.classes["root"]]);
 
 
     function handleBackgroundColorChange(color: string) {
@@ -24,6 +48,17 @@ export default function PortfolioStyle({style, onStyleChange}: Props) {
             return
         }
         onStyleChange("container", "alignItems", value);
+    }
+
+    function onHorizontalPaddingChange(value: number) {
+        setHorizontalPadding(value);
+
+        onStyleChange("root", 'padding', `${verticalPadding} ${value * 100}%`);
+    }
+
+    function onVerticalPaddingChange(value: number) {
+        setVerticalPadding(value);
+        onStyleChange("root", 'padding', `${value * 100}% ${horizontalPadding * 100}%`);
     }
 
     return (
@@ -46,6 +81,27 @@ export default function PortfolioStyle({style, onStyleChange}: Props) {
                             onStyleChange={onStyleChange}
                             identifier="root"
                         />
+
+                        <Stack gap={5}>
+                            <FieldLabel text={"Horizontal Separation"} icon={<IconSeparatorVertical size={16}/>}/>
+                            <Slider
+                                color="blue"
+                                min={0} max={0.3} step={0.01}
+                                label={(value) => `${Math.round(value * 100)} %`}
+                                value={horizontalPadding} onChange={onHorizontalPaddingChange}
+                            />
+                        </Stack>
+
+                        <Stack gap={5}>
+                            <FieldLabel text={"Vertical Separation"} icon={<IconSeparatorHorizontal size={16}/>}/>
+                            <Slider
+                                color="blue"
+                                min={0} max={0.3} step={0.01}
+                                label={(value) => `${Math.round(value * 100)} %`}
+                                value={verticalPadding} onChange={onVerticalPaddingChange}
+                            />
+                        </Stack>
+
                         <Stack gap={"xs"}>
                             <Text>Components Alignment</Text>
                             <SegmentedControl
@@ -54,27 +110,18 @@ export default function PortfolioStyle({style, onStyleChange}: Props) {
                                 data={[
                                     {
                                         label: (
-                                            <Center style={{gap: 10}}>
-                                                <IconAlignLeft size={16}/>
-                                                <span>Left</span>
-                                            </Center>
+                                            <FieldLabel text={"Left"} icon={<IconAlignLeft size={16}/>}/>
                                         ), value: 'flex-start'
                                     },
                                     {
                                         label: (
-                                            <Center style={{gap: 10}}>
-                                                <IconAlignCenter size={16}/>
-                                                <span>Center</span>
-                                            </Center>
+                                            <FieldLabel text={"Center"} icon={<IconAlignCenter size={16}/>}/>
                                         ),
                                         value: 'center'
                                     },
                                     {
                                         label: (
-                                            <Center style={{gap: 10}}>
-                                                <IconAlignRight size={16}/>
-                                                <span>Right</span>
-                                            </Center>
+                                            <FieldLabel text={"Right"} icon={<IconAlignRight size={16}/>}/>
                                         ),
                                         value: 'flex-end'
                                     },
