@@ -1,13 +1,15 @@
 import type {ComponentType, ContainerComponentType} from "~/interfaces/interfaces"
 import Component from "~/components/portfolioComponents/Component";
 import type StyleClass from "~/interfaces/styleClass";
+import type Style from "~/interfaces/style";
 
 interface Props {
     containerComponent: ContainerComponentType,
     styleClass: StyleClass
+    style: Style
 }
 
-export default function ContainerComponent({containerComponent, styleClass}: Props) {
+export default function ContainerComponent({containerComponent, styleClass, style}: Props) {
 
     return (
         <div
@@ -17,7 +19,7 @@ export default function ContainerComponent({containerComponent, styleClass}: Pro
                     className="containerComponent"
                     key={index}
                 >
-                    <Component component={component} styleClass={styleClass}/>
+                    <Component component={component} styleClass={styleClass} style={style}/>
                 </div>
             ))}
         </div>
