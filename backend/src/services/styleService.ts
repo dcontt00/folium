@@ -7,7 +7,7 @@ async function createPortfolioStyle() {
             identifier: "root",
             backgroundColor: "#242424",
             color: "white",
-            padding: "5% 10%",
+            padding: "2% 5%",
         }
     )
 
