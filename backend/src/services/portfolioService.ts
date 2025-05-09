@@ -1,7 +1,7 @@
 import {PortfolioModel, VersionModel} from "@/models";
 import {IVersion} from "@/interfaces";
 import {ApiError, Portfolio} from "@/classes";
-import {createTextComponent, removeOrphanComponents} from "@/services/componentService";
+import {createImageComponent, createTextComponent, removeOrphanComponents} from "@/services/componentService";
 import Component from "@/classes/components/Component";
 import TextType from "@/interfaces/TextType";
 import path from "path";
@@ -110,26 +110,34 @@ async function createInitialPortfolio(
 ) {
     const style = await createPortfolioStyle()
     const newPortfolio = await createPortfolio(title, url, userId, description, style._id)
-    const titleComponent = await createTextComponent(
+    const imageComponent = await createImageComponent(
         0,
+        "https://placehold.co/600x100",
+        newPortfolio._id,
+        style._id)
+
+    const titleComponent = await createTextComponent(
+        1,
         "Welcome to your new portfolio",
         TextType.H1,
         newPortfolio._id,
         style._id
     )
     const textComponent = await createTextComponent(
-        1,
+        2,
         "You can add components from left menu",
         TextType.P,
         newPortfolio._id,
         style._id
     )
-
-
     await PortfolioModel
         .findOneAndUpdate(
             {url: url},
-            {title: title, description: description, components: [titleComponent._id, textComponent._id]},
+            {
+                title: title,
+                description: description,
+                components: [imageComponent._id, titleComponent._id, textComponent._id]
+            },
             {new: true}
         )
         .populate({

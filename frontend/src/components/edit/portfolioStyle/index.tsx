@@ -53,7 +53,7 @@ export default function PortfolioStyle({style, onStyleChange}: Props) {
     function onHorizontalPaddingChange(value: number) {
         setHorizontalPadding(value);
 
-        onStyleChange("root", 'padding', `${verticalPadding} ${value * 100}%`);
+        onStyleChange("root", 'padding', `${verticalPadding * 100}% ${value * 100}%`);
     }
 
     function onVerticalPaddingChange(value: number) {

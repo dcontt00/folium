@@ -205,7 +205,7 @@ export default function Edit() {
                 breakpoint: 'sm',
                 collapsed: {mobile: !openedEditComponent || previewEnabled, desktop: previewEnabled}
             }}
-            padding="md"
+
         >
             <AppShell.Header>
                 <HeaderButtons

@@ -23,10 +23,9 @@ body {
 }
 
 .dnd-draggable {
-    padding: 1em;
     display: flex;
     align-items: center;
-    gap: 1em;
+    /*gap: 1em;*/
     width: 100%;
     /*background: #181e30;*/
 }

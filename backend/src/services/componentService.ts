@@ -145,6 +145,66 @@ async function createTextComponent(index: number, text: string, type: TextType, 
     return textComponent;
 }
 
+async function createImageComponent(index: number, url: string, parent_id: mongoose.Types.ObjectId, styleId: mongoose.Types.ObjectId) {
+    const className = generateRandomClassName();
+
+    const imageComponent = await ImageComponentModel.create({
+        index: index,
+        url: url,
+        parent_id: parent_id,
+        className: className
+    })
+
+    const imageContainerClass = await styleClassModel
+        .create({
+            identifier: className + "-container",
+            flexDirection: "column",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#2d3748",
+            width: '100%',
+        })
+
+    const overlayTextClass = await styleClassModel
+        .create({
+            identifier: className + "-overlay",
+            position: "absolute",
+            top: "0",
+            left: "0",
+            right: "0",
+            bottom: "0",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            imageOverlayTransparency: "0"
+        })
+
+    const imageCaptionClass = await styleClassModel
+        .create({
+            identifier: className + "-caption",
+            marginTop: "0.5rem",
+            textAlign: "center",
+            fontSize: "0.875rem",
+            color: "#ffffff"
+        })
+
+    await styleModel.findByIdAndUpdate(
+        {_id: styleId},
+        {
+            $set: {
+                //@ts-ignore
+                [`classes.${imageComponent.className}-container`]: imageContainerClass._id,
+                //@ts-ignore
+                [`classes.${imageComponent.className}-overlay`]: overlayTextClass._id,
+                //@ts-ignore
+                [`classes.${imageComponent.className}-caption`]: imageCaptionClass._id,
+            },
+        }
+    );
+    return imageComponent;
+}
+
 
 function generateRandomClassName(prefix: string = "class"): string {
     const randomString = Math.random().toString(36).substring(2, 10);
@@ -179,5 +239,6 @@ export {
     removeOrphanComponents,
     createComponent,
     createTextComponent,
-    componentsAreEquals
+    componentsAreEquals,
+    createImageComponent
 }
