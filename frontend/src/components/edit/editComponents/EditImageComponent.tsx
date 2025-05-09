@@ -37,7 +37,7 @@ export default function EditImageComponent({
             return
         }
 
-        const styleImageWidth = style.classes[`${component.className}-container`].imageWidth;
+        const styleImageWidth = style.classes[`${component.className}-container`].width;
         const styleOverlayTransparency = style.classes[`${component.className}-overlay`].imageOverlayTransparency;
 
         setWidth(Number(styleImageWidth.replace("%", "")) / 100);
@@ -66,13 +66,11 @@ export default function EditImageComponent({
     function onWidthChange(value: number) {
         setWidth(value);
 
-        onStyleChange(`${component.className}-container`, 'imageWidth', `${value * 100}%`);
-        //handleOnStyleChange("imageWidth", value.toString());
+        onStyleChange(`${component.className}-container`, 'width', `${value * 100}%`);
         onEditComponent(component);
     }
 
     function onOverlayTransparencyChange(value: number) {
-        console.log("onOverlayTransparencyChange", value)
         setOverlayTransparency(value);
 
         onStyleChange(`${component.className}-overlay`, 'imageOverlayTransparency', value.toString());

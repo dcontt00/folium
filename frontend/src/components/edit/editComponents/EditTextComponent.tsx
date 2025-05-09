@@ -1,10 +1,11 @@
 import type {TextComponentType} from "~/interfaces/interfaces";
-import {Combobox, Input, InputBase, Stack, Textarea, useCombobox} from "@mantine/core";
+import {Center, Combobox, Input, InputBase, SegmentedControl, Stack, Textarea, useCombobox} from "@mantine/core";
 import {useEffect, useState} from "react";
 import {TextType} from "~/interfaces/textComponent";
 import {capitalize} from "~/utils";
 import type StyleClass from "~/interfaces/styleClass";
 import FontsCombobox from "~/components/edit/portfolioStyle/FontsCombobox";
+import {IconAlignCenter, IconAlignLeft, IconAlignRight} from "@tabler/icons-react";
 
 interface Props {
     component: TextComponentType;
@@ -19,6 +20,8 @@ export default function EditTextComponent({component, onEditComponent, styleClas
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),
     });
+
+    console.log(styleClass)
 
     // Needed when selecting a different component
     useEffect(() => {
@@ -44,7 +47,6 @@ export default function EditTextComponent({component, onEditComponent, styleClas
     }
 
     function handleStyleChange(identifier: string, attribute: string, value: string) {
-        console.log("handleStyleChange", component.className, attribute, value);
         onStyleChange(identifier, attribute, value);
         onEditComponent(component);
     }
@@ -55,6 +57,14 @@ export default function EditTextComponent({component, onEditComponent, styleClas
             {capitalize(item)}
         </Combobox.Option>
     ));
+
+    function handleTextAlignChange(value: string) {
+        if (!value) {
+            return
+        }
+        onStyleChange(component.className, "textAlign", value);
+        onEditComponent(component);
+    }
 
     return (
         <Stack>
@@ -91,6 +101,38 @@ export default function EditTextComponent({component, onEditComponent, styleClas
                 fontFamily={styleClass.textFont}
                 onStyleChange={handleStyleChange}
                 identifier={component.className}
+            />
+            <SegmentedControl
+                value={styleClass.textAlign}
+                onChange={handleTextAlignChange}
+                data={[
+                    {
+                        label: (
+                            <Center style={{gap: 10}}>
+                                <IconAlignLeft size={16}/>
+                                <span>Left</span>
+                            </Center>
+                        ), value: 'left'
+                    },
+                    {
+                        label: (
+                            <Center style={{gap: 10}}>
+                                <IconAlignCenter size={16}/>
+                                <span>Center</span>
+                            </Center>
+                        ),
+                        value: 'center'
+                    },
+                    {
+                        label: (
+                            <Center style={{gap: 10}}>
+                                <IconAlignRight size={16}/>
+                                <span>Right</span>
+                            </Center>
+                        ),
+                        value: 'right'
+                    },
+                ]}
             />
         </Stack>
     );

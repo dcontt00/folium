@@ -125,7 +125,13 @@ async function createTextComponent(index: number, text: string, type: TextType, 
         className: className
     })
 
-    const styleClass = await styleClassModel.create({identifier: className})
+    const styleClass = await styleClassModel
+        .create({
+            identifier: className,
+            textAlign: "left",
+            textFont: "Arial",
+            width: "100%",
+        })
 
     await styleModel.findByIdAndUpdate(
         {_id: styleId},

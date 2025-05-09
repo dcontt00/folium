@@ -32,7 +32,9 @@ export default function AddComponentMenu({
         const className = generateRandomClassName();
         const styleClass: StyleClass = {
             identifier: className,
-            textFont: "Arial"
+            textFont: "Arial",
+            textAlign: "left",
+            width: "100%",
         }
         const newComponent: TextComponentType = {
             _id: null,
@@ -94,7 +96,7 @@ export default function AddComponentMenu({
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#2d3748",
-            imageWidth: '100%',
+            width: '100%',
         }
 
         const overlayTextClass: StyleClass = {

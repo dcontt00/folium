@@ -4,7 +4,7 @@ export default class StyleClass {
     textFont: string;
     backgroundColor: string;
     display: string;
-    imageWidth: number;
+    width: number;
     imageOverlayTransparency: number;
     flexDirection: string;
     alignItems: string;
@@ -32,7 +32,7 @@ export default class StyleClass {
         textFont: string,
         backgroundColor: string,
         display: string,
-        imageWidth: number,
+        width: number,
         imageOverlayTransparency: number,
         flexDirection: string,
         alignItems: string,
@@ -59,7 +59,7 @@ export default class StyleClass {
         this.display = display;
         this.identifier = identifier;
         this.textFont = textFont;
-        this.imageWidth = imageWidth;
+        this.width = width;
         this.imageOverlayTransparency = imageOverlayTransparency;
         this.flexDirection = flexDirection;
         this.alignItems = alignItems;
@@ -95,8 +95,9 @@ export default class StyleClass {
         if (this.display) {
             style += `display: ${this.display};`
         }
-        if (this.imageWidth) {
-            style += `width: ${this.imageWidth};`
+        if (this.width) {
+            console.log(this.width)
+            style += `width: ${this.width};`
         }
         if (this.imageOverlayTransparency) {
             style += `background-color:rgba(0, 0, 0, ${this.imageOverlayTransparency} );`

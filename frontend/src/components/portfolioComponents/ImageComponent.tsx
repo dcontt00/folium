@@ -22,7 +22,7 @@ export default function ImageComponent({imageComponent, style}: Props) {
             justifyContent: 'center',
             backgroundColor: '#2d3748',
             // @ts-ignore
-            width: imgContainerClass.imageWidth,
+            width: imgContainerClass.width,
         }}>
             <div style={{position: 'relative', width: '100%'}}>
                 <img style={{width: '100%'}} src={imageComponent.url} alt={imageComponent.url}/>
