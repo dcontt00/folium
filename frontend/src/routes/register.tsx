@@ -1,12 +1,18 @@
 import {Container} from "@mantine/core";
 import Register from "~/components/register";
+import {Helmet} from "react-helmet";
 
 export default function RegisterRoute() {
 
     return (
-        <Container size="xs">
-            <Register/>
-        </Container>
+        <>
+            <Helmet>
+                <title>Folium - Register</title>
+            </Helmet>
+            <Container size="xs">
+                <Register/>
+            </Container>
+        </>
     );
 }
 

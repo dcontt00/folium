@@ -6,6 +6,7 @@ import NewPortfolioModal from "~/components/NewPortfolioModal";
 import {useFetcher, useLoaderData} from "react-router";
 import {IconCirclePlus} from "@tabler/icons-react";
 import UserMenu from "~/components/UserMenu";
+import {Helmet} from "react-helmet";
 
 interface Portfolio {
     title: string;
@@ -26,6 +27,9 @@ export default function Home() {
     const portfolios: Array<Portfolio> = fetcher.data || useLoaderData();
     return (
         <>
+            <Helmet>
+                <title>Folium - Home</title>
+            </Helmet>
             <AppShell
                 header={{height: 60}}
                 padding="md"

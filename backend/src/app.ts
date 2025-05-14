@@ -14,10 +14,25 @@ import fileUpload from "express-fileupload";
 import connectDB from "@/db";
 import {authHandler, errorHandler} from "@/middleware";
 import {createDirectories, getHtmlFolder} from "@/utils/directories";
+import cors from "cors";
 
 
 const app: Express = express();
 const port = 3000
+const allowedOrigins = ["http://localhost:3000", "http://localhost:1234"];
+
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        credentials: true,
+    })
+);
 // Middleware
 app.use(logger('dev'));
 app.use(express.json());

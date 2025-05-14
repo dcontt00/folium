@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import axiosInstance from "~/axiosInstance";
 import {AppShell, Button, Loader, Stack, Title} from "@mantine/core";
 import {IconBrandGithub, IconCheck, IconX} from "@tabler/icons-react";
+import {Helmet} from "react-helmet";
 
 export default function GithubCallback() {
 
@@ -49,21 +50,26 @@ export default function GithubCallback() {
     }, [state]);
 
     return (
-        <AppShell>
+        <>
+            <Helmet>
+                <title>Folium - Github Login</title>
+            </Helmet>
+            <AppShell>
 
-            <AppShell.Main
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100%",
-                }}
-            >
-                <Stack align="center" gap="xl">
-                    <GithubLogin success={success} loading={loading}/>
-                </Stack>
-            </AppShell.Main>
-        </AppShell>
+                <AppShell.Main
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "100%",
+                    }}
+                >
+                    <Stack align="center" gap="xl">
+                        <GithubLogin success={success} loading={loading}/>
+                    </Stack>
+                </AppShell.Main>
+            </AppShell>
+        </>
     );
 }
 

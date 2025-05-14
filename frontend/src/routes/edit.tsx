@@ -15,6 +15,7 @@ import HistoryModal from "~/components/edit/HistoryModal";
 import {modals} from "@mantine/modals";
 import PortfolioStyle from "~/components/edit/portfolioStyle";
 import type StyleClass from "~/interfaces/styleClass";
+import {Helmet} from "react-helmet";
 
 
 export function HydrateFallback() {
@@ -193,103 +194,108 @@ export default function Edit() {
     }
 
     return (
-        <AppShell
-            header={{height: 60, collapsed: previewEnabled}}
-            aside={{
-                width: 300,
-                breakpoint: "sm",
-                collapsed: {mobile: !openedSettings || previewEnabled, desktop: !openedSettings || previewEnabled}
-            }}
-            navbar={{
-                width: 300,
-                breakpoint: 'sm',
-                collapsed: {mobile: !openedEditComponent || previewEnabled, desktop: previewEnabled}
-            }}
-
-        >
-            <AppShell.Header>
-                <HeaderButtons
-                    onBack={onBack}
-                    onSave={onSave}
-                    onPreview={() => setPreviewEnabled(true)}
-                    toggleOpenedSettings={toggleOpenedSettings}
-                    unsaved={unsaved}
-                    portfolio={portfolio}
-                    openHistoryModal={openHistoryModal}
-                />
-            </AppShell.Header>
-            <AppShell.Navbar
-                style={{overflowY: "auto"}}
-            >
-                <Stack p="sm" gap="md">
-                    <AddComponentMenu
-                        parent_id={portfolio._id}
-                        portfolioComponentsLength={portfolio.components.length}
-                        onAddComponent={onAddComponent}
-                        allowContainerComponent={true}
-                        onStyleClassAdd={onStyleClassAdd}
-                    />
-                    {editComponent ? (
-                            <EditComponentSection
-                                portfolioUrl={portfolio.url}
-                                component={editComponent}
-                                onEditComponent={onEditComponent}
-                                styleClass={portfolioState.style.classes?.[editComponent.className]}
-                                style={portfolioState.style}
-                                onStyleChange={onStyleChange}
-                            />
-                        ) :
-                        (
-                            <Alert variant="light" color="blue" title="Select a component to edit it"
-                                   icon={<IconInfoCircle/>}/>
-                        )
-                    }
-                    <PortfolioStyle
-                        style={portfolioState.style}
-                        onStyleChange={onStyleChange}
-                    />
-                    <Button hiddenFrom="sm" onClick={toggleOpenedEditComponent}>Close</Button>
-                </Stack>
-            </AppShell.Navbar>
-            <AppShell.Aside
-                style={{overflowY: "auto"}}
-            >
-                <Stack p="sm">
-                    <SettingsSection
-                        toggleOpenedSettings={toggleOpenedSettings}
-                        title={title}
-                        setTitle={setTitle}
-                        description={description}
-                        setDescription={setDescription}
-                        setUnsaved={setUnsaved}
-                        portfolioUrl={portfolio.url}
-                    />
-                </Stack>
-            </AppShell.Aside>
-            <AppShell.Main
-                style={{
-                    backgroundColor: portfolioState.style.classes?.["root"].backgroundColor!!,
-                    color: portfolioState.style.classes?.["root"].color!!,
+        <>
+            <Helmet>
+                <title>Folium - Edit</title>
+            </Helmet>
+            <AppShell
+                header={{height: 60, collapsed: previewEnabled}}
+                aside={{
+                    width: 300,
+                    breakpoint: "sm",
+                    collapsed: {mobile: !openedSettings || previewEnabled, desktop: !openedSettings || previewEnabled}
                 }}
-            >
-                <ComponentsDnD
-                    onSelectEditComponent={onSelectEditComponent}
-                    portfolioState={portfolioState}
-                    onRemoveComponent={onRemoveComponent}
-                    onDragEnd={onDragEnd}
-                    onEditComponent={onEditComponent}
-                    onStyleClassAdd={onStyleClassAdd}
-                    style={portfolioState.style}
-                />
-            </AppShell.Main>
+                navbar={{
+                    width: 300,
+                    breakpoint: 'sm',
+                    collapsed: {mobile: !openedEditComponent || previewEnabled, desktop: previewEnabled}
+                }}
 
-            <HistoryModal
-                portfolioId={portfolioState._id}
-                opened={openedHistoryModal}
-                onClose={closeHistoryModal}
-                setPortfolioState={setPortfolioState}
-            />
-        </AppShell>
+            >
+                <AppShell.Header>
+                    <HeaderButtons
+                        onBack={onBack}
+                        onSave={onSave}
+                        onPreview={() => setPreviewEnabled(true)}
+                        toggleOpenedSettings={toggleOpenedSettings}
+                        unsaved={unsaved}
+                        portfolio={portfolio}
+                        openHistoryModal={openHistoryModal}
+                    />
+                </AppShell.Header>
+                <AppShell.Navbar
+                    style={{overflowY: "auto"}}
+                >
+                    <Stack p="sm" gap="md">
+                        <AddComponentMenu
+                            parent_id={portfolio._id}
+                            portfolioComponentsLength={portfolio.components.length}
+                            onAddComponent={onAddComponent}
+                            allowContainerComponent={true}
+                            onStyleClassAdd={onStyleClassAdd}
+                        />
+                        {editComponent ? (
+                                <EditComponentSection
+                                    portfolioUrl={portfolio.url}
+                                    component={editComponent}
+                                    onEditComponent={onEditComponent}
+                                    styleClass={portfolioState.style.classes?.[editComponent.className]}
+                                    style={portfolioState.style}
+                                    onStyleChange={onStyleChange}
+                                />
+                            ) :
+                            (
+                                <Alert variant="light" color="blue" title="Select a component to edit it"
+                                       icon={<IconInfoCircle/>}/>
+                            )
+                        }
+                        <PortfolioStyle
+                            style={portfolioState.style}
+                            onStyleChange={onStyleChange}
+                        />
+                        <Button hiddenFrom="sm" onClick={toggleOpenedEditComponent}>Close</Button>
+                    </Stack>
+                </AppShell.Navbar>
+                <AppShell.Aside
+                    style={{overflowY: "auto"}}
+                >
+                    <Stack p="sm">
+                        <SettingsSection
+                            toggleOpenedSettings={toggleOpenedSettings}
+                            title={title}
+                            setTitle={setTitle}
+                            description={description}
+                            setDescription={setDescription}
+                            setUnsaved={setUnsaved}
+                            portfolioUrl={portfolio.url}
+                        />
+                    </Stack>
+                </AppShell.Aside>
+                <AppShell.Main
+                    style={{
+                        backgroundColor: portfolioState.style.classes?.["root"].backgroundColor!!,
+                        color: portfolioState.style.classes?.["root"].color!!,
+                    }}
+                >
+                    <ComponentsDnD
+                        onSelectEditComponent={onSelectEditComponent}
+                        portfolioState={portfolioState}
+                        onRemoveComponent={onRemoveComponent}
+                        onDragEnd={onDragEnd}
+                        onEditComponent={onEditComponent}
+                        onStyleClassAdd={onStyleClassAdd}
+                        style={portfolioState.style}
+                    />
+                </AppShell.Main>
+
+                <HistoryModal
+                    portfolioId={portfolioState._id}
+                    opened={openedHistoryModal}
+                    onClose={closeHistoryModal}
+                    setPortfolioState={setPortfolioState}
+                />
+            </AppShell>
+        </>
     );
 }
 
