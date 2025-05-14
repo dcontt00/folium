@@ -75,7 +75,7 @@ export default function Register() {
                 gap="md"
             >
                 <Title order={3}>Register</Title>
-                <Group>
+                <Group grow>
                     <TextInput
                         withAsterisk
                         label="Name"
@@ -97,21 +97,19 @@ export default function Register() {
                     key={form.key('email')}
                     {...form.getInputProps('email')}
                 />
-                <Group>
-                    <TextInput
-                        withAsterisk
-                        label="Username"
-                        key={form.key('username')}
-                        {...form.getInputProps('username')}
-                    />
-                    <PasswordInput
-                        withAsterisk
-                        label="Password"
-                        key={form.key('password')}
-                        style={{flex: 1}}
-                        {...form.getInputProps('password')}
-                    />
-                </Group>
+                <TextInput
+                    withAsterisk
+                    label="Username"
+                    key={form.key('username')}
+                    {...form.getInputProps('username')}
+                />
+                <PasswordInput
+                    withAsterisk
+                    label="Password"
+                    key={form.key('password')}
+                    style={{flex: 1}}
+                    {...form.getInputProps('password')}
+                />
                 <Button type="submit" disabled={!form.isValid()}>Submit</Button>
             </Stack>
         </form>
