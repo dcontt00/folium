@@ -37,6 +37,9 @@ FROM node:20-alpine AS prod
 # Set the working directory
 WORKDIR /app
 
+# Set NODE_ENV to production
+ENV NODE_ENV=production
+
 # Copy the built frontend code to the Nginx HTML directory
 COPY --from=frontend-builder /app/dist /app/public
 

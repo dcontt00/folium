@@ -8,7 +8,7 @@ const pages = [
     {name: '/login', title: 'Login'},
     {name: '/register', title: 'Register'},
     {name: '/home', title: 'Home'},
-    {name: '/portfolio', title: 'Portfolio'},
+    {name: '/view', title: 'Portfolio'},
     {name: '/edit', title: 'Edit'},
     {name: "/github-callback", title: "GitHub Callback"},
     {name: "/profile", title: "Profile"},

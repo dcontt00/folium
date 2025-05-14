@@ -17,5 +17,7 @@ services:
     depends_on:
       - mongodb
     volumes:
-      - ./data:/data/db
+      - ./folium_data/images:/app/images
+      - ./folium_data/html:/app/html
+      - ./folium_data/public:/app/src/public
     restart: always

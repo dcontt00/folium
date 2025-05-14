@@ -22,5 +22,7 @@ services:
     depends_on:
       - mongodb
     volumes:
-      - ./data:/data/db
+      - ./backend/images:/app/images
+      - ./backend/html:/app/html
+      - ./backend/public:/app/src/public
     restart: always

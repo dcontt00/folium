@@ -2,6 +2,10 @@ import fs from "fs";
 import path from "path";
 
 function getRootFolder() {
+
+    if (process.env.NODE_ENV === "production") {
+        return path.resolve(__dirname, '../');
+    }
     return path.resolve(__dirname, '../../');
 }
 
@@ -28,15 +32,15 @@ function createDirectories() {
     const htmlFolder = getHtmlFolder();
     if (!fs.existsSync(exportsFolder)) {
         fs.mkdirSync(exportsFolder);
-        console.log("Created exports folder");
+        console.log("Created exports folder in ", exportsFolder);
     }
     if (!fs.existsSync(imagesFolder)) {
         fs.mkdirSync(imagesFolder);
-        console.log("Created images folder");
+        console.log("Created images folder in ", imagesFolder);
     }
     if (!fs.existsSync(htmlFolder)) {
         fs.mkdirSync(htmlFolder);
-        console.log("Created html folder");
+        console.log("Created html folder in ", htmlFolder);
     }
 }
 
