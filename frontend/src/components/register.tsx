@@ -15,17 +15,15 @@ interface FormValues {
 function validatePassword(value: string): string | null {
     let errorMessage = 'Password must have: ';
 
-    switch (true) {
-        case value.length < 8:
-            errorMessage += '8 characters, ';
-        case !/[A-Z]/.test(value):
-            errorMessage += '1 uppercase letter, ';
-        case !/\d/.test(value):
-            errorMessage += '1 number, ';
-        case !/[!@#$%^&*]/.test(value):
-            errorMessage += '1 special symbol. ';
+    if (value.length < 8) {
+        errorMessage += '8 characters, ';
     }
-
+    if (!/[A-Z]/.test(value)) {
+        errorMessage += '1 uppercase letter, ';
+    }
+    if (!/\d/.test(value)) {
+        errorMessage += '1 number, ';
+    }
     if (errorMessage === 'Password must have: ') {
         return null;
     }
@@ -65,6 +63,8 @@ export default function Register() {
                     navigate('/login');
                 })
                 .catch((error) => {
+                    const key = error.response.data.key;
+                    form.setFieldError(key, error.response.data.message);
                     console.log(error);
                 })
         })}

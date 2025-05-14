@@ -26,7 +26,25 @@ router.post("/", async (req: Request, res: Response) => {
             message: "User created Successfully",
             user: userResponse,
         });
-    })
+    }).catch((err) => {
+        console.error(err);
+
+        if (err.code === 11000) {
+            const duplicatedKey = Object.keys(err.keyValue)[0];
+            res.status(400).json({
+                status: 400,
+                success: false,
+                key: duplicatedKey,
+                message: "A user with this " + duplicatedKey + " already exists",
+            });
+        } else {
+            res.status(500).json({
+                status: 500,
+                success: false,
+                message: "Error creating user",
+            });
+        }
+    });
 });
 
 export default router;
