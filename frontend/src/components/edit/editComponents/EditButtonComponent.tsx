@@ -15,7 +15,8 @@ interface Props {
 export default function EditButtonComponent({component, onEditComponent, styleClass, onStyleChange}: Props) {
     const [text, setText] = useState(component.text);
     const [url, setUrl] = useState(component.url);
-    console.log("styleClass", styleClass)
+    const [urlError, setUrlError] = useState<string | null>(null);
+
 
     useEffect(() => {
         setText(component.text);
@@ -30,10 +31,18 @@ export default function EditButtonComponent({component, onEditComponent, styleCl
     }
 
     function onUrlChange(event: any) {
-        setUrl(event.target.value);
-        // Change the text of the component
-        component.url = event.target.value;
-        onEditComponent(component);
+        const newUrl = event.target.value;
+        setUrl(newUrl);
+
+        // Validate URL
+        const urlPattern = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
+        if (!urlPattern.test(newUrl)) {
+            setUrlError("Invalid URL format");
+        } else {
+            setUrlError(null);
+            component.url = newUrl;
+            onEditComponent(component);
+        }
     }
 
     function onColorChange(value: string) {
@@ -57,6 +66,7 @@ export default function EditButtonComponent({component, onEditComponent, styleCl
                 label="Url"
                 value={url}
                 onChange={(event) => onUrlChange(event)}
+                error={urlError}
             />
             <ColorInput
                 label="Button color"
