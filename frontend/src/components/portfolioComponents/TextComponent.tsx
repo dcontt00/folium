@@ -16,7 +16,7 @@ export default function TextComponent({textComponent, styleClass}: TextComponent
                 <Title
                     // @ts-ignore
                     style={{
-                        fontSize: "40px",
+                        fontSize: "2.8em",
                         fontFamily: styleClass.textFont,
                         width: "100%",
                         textAlign: styleClass.textAlign,
@@ -30,7 +30,7 @@ export default function TextComponent({textComponent, styleClass}: TextComponent
                 <Title
                     // @ts-ignore
                     style={{
-                        fontSize: "36px",
+                        fontSize: "2.5em",
                         fontFamily: styleClass.textFont,
                         width: "100%",
                         textAlign: styleClass.textAlign,
@@ -44,7 +44,7 @@ export default function TextComponent({textComponent, styleClass}: TextComponent
                 <Title
                     // @ts-ignore
                     style={{
-                        fontSize: "34px",
+                        fontSize: "2.2em",
                         fontFamily: styleClass.textFont,
                         width: "100%",
                         textAlign: styleClass.textAlign,
@@ -58,7 +58,7 @@ export default function TextComponent({textComponent, styleClass}: TextComponent
                 <Title
                     // @ts-ignore
                     style={{
-                        fontSize: "30px",
+                        fontSize: "1.9em",
                         fontFamily: styleClass.textFont,
                         width: "100%",
                         textAlign: styleClass.textAlign,
@@ -72,7 +72,7 @@ export default function TextComponent({textComponent, styleClass}: TextComponent
                 <Title
                     // @ts-ignore
                     style={{
-                        fontSize: "28px",
+                        fontSize: "1.6em",
                         fontFamily: styleClass.textFont,
                         width: "100%",
                         textAlign: styleClass.textAlign,
@@ -86,7 +86,7 @@ export default function TextComponent({textComponent, styleClass}: TextComponent
                 <Title
                     // @ts-ignore
                     style={{
-                        fontSize: "26px",
+                        fontSize: "1.3em",
                         fontFamily: styleClass.textFont,
                         width: "100%",
                         textAlign: styleClass.textAlign,
@@ -95,11 +95,12 @@ export default function TextComponent({textComponent, styleClass}: TextComponent
                     {textComponent.text}
                 </Title>
             )
-        default:
+        case TextType.P:
             return (
                 <Text
                     // @ts-ignore
                     style={{
+                        fontSize: "1em",
                         fontFamily: styleClass.textFont,
                         width: "100%",
                         textAlign: styleClass.textAlign

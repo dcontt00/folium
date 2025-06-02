@@ -58,10 +58,12 @@ export default function AddComponentMenu({
             backgroundColor: "#0070f3",
             border: "none",
             fontSize: "1rem",
-            padding: "15px 18px",
+            padding: "9px 18px",
             transition: "transform 0.2s ease",
             cursor: "pointer",
             borderRadius: "5px",
+            color: "#ffffff",
+            fontWeight: "Bold",
         }
 
         const animationStyleClass: StyleClass = {

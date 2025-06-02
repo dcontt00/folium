@@ -1,8 +1,13 @@
 export default class StyleClass {
     _id: string;
     identifier: string;
+
+    // Fonts
     textFont: string;
-    backgroundColor: string;
+    fontSize: string;
+    fontWeight: string;
+
+    // Layout
     display: string;
     width: number;
     imageOverlayTransparency: number;
@@ -11,19 +16,22 @@ export default class StyleClass {
     justifyContent: string;
     marginTop: string;
     textAlign: string;
-    fontSize: string;
+    padding: string;
+    borderRadius: string;
+    gap: string;
+
+    // Positioning
     position: string;
     top: string;
     left: string;
     right: string;
     bottom: string;
     border: string;
-    padding: string;
+
+    backgroundColor: string;
     transition: string;
     transform: string;
     cursor: string;
-    borderRadius: string;
-    gap: string;
     color: string;
 
     constructor(
@@ -52,7 +60,8 @@ export default class StyleClass {
         cursor: string,
         borderRadius: string,
         gap: string,
-        color: string
+        color: string,
+        fontWeight: string
     ) {
         this._id = _id;
         this.backgroundColor = backgroundColor;
@@ -80,6 +89,7 @@ export default class StyleClass {
         this.borderRadius = borderRadius;
         this.gap = gap;
         this.color = color;
+        this.fontWeight = fontWeight;
     }
 
 
@@ -158,6 +168,9 @@ export default class StyleClass {
         }
         if (this.color) {
             style += `color: ${this.color};`
+        }
+        if (this.fontWeight) {
+            style += `font-weight: ${this.fontWeight};`
         }
 
         style += `}`
