@@ -6,7 +6,6 @@ export default class ContainerComponent extends Component {
     constructor(_id: string, __t: string, componentId: number, index: number, parent_id: string, className: string, components: any[]) {
         super(_id, __t, componentId, index, parent_id, className);
         this.components = components;
-
     }
 
     toHtml() {
@@ -17,9 +16,8 @@ export default class ContainerComponent extends Component {
 
 
         return `
-         <div
-            style="display: flex; flexDirection: row; gap: 1em">
-            ${componentsHtml.join('\n')}
+         <div class="${this.className}">
+            ${componentsHtml}
         </div>
         
         `;

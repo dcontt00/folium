@@ -144,8 +144,12 @@ export default function AddComponentMenu({
         const className = generateRandomClassName();
         const styleClass: StyleClass = {
             identifier: className,
-            backgroundColor: "#ffffff",
             color: "#000000",
+            display: "flex",
+            flexDirection: "row",
+            gap: "1em",
+            alignItems: "center",
+            width: "100%",
         }
         const newComponent: ContainerComponentType = {
             _id: null,
