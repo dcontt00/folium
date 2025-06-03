@@ -18,25 +18,37 @@ router.put("/", authHandler, async (req: Request, res: Response, next: NextFunct
     const email = req.body.email;
     const username = req.body.username;
 
+    const duplicateUser = await UserModel.findOne({
+        $or: [
+            {email: email},
+            {username: username},
+        ],
+        _id: {$ne: user.id}, // Exclude the current user
+    });
 
-    await UserModel
-        .findOneAndUpdate(
-            {_id: user.id,},
-            {
-                name: name,
-                surname: surname,
-                email: email,
-                username: username,
-            },
-            {new: true}
-        )
-        .then((user) => {
-            console.log(user)
-            res.status(200).json({
-                message: "User updated successfully",
-                user: user,
+    if (duplicateUser) {
+        const duplicateField = duplicateUser.email === email ? "email" : "username";
+        throw new ApiError(409, `Duplicate value for field: ${duplicateField}`);
+    } else {
+        await UserModel
+            .findOneAndUpdate(
+                {_id: user.id,},
+                {
+                    name: name,
+                    surname: surname,
+                    email: email,
+                    username: username,
+                },
+                {new: true}
+            )
+            .then((user) => {
+                console.log(user)
+                res.status(200).json({
+                    message: "User updated successfully",
+                    user: user,
+                })
             })
-        })
+    }
 });
 
 // Get user

@@ -54,10 +54,17 @@ export default function Profile() {
 
         await axiosInstance.put('/user', form.getValues()).then(async (response) => {
             console.log(response);
+            setEdit(false);
         }).catch((error) => {
-            console.log(error);
+            console.log(form.errors)
+
+            if (error.response.data.message.includes("email")) {
+                form.setFieldError('email', 'Email already exists');
+            } else {
+                form.setFieldError('username', 'Username already exists');
+            }
+            console.log(form.errors)
         })
-        setEdit(false);
     }
 
     return (
@@ -130,6 +137,8 @@ export default function Profile() {
                                 <Button
                                     leftSection={<IconDeviceFloppy/>}
                                     onClick={() => handleSave()}
+                                    disabled={Object.keys(form.errors).length > 0}
+
                                 >
                                     Save
                                 </Button>
