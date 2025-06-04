@@ -90,11 +90,6 @@ const router = createBrowserRouter([
                 Component: Home,
                 loader: async () => await getPortfolios()
             },
-            /* {
-                 path: "view/:portfolioUrl",
-                 Component: PortfolioRoute,
-                 loader: async ({params}) => await getPortfolio(params)
-             },*/
             {
                 path: "view/:portfolioUrl",
                 Component: PortfolioRoute,
