@@ -10,8 +10,9 @@ import config from "~/config";
 export default function HeroContentLeft() {
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
-    console.log(config)
-    console.log(import.meta.env)
+    console.log("config", config)
+    console.log("meta.env", import.meta.env)
+    console.log("process.env", process.env)
 
     return (
         <>
