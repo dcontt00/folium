@@ -11,6 +11,7 @@ export default function HeroContentLeft() {
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     console.log(config)
+    console.log(import.meta.env)
 
     return (
         <>
