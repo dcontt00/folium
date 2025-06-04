@@ -41,6 +41,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV GH_OAUTH_CLIENT_ID=$GH_OAUTH_CLIENT_ID
 ENV GH_OAUTH_CLIENT_SECRET=$GH_OAUTH_CLIENT_SECRET
+ENV VITE_GH_OAUTH_CLIENT_SECRET=$VITE_GH_OAUTH_CLIENT_SECRET
+
 
 # Copy the built frontend code to the Nginx HTML directory
 COPY --from=frontend-builder /app/dist /app/public
