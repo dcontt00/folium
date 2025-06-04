@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   build-and-publish:
@@ -26,7 +26,10 @@ jobs:
       # Build the Docker image
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/folium:latest .
+          docker build \
+            --build-arg GH_OAUTH_CLIENT_ID=${{ secrets.GH_OAUTH_CLIENT_ID }} \
+            --build-arg GH_OAUTH_CLIENT_SECRET=${{ secrets.GH_OAUTH_CLIENT_SECRET }} \
+            -t ghcr.io/${{ github.repository_owner }}/folium:latest .
 
       # Push the Docker image to GHCR
       - name: Push Docker image
