@@ -29,6 +29,8 @@ jobs:
           docker build \
             --build-arg GH_OAUTH_CLIENT_ID=${{ secrets.GH_OAUTH_CLIENT_ID }} \
             --build-arg GH_OAUTH_CLIENT_SECRET=${{ secrets.GH_OAUTH_CLIENT_SECRET }} \
+            --build-arg VITE_GH_OAUTH_CLIENT_SECRET=${{ secrets.VITE_GH_OAUTH_CLIENT_SECRET }} \
+          
             -t ghcr.io/${{ github.repository_owner }}/folium:latest .
 
       # Push the Docker image to GHCR
