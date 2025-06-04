@@ -303,6 +303,11 @@ async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portf
 }
 
 async function getPortfolioByUrl(url: string) {
+    console.log(1)
+
+    //const portfolio = await PortfolioModel.findOne({url: url})
+    //console.log(portfolio)
+
     return PortfolioModel.findOne({url: url})
         .populate({
             path: "components",
@@ -314,7 +319,10 @@ async function getPortfolioByUrl(url: string) {
             populate: {
                 path: "classes"
             }
-        });
+        }).catch((err) => {
+            console.log("Error getting portfolio by url", err)
+            throw new ApiError(500, "Error getting portfolio by url");
+        })
 
 }
 

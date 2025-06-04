@@ -1,16 +1,16 @@
 import {useState} from 'react';
 import {Button, Center, Container, Group, Highlight, Overlay, Stack, Text, Title, Transition} from '@mantine/core';
 import classes from './index.module.css';
-import {useNavigate} from 'react-router';
 import Login from "~/components/login";
 import {IconArrowLeft} from "@tabler/icons-react";
 import Register from "~/components/register";
 import {Helmet} from "react-helmet";
+import config from "~/config";
 
 export default function HeroContentLeft() {
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
-    const navigate = useNavigate();
+    console.log(config)
 
     return (
         <>

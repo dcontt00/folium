@@ -16,7 +16,7 @@ export default function GithubLogin() {
         const redirectUrl = `${rootUrl}/github-callback`;
         console.log("redirectUrl", redirectUrl);
         window.open(
-            `https://github.com/login/oauth/authorize?client_id=${config.GITHUB_OAUTH_CLIENT_ID}&redirect_uri=${redirectUrl}&response_type=code&scope=repo&state=${cryptoState}`,
+            `https://github.com/login/oauth/authorize?client_id=${config.GH_OAUTH_CLIENT_ID}&redirect_uri=${redirectUrl}&response_type=code&scope=repo&state=${cryptoState}`,
         );
     }
 

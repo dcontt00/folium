@@ -166,6 +166,9 @@ router.get("/:url", authHandler, async (req, res) => {
     }
 
     const portfolio = await getPortfolioByUrl(req.params.url)
+    if (portfolio == null) {
+        throw new ApiError(404, "Portfolio not found");
+    }
     res.status(200).json({
         status: 200,
         success: true,

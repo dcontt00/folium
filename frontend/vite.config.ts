@@ -2,11 +2,13 @@ import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 
+console.log(process.env.VITE_GH_OAUTH_CLIENT_ID)
 export default defineConfig({
     plugins: [react()],
-    define: {
-        'import.meta.env.BACKEND_URL': JSON.stringify(process.env.BACKEND_URL),
-    },
+
+    /* define: {
+         'import.meta.env.GH_OAUTH_CLIENT_ID': JSON.stringify(process.env.VITE_GH_OAUTH_CLIENT_ID),
+     },*/
     resolve: {
         alias: {
             '~': path.resolve(__dirname, './src'),

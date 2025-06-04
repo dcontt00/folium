@@ -45,8 +45,8 @@ async function exchangeCodeForToken(code: string, redirectUri: string) {
         "https://github.com/login/oauth/access_token",
         {
             params: {
-                client_id: config.GITHUB_OAUTH_CLIENT_ID,
-                client_secret: config.GITHUB_OAUTH_CLIENT_SECRET,
+                client_id: config.GH_OAUTH_CLIENT_ID,
+                client_secret: config.GH_OAUTH_CLIENT_SECRET,
                 code: code,
                 redirect_uri: redirectUri,
             },

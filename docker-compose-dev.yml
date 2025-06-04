@@ -8,13 +8,14 @@ services:
       - ./db:/data/db
     restart: unless-stopped
 
-
   folium:
     image: folium:latest
     build:
       context: .
       dockerfile: Dockerfile
     container_name: folium
+    env_file:
+      - .env
     ports:
       - "3000:3000"
     environment:

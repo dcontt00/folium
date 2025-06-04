@@ -5,11 +5,11 @@ services:
     volumes:
       - ./db:/data/db
     restart: unless-stopped
-
-
   folium:
     image: ghcr.io/dcontt00/folium:latest
     container_name: folium
+    env_file:
+      - .env
     ports:
       - "3000:3000"
     environment:
