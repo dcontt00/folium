@@ -12,7 +12,6 @@ export default function HeroContentLeft() {
     const [showRegister, setShowRegister] = useState(false);
     console.log("config", config)
     console.log("meta.env", import.meta.env)
-    console.log("process.env", process.env)
 
     return (
         <>

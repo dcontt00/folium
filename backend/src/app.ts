@@ -15,6 +15,7 @@ import connectDB from "@/db";
 import {authHandler, errorHandler} from "@/middleware";
 import {createDirectories, getHtmlFolder} from "@/utils/directories";
 import cors from "cors";
+import config from "@/utils/config";
 
 
 const app: Express = express();
@@ -67,6 +68,7 @@ app.get("/api/view/:portfolioUrl", authHandler, async (req, res) => {
 
 
 app.use(errorHandler)
+console.log(config)
 
 app.listen(port, () => {
     createDirectories()

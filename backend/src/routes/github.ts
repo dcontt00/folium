@@ -7,6 +7,7 @@ import {exchangeCodeForToken, getUserFromToken, uploadFilesToGithubPages} from "
 import {generateHtmlFiles} from "@/services/portfolioService";
 import userModel from "@/models/UserModel";
 import {ApiError} from "@/classes";
+import config from "@/utils/config";
 
 const router = express.Router();
 
@@ -134,6 +135,16 @@ router.get('/upload', authHandler, async (req, res, next) => {
 
     res.send({url: url});
 });
+
+router.get("/oauth-url", authHandler, async (req, res) => {
+    const user = req.user;
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+    res.send({GH_OAUTH_CLIENT_ID: config.GH_OAUTH_CLIENT_ID})
+
+})
 
 
 export default router;
