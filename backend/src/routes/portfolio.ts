@@ -9,6 +9,7 @@ import {
     getPortfoliosByUserId,
     removePortfolioByUrl,
     restorePortfolio,
+    takeScreenshot,
     zipPortfolio
 } from "@/services/portfolioService";
 import {IPortfolio} from "@/interfaces";
@@ -17,7 +18,7 @@ import {createVersion, deleteOlderVersions, getVersionById, getVersionsByPortfol
 import Component from "@/classes/components/Component";
 import styleModel from "@/models/StyleModel";
 import styleClassModel from "@/models/StyleClassModel";
-import {getHtmlFolder} from "@/utils/directories";
+import {getHtmlFolder, getImagesFolder} from "@/utils/directories";
 import StyleClass from "@/classes/StyleClass";
 
 
@@ -44,7 +45,12 @@ router.post("/", authHandler, async (req, res) => {
         data: initialPortfolio,
     })
 
-    await generateHtmlFiles(req.body.url)
+    const htmlFilePath = await generateHtmlFiles(req.body.url)
+    if (!htmlFilePath) {
+        throw new ApiError(500, "Error generating HTML files");
+    }
+
+    await takeScreenshot(htmlFilePath, getImagesFolder() + `/thumbnails/${req.body.url}`)
 
 
 });
@@ -281,7 +287,12 @@ router.put("/:url", authHandler, async (req, res) => {
             }
 
             await createVersion(portfolio, updatedPortfolio)
-            await generateHtmlFiles(portfolio.url)
+            const htmlFilePath = await generateHtmlFiles(req.body.url)
+            if (!htmlFilePath) {
+                throw new ApiError(500, "Error generating HTML files");
+            }
+
+            await takeScreenshot(htmlFilePath, getImagesFolder() + `/thumbnails/${updatedPortfolio.url}`)
         })
 
 })

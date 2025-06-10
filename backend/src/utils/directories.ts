@@ -17,6 +17,14 @@ function getImagesFolder() {
     return path.join(getRootFolder(), "images");
 }
 
+function getPortfolioImagesFolder() {
+    return path.join(getRootFolder(), "images", "portfolios");
+}
+
+function getThumbnailsFolder() {
+    return path.join(getRootFolder(), "images", "thumbnails");
+}
+
 function getPublicFolder() {
     return path.join(getRootFolder(), "src", "public");
 }
@@ -30,6 +38,8 @@ function createDirectories() {
     const exportsFolder = getExportsFolder();
     const imagesFolder = getImagesFolder();
     const htmlFolder = getHtmlFolder();
+    const thumbnailsFolder = getThumbnailsFolder();
+
     if (!fs.existsSync(exportsFolder)) {
         fs.mkdirSync(exportsFolder);
         console.log("Created exports folder in ", exportsFolder);
@@ -42,6 +52,10 @@ function createDirectories() {
         fs.mkdirSync(htmlFolder);
         console.log("Created html folder in ", htmlFolder);
     }
+    if (!fs.existsSync(thumbnailsFolder)) {
+        fs.mkdirSync(thumbnailsFolder);
+        console.log("Created thumbnails folder in ", thumbnailsFolder);
+    }
 }
 
 export {
@@ -49,7 +63,9 @@ export {
     createDirectories,
     getImagesFolder,
     getHtmlFolder,
-    getPublicFolder
+    getPublicFolder,
+    getPortfolioImagesFolder,
+    getThumbnailsFolder
 
 }
 

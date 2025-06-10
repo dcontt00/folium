@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.11.0",
     "morgan": "~1.9.1",
+    "puppeteer": "^24.10.0",
     "sharp": "^0.34.1"
   },
   "devDependencies": {

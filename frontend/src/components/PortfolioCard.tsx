@@ -4,6 +4,7 @@ import {useNavigate} from "react-router";
 import {useDisclosure} from "@mantine/hooks";
 import axiosInstance from "~/axiosInstance";
 import {modals} from "@mantine/modals";
+import config from "~/config";
 
 interface PortfolioCardProps {
     title: string;
@@ -45,10 +46,11 @@ export default function PortfolioCard({title, description, url, onDelete}: Portf
             component="a"
             target="_blank"
         >
-            <Card.Section>
+            <Card.Section inheritPadding px="xs" py="xs">
                 <Image
-                    src="https://images.unsplash.com/photo-1579227114347-15d08fc37cae?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2550&q=80"
+                    src={`${config.BACKEND_URL}/images/thumbnails/${url}.png`}
                     h={160}
+                    width="100%"
                     alt="No way!"
                 />
             </Card.Section>

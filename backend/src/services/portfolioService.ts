@@ -7,13 +7,14 @@ import TextType from "@/interfaces/TextType";
 import path from "path";
 import fs from "fs";
 import archiver from "archiver"
-import {getHtmlFolder, getImagesFolder, getPublicFolder} from "@/utils/directories";
+import {getHtmlFolder, getImagesFolder, getPortfolioImagesFolder, getPublicFolder} from "@/utils/directories";
 import {createPortfolioStyle} from "@/services/styleService";
 import mongoose from "mongoose";
 import styleModel from "@/models/StyleModel";
 import Style from "@/classes/Style";
 import StyleClass from "@/classes/StyleClass";
 import Changes from "@/classes/Changes";
+import puppeteer from "puppeteer";
 
 
 async function generateHtmlFiles(portfolioUrl: string) {
@@ -54,19 +55,18 @@ async function generateHtmlFiles(portfolioUrl: string) {
     // Copy images to the output directory
     const portfolioImagesPath = path.join(getImagesFolder(), portfolioUrl)
     const publicPath = getPublicFolder()
-    if (!fs.existsSync(portfolioImagesPath)) {
-        console.log("No images to copy");
-        return;
+    if (fs.existsSync(portfolioImagesPath)) {
+        const images = fs.readdirSync(portfolioImagesPath);
+        const placeholder = fs.readdirSync(publicPath)
+        images.push(...placeholder)
+        for (const image of images) {
+            const sourcePath = path.join(portfolioImagesPath, image);
+            const destPath = path.join(outputDir, image);
+            fs.copyFileSync(sourcePath, destPath);
+        }
     }
-
-    const images = fs.readdirSync(portfolioImagesPath);
-    const placeholder = fs.readdirSync(publicPath)
-    images.push(...placeholder)
-    for (const image of images) {
-        const sourcePath = path.join(portfolioImagesPath, image);
-        const destPath = path.join(outputDir, image);
-        fs.copyFileSync(sourcePath, destPath);
-    }
+    console.log(htmlFilePath)
+    return htmlFilePath;
 }
 
 // Create portfolio
@@ -339,7 +339,7 @@ async function removePortfolioByUrl(url: string) {
         await removeOrphanComponents()
 
         // Remove images folder
-        const imagesFolder = path.join(getImagesFolder(), portfolio.url);
+        const imagesFolder = path.join(getPortfolioImagesFolder(), portfolio.url);
         if (fs.existsSync(imagesFolder)) {
             fs.rmSync(imagesFolder, {recursive: true, force: true});
         }
@@ -415,6 +415,24 @@ async function zipPortfolio(portfolioUrl: string): Promise<string> {
 
 }
 
+async function takeScreenshot(htmlFilePath: string, outputPath: string) {
+    console.log(htmlFilePath)
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.setViewport({width: 600, height: 200})
+
+    // Load the HTML file
+    const fileUrl = `file://${path.resolve(htmlFilePath)}`;
+    await page.goto(fileUrl, {waitUntil: 'networkidle0'});
+
+    console.log("Taking screenshot of:", fileUrl);
+
+    // Take a screenshot
+    await page.screenshot({path: `${outputPath}.png`, fullPage: true});
+
+    await browser.close();
+}
 
 export {
     createPortfolio,
@@ -427,5 +445,6 @@ export {
     generateHtmlFiles,
     zipPortfolio,
     getComponentAdditions,
-    getComponentUpdatesAndRemovals
+    getComponentUpdatesAndRemovals,
+    takeScreenshot
 }

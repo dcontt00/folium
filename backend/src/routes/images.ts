@@ -3,7 +3,7 @@ import {authHandler} from "@/middleware";
 import path from "path";
 import fs from "node:fs";
 import {ApiError, AuthenticationError} from "@/classes";
-import {getImagesFolder} from "@/utils/directories";
+import {getImagesFolder, getPortfolioImagesFolder} from "@/utils/directories";
 import sharp from "sharp";
 import * as crypto from "node:crypto";
 
@@ -34,17 +34,15 @@ router.post("/", authHandler, async (req, res) => {
     const imagesPath = getImagesFolder();
     const upload = req.files.upload;
 
-
     let url = `/images/`;
     let imagesFolder = imagesPath;
     let filename = `${user.id}.jpg`;
     if (portfolioUrl) {
-        imagesFolder = path.join(imagesPath, portfolioUrl);
-        url = `/images/${portfolioUrl}/`;
+        imagesFolder = path.join(getPortfolioImagesFolder(), portfolioUrl);
+        url = `/images/portfolios/${portfolioUrl}/`;
         const hash = crypto.createHash('sha256').update(upload.data).digest('hex');
         filename = `${hash}.jpg`;
     }
-
 
     // Check if the folder exists, if not, create it
     if (!fs.existsSync(imagesFolder)) {
