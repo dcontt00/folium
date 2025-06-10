@@ -1,8 +1,9 @@
-import {Alert, Anchor, Button, Divider, Stack, Text, Textarea, TextInput, Title} from "@mantine/core";
+import {Alert, Anchor, Button, Divider, Modal, Stack, Text, Textarea, TextInput, Title} from "@mantine/core";
 import axiosInstance from "~/axiosInstance";
 import GithubLogin from "~/components/GithubLogin";
 import {useEffect, useState} from "react";
 import {IconBrandGithub, IconCheck, IconDownload} from "@tabler/icons-react";
+import {useDisclosure, useInterval} from "@mantine/hooks";
 
 
 interface Props {
@@ -28,22 +29,27 @@ export default function SettingsSection({
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [url, setUrl] = useState("");
+    const [opened, {toggle}] = useDisclosure();
+    const interval = useInterval(() => {
+        checkGithubAuthorization()
+    }, 1000);
+    const checkGithubAuthorization = async () => {
+        console.log("Sí")
+        await axiosInstance.get('/github/status').then((response) => {
+            setGithubIsAuthorized(true);
+            console.log("No")
+            return true;
+        }).catch((e) => {
+            console.log(e)
+            setGithubIsAuthorized(false);
+        })
 
+    };
     useEffect(() => {
-        const checkGithubAuthorization = async () => {
-            console.log("Sí")
-            await axiosInstance.get('/github/status').then((response) => {
-                setGithubIsAuthorized(true);
-                console.log("No")
-                return true;
-            }).catch((e) => {
-                console.log(e)
-                setGithubIsAuthorized(false);
-            })
-
-        };
-        console.log('Checking GitHub authorization');
-        checkGithubAuthorization();
+        interval.start()
+        if (githubIsAuthorized) {
+            interval.stop();
+        }
     }, []);
 
     async function exportAndSave() {
@@ -60,7 +66,12 @@ export default function SettingsSection({
         link.remove();
     }
 
-    async function exportToGithub() {
+    async function onExportToGithubClick() {
+
+        if (!githubIsAuthorized) {
+            toggle();
+            return;
+        }
         setLoading(true);
         await axiosInstance.get(`/github/upload`, {
             params: {
@@ -85,6 +96,14 @@ export default function SettingsSection({
 
     return (
         <>
+            <Modal size="xl" opened={opened && !githubIsAuthorized} onClose={toggle} title="Github Login Required">
+                <Stack>
+                    <Title order={6}>
+                        You need to login to Github in order to upload this portfolio to Github Pages
+                    </Title>
+                    <GithubLogin/>
+                </Stack>
+            </Modal>
             <Title order={3}>Settings</Title>
             <TextInput
                 label="Title"
@@ -114,40 +133,33 @@ export default function SettingsSection({
             </Button>
             <Title order={4}>Github</Title>
 
-            {githubIsAuthorized ?
-                <>
+            <Button
+                leftSection={success ? <IconCheck/> : <IconBrandGithub/>}
+                onClick={onExportToGithubClick}
+                loading={loading}
+                color={
+                    success ? "green" : "blue"
+                }
+            >
+                {success ?
+                    "Success" :
+                    "Export to Github"}
+            </Button>
+            {url != "" &&
+                <Alert color="green" icon={<IconCheck size={16}/>} title="Success!">
 
-                    <Button
-                        leftSection={success ? <IconCheck/> : <IconBrandGithub/>}
-                        onClick={exportToGithub}
-                        loading={loading}
-                        color={
-                            success ? "green" : "blue"
-                        }
-                    >
-                        {success ?
-                            "Success" :
-                            "Export to Github"}
-                    </Button>
-                    {url != "" &&
-                        <Alert color="green" icon={<IconCheck size={16}/>} title="Success!">
+                    <Stack gap="xs">
+                        <Text>Your site is on:
+                        </Text>
 
-                            <Stack gap="xs">
-                                <Text>Your site is on:
-                                </Text>
-
-                                <Anchor href={url} target="_blank" rel="noreferrer">
-                                    {url}
-                                </Anchor>
-                                <Text>
-                                    It may take a few minutes to be available or updated
-                                </Text>
-                            </Stack>
-                        </Alert>
-                    }
-                </>
-                :
-                <GithubLogin/>
+                        <Anchor href={url} target="_blank" rel="noreferrer">
+                            {url}
+                        </Anchor>
+                        <Text>
+                            It may take a few minutes to be available or updated
+                        </Text>
+                    </Stack>
+                </Alert>
             }
         </>
     )
