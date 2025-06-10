@@ -67,7 +67,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
     }, [opened]);
 
     return (
-        <Modal size="xl" opened={opened} onClose={onClose} title="History">
+        <Modal size="xl" opened={opened} onClose={onClose} title="Change History">
             <Stack p="sm">
                 {loading && <div>Loading...</div>}
                 {error && <div>Error: {error.message}</div>}
