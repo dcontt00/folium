@@ -41,7 +41,9 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'public')));
-connectDB();
+connectDB().then(() => {
+    console.log("Connected to MongoDB");
+})
 
 // Routes
 app.use('/api', indexRouter);
