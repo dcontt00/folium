@@ -4,13 +4,19 @@ import {IconBrandGithub} from "@tabler/icons-react";
 import axiosInstance from "~/axiosInstance";
 import type {AxiosResponse} from "axios";
 
-export default function GithubLogin() {
+
+interface GithubLoginProps {
+    onClick: () => void;
+}
+
+export default function GithubLogin({onClick}: GithubLoginProps) {
     const [state, setState] = useLocalStorage({
         key: 'state',
         defaultValue: '',
     });
 
     async function navigateToGithubLogin() {
+        onClick()
         const oauthClientID = await axiosInstance.get("/github/oauth-url").then((response: AxiosResponse) => {
             return response.data.GH_OAUTH_CLIENT_ID;
         })

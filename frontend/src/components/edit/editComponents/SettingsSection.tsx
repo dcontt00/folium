@@ -1,9 +1,9 @@
 import {Alert, Anchor, Button, Divider, Modal, Stack, Text, Textarea, TextInput, Title} from "@mantine/core";
 import axiosInstance from "~/axiosInstance";
 import GithubLogin from "~/components/GithubLogin";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {IconBrandGithub, IconCheck, IconDownload} from "@tabler/icons-react";
-import {useDisclosure, useInterval} from "@mantine/hooks";
+import {useDisclosure} from "@mantine/hooks";
 
 
 interface Props {
@@ -25,32 +25,20 @@ export default function SettingsSection({
                                             setUnsaved,
                                             portfolioUrl
                                         }: Props) {
-    const [githubIsAuthorized, setGithubIsAuthorized] = useState(false);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [url, setUrl] = useState("");
     const [opened, {toggle}] = useDisclosure();
-    const interval = useInterval(() => {
-        checkGithubAuthorization()
-    }, 1000);
-    const checkGithubAuthorization = async () => {
-        console.log("Sí")
-        await axiosInstance.get('/github/status').then((response) => {
-            setGithubIsAuthorized(true);
-            console.log("No")
-            return true;
-        }).catch((e) => {
-            console.log(e)
-            setGithubIsAuthorized(false);
-        })
 
-    };
-    useEffect(() => {
-        interval.start()
-        if (githubIsAuthorized) {
-            interval.stop();
+    const checkGithubAuthorization = async (): Promise<boolean> => {
+        try {
+            await axiosInstance.get('/github/status');
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false;
         }
-    }, []);
+    }
 
     async function exportAndSave() {
         const response = await axiosInstance.get(`/portfolio/${portfolioUrl}/export`, {
@@ -67,8 +55,9 @@ export default function SettingsSection({
     }
 
     async function onExportToGithubClick() {
+        const isGithubAuthorized = await checkGithubAuthorization();
 
-        if (!githubIsAuthorized) {
+        if (!isGithubAuthorized) {
             toggle();
             return;
         }
@@ -96,12 +85,12 @@ export default function SettingsSection({
 
     return (
         <>
-            <Modal size="xl" opened={opened && !githubIsAuthorized} onClose={toggle} title="Github Login Required">
+            <Modal size="xl" opened={opened} onClose={toggle} title="Github Login Required">
                 <Stack>
                     <Title order={6}>
                         You need to login to Github in order to upload this portfolio to Github Pages
                     </Title>
-                    <GithubLogin/>
+                    <GithubLogin onClick={() => toggle()}/>
                 </Stack>
             </Modal>
             <Title order={3}>Settings</Title>
