@@ -15,8 +15,14 @@ import Style from "@/classes/Style";
 import StyleClass from "@/classes/StyleClass";
 import Changes from "@/classes/Changes";
 import puppeteer from "puppeteer";
+import {createFirstVersion} from "@/services/versionService";
 
-
+/**
+ * Generates HTML and CSS files for a portfolio based on its URL.
+ * @param {string} portfolioUrl - The URL of the portfolio.
+ * @returns {Promise<string>} - The path to the generated HTML file.
+ * @throws {Error} - Throws an error if the portfolio or style is not found.
+ */
 async function generateHtmlFiles(portfolioUrl: string) {
     const portfolio = await PortfolioModel.findOne({url: portfolioUrl}).populate({
         path: 'components',
@@ -69,7 +75,17 @@ async function generateHtmlFiles(portfolioUrl: string) {
     return htmlFilePath;
 }
 
-// Create portfolio
+/**
+ * Creates a new portfolio in the database.
+ * @param {string} title - The title of the portfolio.
+ * @param {string} url - The URL of the portfolio.
+ * @param {string} userId - The ID of the user creating the portfolio.
+ * @param {string} description - A description of the portfolio.
+ * @param {mongoose.Types.ObjectId} style - The style ID associated with the portfolio.
+ * @param {boolean} [populate=false] - Whether to populate the portfolio's components.
+ * @returns {Promise<any>} - The created portfolio object.
+ * @throws {ApiError} - Throws an error if the URL already exists or a server error occurs.
+ */
 async function createPortfolio(
     title: string, url: string, userId: string, description: string, style: mongoose.Types.ObjectId, populate: boolean = false
 ) {
@@ -102,6 +118,14 @@ async function createPortfolio(
     return portfolio;
 }
 
+/**
+ * Creates an initial portfolio with default components and generates its first version.
+ * @param {string} title - The title of the portfolio.
+ * @param {string} url - The URL of the portfolio.
+ * @param {string} description - A description of the portfolio.
+ * @param {string} userId - The ID of the user creating the portfolio.
+ * @throws {ApiError} - Throws an error if the portfolio creation fails.
+ */
 async function createInitialPortfolio(
     title: string,
     url: string,
@@ -150,37 +174,32 @@ async function createInitialPortfolio(
             if (portfolio == null) {
                 throw new ApiError(404, "Portfolio not found");
             }
-
-            const changes = new Changes()
-            changes.setPortfolioCreated(true)
-            await VersionModel.create(
-                {
-                    portfolioId: portfolio._id,
-                    changes: changes.toJSON(),
-                    components: portfolio.components,
-                    title: portfolio.title,
-                    description: portfolio.description,
-                    url: portfolio.url,
-                    style: portfolio.style,
-                }
-            ).then(() => {
-                console.log("Version created")
-            }).catch((err => {
-                console.log("Error creating version", err)
-                throw new ApiError(500, "Error creating version");
-            }))
+            await createFirstVersion(portfolio)
+            const htmlFilePath = await generateHtmlFiles(url)
+            await takeScreenshot(htmlFilePath, getImagesFolder() + `/thumbnails/${url}`)
         }).catch((err) => {
             console.log("Error creating version", err)
             throw new ApiError(500, "Error creating portfolio");
         })
 }
 
-
+/**
+ * Retrieves all portfolios associated with a specific user ID.
+ * @param {string} userId - The ID of the user.
+ * @returns {Promise<any[]>} - An array of portfolios.
+ */
 async function getPortfoliosByUserId(userId: string) {
     return PortfolioModel.find({user: userId});
 }
 
-
+/**
+ * Identifies updates and removals of components between two versions of a portfolio.
+ * @param {Component[]} previousComponents - The components in the previous version.
+ * @param {Component[]} currentComponents - The components in the current version.
+ * @param {Style} prevStyle - The style of the previous version.
+ * @param {Style} currentStyle - The style of the current version.
+ * @param {Changes} changes - The object to store detected changes.
+ */
 async function getComponentUpdatesAndRemovals(previousComponents: Component[], currentComponents: Component[], prevStyle: Style, currentStyle: Style, changes: Changes) {
     for (const prevComponent of previousComponents) {
         const currentComponent = currentComponents.find(
@@ -226,6 +245,13 @@ async function getComponentUpdatesAndRemovals(previousComponents: Component[], c
     }
 }
 
+/**
+ * Compares styles between two versions and detects changes.
+ * @param {Map<string, StyleClass>} styleA - The style classes of the previous version.
+ * @param {Map<string, StyleClass>} styleB - The style classes of the current version.
+ * @param {Component} component - The component being compared.
+ * @param {Changes} changes - The object to store detected changes.
+ */
 function compareStyles(styleA: Map<string, StyleClass>, styleB: Map<string, StyleClass>, component: Component, changes: Changes) {
 
     const keys = new Set([...styleA.keys(), ...styleB.keys()]);
@@ -264,6 +290,12 @@ function compareStyles(styleA: Map<string, StyleClass>, styleB: Map<string, Styl
     }
 }
 
+/**
+ * Identifies additions of components between two versions of a portfolio.
+ * @param {Component[]} previousComponents - The components in the previous version.
+ * @param {Component[]} currentComponents - The components in the current version.
+ * @param {Changes} changes - The object to store detected changes.
+ */
 function getComponentAdditions(previousComponents: Component[], currentComponents: Component[], changes: Changes) {
 
     for (const currentComponent of currentComponents) {
@@ -285,7 +317,12 @@ function getComponentAdditions(previousComponents: Component[], currentComponent
     }
 }
 
-
+/**
+ * Detects changes between two portfolio objects.
+ * @param {Portfolio} prevPortfolio - The previous portfolio object.
+ * @param {Portfolio} newPortfolio - The new portfolio object.
+ * @param {Changes} changes - The object to store detected changes.
+ */
 async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portfolio, changes: Changes) {
 
     // Check portfolio attributes
@@ -302,6 +339,12 @@ async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portf
     }
 }
 
+/**
+ * Retrieves a portfolio by its URL.
+ * @param {string} url - The URL of the portfolio.
+ * @returns {Promise<any>} - The portfolio object.
+ * @throws {ApiError} - Throws an error if the portfolio retrieval fails.
+ */
 async function getPortfolioByUrl(url: string) {
     console.log(1)
 
@@ -326,6 +369,11 @@ async function getPortfolioByUrl(url: string) {
 
 }
 
+/**
+ * Removes a portfolio by its URL, including associated components, versions, and files.
+ * @param {string} url - The URL of the portfolio.
+ * @throws {ApiError} - Throws an error if the portfolio is not found or deletion fails.
+ */
 async function removePortfolioByUrl(url: string) {
     const portfolio = await PortfolioModel.findOne({url: url});
 
@@ -356,6 +404,13 @@ async function removePortfolioByUrl(url: string) {
     }
 }
 
+/**
+ * Restores a portfolio to a specific version.
+ * @param {IVersion} version - The version object containing portfolio details.
+ * @param {any} components - The components to restore.
+ * @param {any} style - The style to restore.
+ * @returns {Promise<any>} - The restored portfolio object.
+ */
 async function restorePortfolio(version: IVersion, components: any, style: any) {
     return PortfolioModel
         .findOneAndUpdate({
@@ -380,11 +435,16 @@ async function restorePortfolio(version: IVersion, components: any, style: any) 
         });
 }
 
+
 /**
- * Zips the portfolio folder and returns the path to the zip file
- * @param portfolioUrl
+ * Zips the portfolio folder and returns the path to the zip file.
+ * @param {string} portfolioUrl - The URL of the portfolio.
+ * @returns {Promise<string>} - The path to the zip file.
+ * @throws {Error} - Throws an error if the zipping process fails.
  */
-async function zipPortfolio(portfolioUrl: string): Promise<string> {
+async function exportPortfolioAsZip(portfolioUrl: string): Promise<string> {
+    // Generate HTMl files for the portfolio
+    await generateHtmlFiles(portfolioUrl)
 
     const rootFolder = path.resolve(__dirname, '../../');
     const exportFolder = path.join(rootFolder, "exports")
@@ -415,6 +475,12 @@ async function zipPortfolio(portfolioUrl: string): Promise<string> {
 
 }
 
+/**
+ * Zips the portfolio folder and returns the path to the zip file.
+ * @param {string} portfolioUrl - The URL of the portfolio.
+ * @returns {Promise<string>} - The path to the zip file.
+ * @throws {Error} - Throws an error if the zipping process fails.
+ */
 async function takeScreenshot(htmlFilePath: string, outputPath: string) {
     console.log(htmlFilePath)
     const browser = await puppeteer.launch();
@@ -443,7 +509,7 @@ export {
     removePortfolioByUrl,
     restorePortfolio,
     generateHtmlFiles,
-    zipPortfolio,
+    exportPortfolioAsZip,
     getComponentAdditions,
     getComponentUpdatesAndRemovals,
     takeScreenshot

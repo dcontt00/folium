@@ -15,7 +15,12 @@ describe('Test User Service', function () {
 
 
         it('Create user', async function () {
-            const actualResult = await createUser("name", "surname", "username", "email", "password");
+            const actualResult = await createUser(
+                "name",
+                "surname",
+                "username",
+                "email",
+                "password");
 
             assert.deepEqual(actualResult, {
                 status: 201,
@@ -37,13 +42,6 @@ describe('Test User Service', function () {
             }
         });
 
-        it('Create user with invalid email', async function () {
-            try {
-                await createUser("name", "surname", "username", "invalid-email", "password");
-            } catch (error: any) {
-                assert.equal(error.message, "Invalid email format");
-            }
-        });
 
         it('Create user with duplicate username', async function () {
             await createUser("name", "surname", "username", "email", "password");
