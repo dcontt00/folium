@@ -5,6 +5,7 @@ import IContainerComponent from "@/interfaces/IContainerComponent";
 import IPortfolio from "@/interfaces/IPortfolio";
 import IUser from "@/interfaces/IUser";
 import StyleClass from "@/interfaces/styleClass";
+import IServiceResult from "@/interfaces/IServiceResult";
 
 
 export {
@@ -15,5 +16,6 @@ export {
     IPortfolio,
     IUser,
     ChangeType,
-    StyleClass
+    StyleClass,
+    IServiceResult
 }

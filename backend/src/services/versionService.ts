@@ -1,7 +1,7 @@
 import {VersionModel} from "@/models";
 import mongoose from "mongoose";
 import {getComponentAdditions, getComponentUpdatesAndRemovals, getPortfolioChanges} from "@/services/portfolioService";
-import {Portfolio} from "@/classes";
+import {ApiError, Portfolio} from "@/classes";
 import Changes from "@/classes/Changes";
 import styleModel from "@/models/StyleModel";
 
@@ -21,7 +21,6 @@ async function createVersion(
     prevPortfolio: Portfolio,
     newPortfolio: Portfolio,
 ) {
-
     const changes2 = new Changes();
 
     await getPortfolioChanges(prevPortfolio, newPortfolio, changes2)
@@ -46,6 +45,28 @@ async function createVersion(
     })
 }
 
+async function createFirstVersion(portfolio: Portfolio) {
+
+    const changes = new Changes()
+    changes.setPortfolioCreated(true)
+    await VersionModel.create(
+        {
+            portfolioId: portfolio._id,
+            changes: changes.toJSON(),
+            components: portfolio.components,
+            title: portfolio.title,
+            description: portfolio.description,
+            url: portfolio.url,
+            style: portfolio.style,
+        }
+    ).then(() => {
+        console.log("Version created")
+    }).catch((err => {
+        console.log("Error creating version", err)
+        throw new ApiError(500, "Error creating version");
+    }))
+}
+
 async function getVersionsByPortfolioId(portfolioId: string) {
     return VersionModel
         .find({portfolioId: portfolioId})
@@ -57,5 +78,6 @@ export {
     getVersionById,
     deleteOlderVersions,
     createVersion,
-    getVersionsByPortfolioId
+    getVersionsByPortfolioId,
+    createFirstVersion
 }

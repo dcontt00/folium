@@ -1,7 +1,13 @@
 import {PortfolioModel, VersionModel} from "@/models";
-import {IVersion} from "@/interfaces";
+import {IServiceResult, IVersion} from "@/interfaces";
 import {ApiError, Portfolio} from "@/classes";
-import {createImageComponent, createTextComponent, removeOrphanComponents} from "@/services/componentService";
+import {
+    componentsAreEquals,
+    createComponent,
+    createImageComponent,
+    createTextComponent,
+    removeOrphanComponents
+} from "@/services/componentService";
 import Component from "@/classes/components/Component";
 import TextType from "@/interfaces/TextType";
 import path from "path";
@@ -15,7 +21,8 @@ import Style from "@/classes/Style";
 import StyleClass from "@/classes/StyleClass";
 import Changes from "@/classes/Changes";
 import puppeteer from "puppeteer";
-import {createFirstVersion} from "@/services/versionService";
+import {createFirstVersion, createVersion} from "@/services/versionService";
+import styleClassModel from "@/models/StyleClassModel";
 
 /**
  * Generates HTML and CSS files for a portfolio based on its URL.
@@ -71,7 +78,7 @@ async function generateHtmlFiles(portfolioUrl: string) {
             fs.copyFileSync(sourcePath, destPath);
         }
     }
-    console.log(htmlFilePath)
+    await takeScreenshot(htmlFilePath, getImagesFolder() + `/thumbnails/${portfolioUrl}`)
     return htmlFilePath;
 }
 
@@ -175,8 +182,7 @@ async function createInitialPortfolio(
                 throw new ApiError(404, "Portfolio not found");
             }
             await createFirstVersion(portfolio)
-            const htmlFilePath = await generateHtmlFiles(url)
-            await takeScreenshot(htmlFilePath, getImagesFolder() + `/thumbnails/${url}`)
+            await generateHtmlFiles(url)
         }).catch((err) => {
             console.log("Error creating version", err)
             throw new ApiError(500, "Error creating portfolio");
@@ -475,11 +481,117 @@ async function exportPortfolioAsZip(portfolioUrl: string): Promise<string> {
 
 }
 
+async function editPortfolio(
+    portfolioUrl: string,
+    portfolioTitle: string,
+    portfolioDescription: string,
+    components: any,
+    reqStyle: any
+): Promise<IServiceResult> {
+    const portfolio = await getPortfolioByUrl(portfolioUrl);
+
+    if (!portfolio) {
+        throw new ApiError(404, "Portfolio not found");
+    }
+
+    let portfolioStyle = undefined
+
+
+    if (components) {
+        for (const reqComponent of components) {
+            const portfolioComponent = portfolio.components.find((component: any) => component.componentId === reqComponent.componentId);
+
+
+            if (!componentsAreEquals(reqComponent, portfolioComponent)) {
+                await createComponent(reqComponent, portfolio._id).then((c) => {
+                    components.push(c);
+                });
+            } else {
+                components.push(portfolioComponent);
+            }
+        }
+    }
+
+
+    await styleModel.findById(portfolio.style).then(async (style) => {
+        if (style == null) {
+            throw new ApiError(404, "Style not found");
+        }
+        const updatedClasses = reqStyle.classes || {};
+        const newClasses: any[] = [];
+        for (const styleClass of Object.values(updatedClasses) as StyleClass[]) {
+            // Create a new style class
+            // @ts-ignore
+            delete styleClass._id;
+
+            const newStyleClass = await styleClassModel.create({
+                ...styleClass
+            });
+
+            newClasses.push(newStyleClass)
+        }
+
+        const classesMap = newClasses.reduce((map, newStyleClass) => {
+            map[`${newStyleClass.identifier}`] = newStyleClass._id;
+            return map;
+        }, {});
+
+        portfolioStyle = await styleModel.create({
+            classes: classesMap,
+        });
+    });
+
+
+    await PortfolioModel
+        .findOneAndUpdate(
+            {url: portfolioUrl},
+            {
+                title: portfolioTitle,
+                description: portfolioDescription,
+                components: components,
+                style: portfolioStyle!!._id
+            },
+            {new: true}
+        )
+        .populate({
+            path: "components",
+            populate: {
+                path: "components",
+            }
+        })
+        .populate({
+            path: "style",
+            populate: {
+                path: "classes"
+            }
+        })
+        .then(async (updatedPortfolio) => {
+            if (updatedPortfolio == null) {
+                throw new ApiError(404, "Portfolio not found");
+            }
+
+            await createVersion(portfolio, updatedPortfolio)
+            await generateHtmlFiles(portfolioUrl)
+
+            return {
+                success: true,
+                status: 200,
+                data: updatedPortfolio,
+            }
+        }).catch((err) => {
+            console.log("Error editing portfolio", err)
+            throw new ApiError(500, "Error editing portfolio");
+        })
+    return {
+        success: true,
+        status: 200,
+    }
+}
+
 /**
- * Zips the portfolio folder and returns the path to the zip file.
- * @param {string} portfolioUrl - The URL of the portfolio.
- * @returns {Promise<string>} - The path to the zip file.
- * @throws {Error} - Throws an error if the zipping process fails.
+ * Takes a screenshot of the portfolio's HTML file.
+ * @param {string} htmlFilePath - The path to the HTML file.
+ * @param {string} outputPath - The path to save the screenshot.
  */
 async function takeScreenshot(htmlFilePath: string, outputPath: string) {
     console.log(htmlFilePath)
@@ -512,5 +624,5 @@ export {
     exportPortfolioAsZip,
     getComponentAdditions,
     getComponentUpdatesAndRemovals,
-    takeScreenshot
+    editPortfolio
 }

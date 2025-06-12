@@ -4,13 +4,12 @@ import {authHandler} from "@/middleware";
 import {ApiError, AuthenticationError} from "@/classes";
 import {
     createInitialPortfolio,
+    exportPortfolioAsZip,
     generateHtmlFiles,
     getPortfolioByUrl,
     getPortfoliosByUserId,
     removePortfolioByUrl,
     restorePortfolio,
-    takeScreenshot,
-    zipPortfolio
 } from "@/services/portfolioService";
 import {IPortfolio} from "@/interfaces";
 import {componentsAreEquals, createComponent} from "@/services/componentService";
@@ -18,7 +17,7 @@ import {createVersion, deleteOlderVersions, getVersionById, getVersionsByPortfol
 import Component from "@/classes/components/Component";
 import styleModel from "@/models/StyleModel";
 import styleClassModel from "@/models/StyleClassModel";
-import {getHtmlFolder, getImagesFolder} from "@/utils/directories";
+import {getHtmlFolder} from "@/utils/directories";
 import StyleClass from "@/classes/StyleClass";
 
 
@@ -44,22 +43,12 @@ router.post("/", authHandler, async (req, res) => {
         success: true,
         data: initialPortfolio,
     })
-
-    const htmlFilePath = await generateHtmlFiles(req.body.url)
-    if (!htmlFilePath) {
-        throw new ApiError(500, "Error generating HTML files");
-    }
-
-    await takeScreenshot(htmlFilePath, getImagesFolder() + `/thumbnails/${req.body.url}`)
-
-
 });
 
 router.get("/:url/export", authHandler, async (req, res) => {
     try {
         const portfolioUrl = req.params.url;
-        await generateHtmlFiles(portfolioUrl)
-        const outputFilePath = await zipPortfolio(portfolioUrl);
+        const outputFilePath = await exportPortfolioAsZip(portfolioUrl);
 
         // Send the file for download
         res.download(outputFilePath, `${portfolioUrl}.zip`, (err) => {
@@ -191,6 +180,7 @@ router.put("/:url", authHandler, async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
+
     const portfolio = await PortfolioModel
         .findOne({url: req.params.url, user: user.id})
         .populate({
@@ -287,12 +277,7 @@ router.put("/:url", authHandler, async (req, res) => {
             }
 
             await createVersion(portfolio, updatedPortfolio)
-            const htmlFilePath = await generateHtmlFiles(req.body.url)
-            if (!htmlFilePath) {
-                throw new ApiError(500, "Error generating HTML files");
-            }
-
-            await takeScreenshot(htmlFilePath, getImagesFolder() + `/thumbnails/${updatedPortfolio.url}`)
+            await generateHtmlFiles(req.body.url)
         })
 
 })
