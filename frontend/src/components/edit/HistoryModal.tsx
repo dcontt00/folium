@@ -34,7 +34,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
 
     async function fetchVersion(version: IVersion) {
         try {
-            const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${version._id}`);
+            const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${version._id}?restore=false`);
             setPortfolioState(response.data.data);
             setCurrentVersionIndex(0);
         } catch (err: any) {

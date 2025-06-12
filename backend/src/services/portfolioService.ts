@@ -138,7 +138,7 @@ async function createInitialPortfolio(
     url: string,
     description: string,
     userId: string,
-) {
+): Promise<IServiceResult> {
     const style = await createPortfolioStyle()
     const newPortfolio = await createPortfolio(title, url, userId, description, style._id)
     const imageComponent = await createImageComponent(
@@ -161,7 +161,7 @@ async function createInitialPortfolio(
         newPortfolio._id,
         style._id
     )
-    await PortfolioModel
+    return await PortfolioModel
         .findOneAndUpdate(
             {url: url},
             {
@@ -183,6 +183,11 @@ async function createInitialPortfolio(
             }
             await createFirstVersion(portfolio)
             await generateHtmlFiles(url)
+            return {
+                success: true,
+                status: 200,
+                data: portfolio,
+            }
         }).catch((err) => {
             console.log("Error creating version", err)
             throw new ApiError(500, "Error creating portfolio");
@@ -380,7 +385,7 @@ async function getPortfolioByUrl(url: string) {
  * @param {string} url - The URL of the portfolio.
  * @throws {ApiError} - Throws an error if the portfolio is not found or deletion fails.
  */
-async function removePortfolioByUrl(url: string) {
+async function removePortfolioByUrl(url: string): Promise<IServiceResult> {
     const portfolio = await PortfolioModel.findOne({url: url});
 
     if (!portfolio) {
@@ -402,6 +407,11 @@ async function removePortfolioByUrl(url: string) {
         const htmlFolder = path.join(getHtmlFolder(), portfolio.url);
         if (fs.existsSync(htmlFolder)) {
             fs.rmSync(htmlFolder, {recursive: true, force: true});
+        }
+        return {
+            success: true,
+            status: 200,
+            data: null,
         }
 
     } catch (error) {
@@ -615,7 +625,6 @@ async function takeScreenshot(htmlFilePath: string, outputPath: string) {
 }
 
 export {
-    createPortfolio,
     getPortfolioChanges,
     createInitialPortfolio,
     getPortfoliosByUserId,

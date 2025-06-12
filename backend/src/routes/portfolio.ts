@@ -1,5 +1,4 @@
 import express from "express";
-import {ComponentModel, PortfolioModel} from "@/models";
 import {authHandler} from "@/middleware";
 import {ApiError, AuthenticationError} from "@/classes";
 import {
@@ -9,12 +8,8 @@ import {
     getPortfolioByUrl,
     getPortfoliosByUserId,
     removePortfolioByUrl,
-    restorePortfolio,
 } from "@/services/portfolioService";
-import {IPortfolio} from "@/interfaces";
-import {deleteOlderVersions, getVersionById, getVersionsByPortfolioId} from "@/services/versionService";
-import Component from "@/classes/components/Component";
-import styleModel from "@/models/StyleModel";
+import {getVersion, getVersionsByPortfolioId} from "@/services/versionService";
 import {getHtmlFolder} from "@/utils/directories";
 
 
@@ -34,12 +29,8 @@ router.post("/", authHandler, async (req, res) => {
         throw new ApiError(500, "URL and title are required");
     }
 
-    const initialPortfolio = await createInitialPortfolio(req.body.title, req.body.url, req.body.description, user.id);
-    res.status(200).json({
-        status: 200,
-        success: true,
-        data: initialPortfolio,
-    })
+    const result = await createInitialPortfolio(req.body.title, req.body.url, req.body.description, user.id);
+    res.status(result.status).json(result)
 });
 
 router.get("/:url/export", authHandler, async (req, res) => {
@@ -106,42 +97,14 @@ router.get("/version/:versionId", authHandler, async (req, res) => {
         throw new ApiError(400, "Version ID is required");
     }
 
-    const version = await getVersionById(versionId)
-
-    if (version == null) {
-        throw new ApiError(404, "Version not found");
-    }
-
-    const components: Component[] = await ComponentModel.find({_id: {$in: version.components}})
-    const style = await styleModel
-        .findById(version.style)
-        .populate("classes")
+    let restore = false
 
     if (req.query.restore == 'true') {
-        const restoredPortfolio = await restorePortfolio(version, components, style)
-        res.status(200).json({
-            status: 200,
-            success: true,
-            data: restoredPortfolio,
-        })
-        await deleteOlderVersions(version.portfolioId, version.createdAt)
-
-    } else {
-        const portfolio: IPortfolio = {
-            _id: version.portfolioId,
-            title: version.title,
-            description: version.description,
-            url: version.url,
-            components: components,
-            // @ts-ignore
-            style: style,
-        }
-        res.status(200).json({
-            status: 200,
-            success: true,
-            data: portfolio,
-        });
+        restore = true;
     }
+
+    const result = await getVersion(versionId, restore)
+    res.status(result.status).json(result)
 
 
 })
@@ -191,23 +154,9 @@ router.put("/:url", authHandler, async (req, res) => {
 
 
 router.delete("/:url", authHandler, async (req, res) => {
-    const user = req.user;
-
-    if (!user) {
-        throw new Error("User not found");
-    }
-
-    const portfolio = await PortfolioModel.findOne({url: req.params.url});
-
-    if (!portfolio) {
-        throw new ApiError(404, "Portfolio not found");
-    }
-
-    await removePortfolioByUrl(req.params.url)
-    res.status(200).json({
-        status: 200,
-        success: true,
-        data: null,
+    const result = await removePortfolioByUrl(req.params.url)
+    res.status(result.status).json({
+        result
     })
 
 })

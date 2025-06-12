@@ -1,10 +1,58 @@
-import {VersionModel} from "@/models";
+import {ComponentModel, VersionModel} from "@/models";
 import mongoose from "mongoose";
-import {getComponentAdditions, getComponentUpdatesAndRemovals, getPortfolioChanges} from "@/services/portfolioService";
+import {
+    getComponentAdditions,
+    getComponentUpdatesAndRemovals,
+    getPortfolioChanges,
+    restorePortfolio
+} from "@/services/portfolioService";
 import {ApiError, Portfolio} from "@/classes";
 import Changes from "@/classes/Changes";
 import styleModel from "@/models/StyleModel";
+import Component from "@/classes/components/Component";
+import {IPortfolio, IServiceResult} from "@/interfaces";
 
+
+async function getVersion(versionId: string, restore: boolean): Promise<IServiceResult> {
+    const version = await getVersionById(versionId)
+
+    if (version == null) {
+        throw new ApiError(404, "Version not found");
+    }
+
+    const components: Component[] = await ComponentModel.find({_id: {$in: version.components}})
+    const style = await styleModel
+        .findById(version.style)
+        .populate("classes")
+
+    if (restore) {
+        const restoredPortfolio = await restorePortfolio(version, components, style)
+        await deleteOlderVersions(version.portfolioId, version.createdAt)
+
+        return {
+            status: 200,
+            success: true,
+            data: restoredPortfolio,
+        }
+
+
+    } else {
+        const portfolio: IPortfolio = {
+            _id: version.portfolioId,
+            title: version.title,
+            description: version.description,
+            url: version.url,
+            components: components,
+            // @ts-ignore
+            style: style,
+        }
+        return {
+            status: 200,
+            success: true,
+            data: portfolio,
+        };
+    }
+}
 
 async function getVersionById(id: string,) {
     return VersionModel.findById(id);
@@ -79,5 +127,6 @@ export {
     deleteOlderVersions,
     createVersion,
     getVersionsByPortfolioId,
-    createFirstVersion
+    createFirstVersion,
+    getVersion
 }
