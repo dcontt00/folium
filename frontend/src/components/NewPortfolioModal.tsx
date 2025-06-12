@@ -3,6 +3,7 @@ import {isNotEmpty, matches, useForm} from '@mantine/form';
 import {useNavigate} from "react-router";
 import {IconCancel, IconFilePlus} from "@tabler/icons-react";
 import axiosInstance from "~/axiosInstance";
+import {useState} from "react";
 
 interface Props {
     opened: boolean;
@@ -11,6 +12,7 @@ interface Props {
 
 export default function NewPortfolioModal({opened, close}: Props) {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const form = useForm({
         mode: 'uncontrolled',
@@ -28,6 +30,7 @@ export default function NewPortfolioModal({opened, close}: Props) {
     });
 
     async function onSubmit(values: any) {
+        setLoading(true);
         await axiosInstance.post(`/portfolio`, values).then(result => {
             console.log(result)
             navigate("/edit/" + values.url)
@@ -37,6 +40,7 @@ export default function NewPortfolioModal({opened, close}: Props) {
             }
             console.log(err)
         })
+        setLoading(false);
     }
 
 
@@ -64,8 +68,14 @@ export default function NewPortfolioModal({opened, close}: Props) {
                         {...form.getInputProps('description')}
                     />
                     <Group>
-                        <Button leftSection={<IconFilePlus/>} type="submit"
-                                disabled={!form.isValid()}>Create</Button>
+                        <Button
+                            leftSection={<IconFilePlus/>}
+                            type="submit"
+                            disabled={!form.isValid()}
+                            loading={loading}
+                        >
+                            Create
+                        </Button>
                         <Button variant="light" leftSection={<IconCancel/>} onClick={close}>Cancel</Button>
                     </Group>
                 </Stack>
