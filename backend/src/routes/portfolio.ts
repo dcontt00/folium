@@ -4,21 +4,18 @@ import {authHandler} from "@/middleware";
 import {ApiError, AuthenticationError} from "@/classes";
 import {
     createInitialPortfolio,
+    editPortfolio,
     exportPortfolioAsZip,
-    generateHtmlFiles,
     getPortfolioByUrl,
     getPortfoliosByUserId,
     removePortfolioByUrl,
     restorePortfolio,
 } from "@/services/portfolioService";
 import {IPortfolio} from "@/interfaces";
-import {componentsAreEquals, createComponent} from "@/services/componentService";
-import {createVersion, deleteOlderVersions, getVersionById, getVersionsByPortfolioId} from "@/services/versionService";
+import {deleteOlderVersions, getVersionById, getVersionsByPortfolioId} from "@/services/versionService";
 import Component from "@/classes/components/Component";
 import styleModel from "@/models/StyleModel";
-import styleClassModel from "@/models/StyleClassModel";
 import {getHtmlFolder} from "@/utils/directories";
-import StyleClass from "@/classes/StyleClass";
 
 
 const router = express.Router();
@@ -174,111 +171,21 @@ router.get("/:url", authHandler, async (req, res) => {
 });
 
 router.put("/:url", authHandler, async (req, res) => {
-    const components: any[] = [];
     const user = req.user;
     if (!user) {
         throw new ApiError(404, "User not found");
     }
 
+    const result = await editPortfolio(
+        req.params.url,
+        req.body.title,
+        req.body.description,
+        req.body.components,
+        req.body.style
+    );
 
-    const portfolio = await PortfolioModel
-        .findOne({url: req.params.url, user: user.id})
-        .populate({
-            path: "components",
-            populate: {
-                path: "components",
-            }
-        }).populate({
-            path: "style",
-            populate: {
-                path: "classes"
-            }
-        })
+    res.status(result.status).json(result)
 
-    if (!portfolio) {
-        throw new ApiError(404, "Portfolio not found");
-    }
-
-    let portfolioStyle = undefined
-
-
-    if (req.body.components) {
-        for (const reqComponent of req.body.components) {
-            const portfolioComponent = portfolio.components.find((component: any) => component.componentId === reqComponent.componentId);
-
-
-            if (!componentsAreEquals(reqComponent, portfolioComponent)) {
-                await createComponent(reqComponent, portfolio._id).then((c) => {
-                    components.push(c);
-                });
-            } else {
-                components.push(portfolioComponent);
-            }
-        }
-    }
-
-
-    await styleModel.findById(portfolio.style).then(async (style) => {
-        if (style == null) {
-            throw new ApiError(404, "Style not found");
-        }
-        const updatedClasses = req.body.style?.classes || {};
-        const newClasses: any[] = [];
-        for (const styleClass of Object.values(updatedClasses) as StyleClass[]) {
-            // Create a new style class
-            // @ts-ignore
-            delete styleClass._id;
-
-            const newStyleClass = await styleClassModel.create({
-                ...styleClass
-            });
-
-            newClasses.push(newStyleClass)
-        }
-
-        const classesMap = newClasses.reduce((map, newStyleClass) => {
-            map[`${newStyleClass.identifier}`] = newStyleClass._id;
-            return map;
-        }, {});
-
-        portfolioStyle = await styleModel.create({
-            classes: classesMap,
-        });
-    });
-
-
-    await PortfolioModel
-        .findOneAndUpdate(
-            {url: req.params.url, user: user.id},
-            {...req.body, components: components, style: portfolioStyle!!._id},
-            {new: true}
-        )
-        .populate({
-            path: "components",
-            populate: {
-                path: "components",
-            }
-        })
-        .populate({
-            path: "style",
-            populate: {
-                path: "classes"
-            }
-        })
-        .then(async (updatedPortfolio) => {
-            res.status(200).json({
-                status: 200,
-                success: true,
-                data: updatedPortfolio,
-            });
-
-            if (updatedPortfolio == null) {
-                throw new ApiError(404, "Portfolio not found");
-            }
-
-            await createVersion(portfolio, updatedPortfolio)
-            await generateHtmlFiles(req.body.url)
-        })
 
 })
 

@@ -485,10 +485,11 @@ async function editPortfolio(
     portfolioUrl: string,
     portfolioTitle: string,
     portfolioDescription: string,
-    components: any,
+    reqComponents: any,
     reqStyle: any
 ): Promise<IServiceResult> {
     const portfolio = await getPortfolioByUrl(portfolioUrl);
+    const components = [];
 
     if (!portfolio) {
         throw new ApiError(404, "Portfolio not found");
@@ -496,12 +497,11 @@ async function editPortfolio(
 
     let portfolioStyle = undefined
 
+    console.log(3)
 
-    if (components) {
-        for (const reqComponent of components) {
+    if (reqComponents) {
+        for (const reqComponent of reqComponents) {
             const portfolioComponent = portfolio.components.find((component: any) => component.componentId === reqComponent.componentId);
-
-
             if (!componentsAreEquals(reqComponent, portfolioComponent)) {
                 await createComponent(reqComponent, portfolio._id).then((c) => {
                     components.push(c);
@@ -513,36 +513,39 @@ async function editPortfolio(
     }
 
 
-    await styleModel.findById(portfolio.style).then(async (style) => {
-        if (style == null) {
-            throw new ApiError(404, "Style not found");
-        }
-        const updatedClasses = reqStyle.classes || {};
-        const newClasses: any[] = [];
-        for (const styleClass of Object.values(updatedClasses) as StyleClass[]) {
-            // Create a new style class
-            // @ts-ignore
-            delete styleClass._id;
+    await styleModel.findById(portfolio.style)
+        .then(async (style) => {
+            if (style == null) {
+                throw new ApiError(404, "Style not found");
+            }
+            const updatedClasses = reqStyle.classes || {};
+            const newClasses: any[] = [];
+            for (const styleClass of Object.values(updatedClasses) as StyleClass[]) {
+                // Create a new style class
+                // @ts-ignore
+                delete styleClass._id;
 
-            const newStyleClass = await styleClassModel.create({
-                ...styleClass
+                const newStyleClass = await styleClassModel.create({
+                    ...styleClass
+                });
+
+                newClasses.push(newStyleClass)
+            }
+
+            const classesMap = newClasses.reduce((map, newStyleClass) => {
+                map[`${newStyleClass.identifier}`] = newStyleClass._id;
+                return map;
+            }, {});
+
+            portfolioStyle = await styleModel.create({
+                classes: classesMap,
             });
+        }).catch((err) => {
+            console.log(err)
+        })
 
-            newClasses.push(newStyleClass)
-        }
-
-        const classesMap = newClasses.reduce((map, newStyleClass) => {
-            map[`${newStyleClass.identifier}`] = newStyleClass._id;
-            return map;
-        }, {});
-
-        portfolioStyle = await styleModel.create({
-            classes: classesMap,
-        });
-    });
-
-
-    await PortfolioModel
+    console.log(4)
+    return await PortfolioModel
         .findOneAndUpdate(
             {url: portfolioUrl},
             {
@@ -566,12 +569,15 @@ async function editPortfolio(
             }
         })
         .then(async (updatedPortfolio) => {
+            console.log(5)
+
             if (updatedPortfolio == null) {
                 throw new ApiError(404, "Portfolio not found");
             }
 
             await createVersion(portfolio, updatedPortfolio)
             await generateHtmlFiles(portfolioUrl)
+
 
             return {
                 success: true,
@@ -582,10 +588,6 @@ async function editPortfolio(
             console.log("Error editing portfolio", err)
             throw new ApiError(500, "Error editing portfolio");
         })
-    return {
-        success: true,
-        status: 200,
-    }
 }
 
 /**
