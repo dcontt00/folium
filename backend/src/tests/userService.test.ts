@@ -25,11 +25,11 @@ describe('Test User Service', function () {
             assert.deepEqual(actualResult, {
                 status: 201,
                 success: true,
-                message: "User created Successfully",
-                user: {
+                data: {
                     name: "name",
                     email: "email",
-                    username: "username"
+                    username: "username",
+                    _id: actualResult.data._id, // Convert ObjectId to string for comparison
                 }
             });
         });

@@ -108,7 +108,6 @@ async function createFirstVersion(portfolio: Portfolio) {
             style: portfolio.style,
         }
     ).then(() => {
-        console.log("Version created")
     }).catch((err => {
         console.log("Error creating version", err)
         throw new ApiError(500, "Error creating version");

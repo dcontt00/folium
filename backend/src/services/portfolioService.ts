@@ -30,7 +30,7 @@ import styleClassModel from "@/models/StyleClassModel";
  * @returns {Promise<string>} - The path to the generated HTML file.
  * @throws {Error} - Throws an error if the portfolio or style is not found.
  */
-async function generateHtmlFiles(portfolioUrl: string) {
+async function generateHtmlFiles(portfolioUrl: string): Promise<string> {
     const portfolio = await PortfolioModel.findOne({url: portfolioUrl}).populate({
         path: 'components',
         populate: {
@@ -63,7 +63,6 @@ async function generateHtmlFiles(portfolioUrl: string) {
     // Write the HTML content to the file
     fs.writeFileSync(htmlFilePath, htmlContent, 'utf-8');
     fs.writeFileSync(cssFilePath, cssContent, 'utf-8');
-    console.log(`HTML and CSS files created at: ${htmlFilePath}, ${cssFilePath} `);
 
     // Copy images to the output directory
     const portfolioImagesPath = path.join(getImagesFolder(), portfolioUrl)
@@ -95,7 +94,7 @@ async function generateHtmlFiles(portfolioUrl: string) {
  */
 async function createPortfolio(
     title: string, url: string, userId: string, description: string, style: mongoose.Types.ObjectId, populate: boolean = false
-) {
+): Promise<any> {
 
     const portfolio = await PortfolioModel
         .create(
@@ -177,6 +176,7 @@ async function createInitialPortfolio(
                 path: "components",
             }
         })
+        .lean()
         .then(async (portfolio) => {
             if (portfolio == null) {
                 throw new ApiError(404, "Portfolio not found");
@@ -199,8 +199,11 @@ async function createInitialPortfolio(
  * @param {string} userId - The ID of the user.
  * @returns {Promise<any[]>} - An array of portfolios.
  */
-async function getPortfoliosByUserId(userId: string) {
-    return PortfolioModel.find({user: userId});
+async function getPortfoliosByUserId(userId: string): Promise<any> {
+    return PortfolioModel.find({user: userId}).catch(error => {
+        console.log("Error getting portfolios by userId", error)
+        throw new ApiError(500, "Error getting portfolios by userId");
+    })
 }
 
 /**
@@ -356,11 +359,7 @@ async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portf
  * @returns {Promise<any>} - The portfolio object.
  * @throws {ApiError} - Throws an error if the portfolio retrieval fails.
  */
-async function getPortfolioByUrl(url: string) {
-    console.log(1)
-
-    //const portfolio = await PortfolioModel.findOne({url: url})
-    //console.log(portfolio)
+async function getPortfolioByUrl(url: string): Promise<any> {
 
     return PortfolioModel.findOne({url: url})
         .populate({
@@ -606,7 +605,6 @@ async function editPortfolio(
  * @param {string} outputPath - The path to save the screenshot.
  */
 async function takeScreenshot(htmlFilePath: string, outputPath: string) {
-    console.log(htmlFilePath)
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
@@ -615,8 +613,6 @@ async function takeScreenshot(htmlFilePath: string, outputPath: string) {
     // Load the HTML file
     const fileUrl = `file://${path.resolve(htmlFilePath)}`;
     await page.goto(fileUrl, {waitUntil: 'networkidle0'});
-
-    console.log("Taking screenshot of:", fileUrl);
 
     // Take a screenshot
     await page.screenshot({path: `${outputPath}.png`, fullPage: true});

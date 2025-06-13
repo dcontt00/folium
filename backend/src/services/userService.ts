@@ -3,10 +3,11 @@ import bcrypt from "bcrypt";
 import {ApiError, AuthenticationError} from "@/classes";
 import jwt from "jsonwebtoken";
 import config from "@/utils/config";
+import {IServiceResult} from "@/interfaces";
 
 const saltRounds = 10
 
-async function createUser(name: string, surname: string, username: string, email: string, password: string) {
+async function createUser(name: string, surname: string, username: string, email: string, password: string): Promise<IServiceResult> {
     try {
         const user = await UserModel.create({
             name: name,
@@ -20,13 +21,13 @@ async function createUser(name: string, surname: string, username: string, email
             name: user.name,
             email: user.email,
             username: user.username,
+            _id: user._id,
         };
 
         return {
             status: 201,
             success: true,
-            message: "User created Successfully",
-            user: userResponse,
+            data: userResponse,
         };
 
     } catch (err: any) {

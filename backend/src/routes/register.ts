@@ -13,8 +13,7 @@ router.post("/", async (req: Request, res: Response) => {
     await createUser(user.name, user.surname, user.username, user.email, user.password).then((result) => {
         res.status(result.status).json({
             success: result.success,
-            message: result.message,
-            user: result.user
+            user: result.data
         });
     }).catch((err: ApiError) => {
         res.status(err.status || 500).json({
