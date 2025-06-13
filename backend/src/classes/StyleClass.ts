@@ -106,7 +106,6 @@ export default class StyleClass {
             style += `display: ${this.display};`
         }
         if (this.width) {
-            console.log(this.width)
             style += `width: ${this.width};`
         }
         if (this.imageOverlayTransparency) {
