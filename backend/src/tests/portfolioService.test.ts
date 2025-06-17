@@ -5,7 +5,8 @@ import {
     createInitialPortfolio,
     editPortfolio,
     getPortfolioByUrl,
-    getPortfoliosByUserId
+    getPortfoliosByUserId,
+    removePortfolioByUrl
 } from "@/services/portfolioService";
 import styleModel from "@/models/StyleModel";
 import Changes from "@/classes/Changes";
@@ -28,7 +29,9 @@ beforeAll(async () => {
             return result.data
         });
 
-    portfolio1 = await createInitialPortfolio("title1", "url1", "description1", createdUser._id)
+    await createInitialPortfolio("title1", "url1", "description1", createdUser._id)
+    await createInitialPortfolio("title2", "url2", "description2", createdUser._id)
+    portfolio1 = await getPortfolioByUrl("url1")
 })
 afterAll(async () => {
     const db = await connectDB()
@@ -189,4 +192,67 @@ describe('Test Porfolio Service', function () {
 
         })
     });
+
+    describe("Remove portfolio", function () {
+        test("Remove portfolio by url", async function () {
+            const portfolios = await getPortfoliosByUserId(createdUser._id.toString())
+            expect(portfolios.length).toBeGreaterThan(0)
+
+            await removePortfolioByUrl("url2")
+            const removedPortfolio = await getPortfolioByUrl("url2");
+            expect(removedPortfolio).toBeNull();
+        })
+        test("Remove portfolio by url that does not exist", async function () {
+            return removePortfolioByUrl("nonexistent-url")
+                .catch(error => expect(error.message)
+                    .toMatch("Portfolio not found"));
+        })
+
+    })
+
+    describe("Edit portfolio", function () {
+        test("Edit portfolio title", async function () {
+            const styleArray = Array.from(portfolio1.style); // Convert Map to an array
+
+            const updatedPortfolio = await editPortfolio("url1", "new title", "description", portfolio1.components, styleArray);
+            expect(updatedPortfolio.data.title).toBe("new title");
+        })
+
+        test("Modify text of second component", async function () {
+            const portfolio = await getPortfolioByUrl("url1");
+            const afterComponents = JSON.parse(JSON.stringify(portfolio.components));
+            const prevStyle = await styleModel.findById(portfolio.style).populate("classes").lean();
+
+            // Modify the text of the second component
+            afterComponents[1].text = "Modified text";
+
+            const updatedPortfolio = await editPortfolio(portfolio.url, portfolio.title, portfolio.description, afterComponents, prevStyle);
+
+            expect(updatedPortfolio.data.components[1].text).toBe("Modified text");
+        })
+
+        test("Modify index of first and second component", async function () {
+            const portfolio = await getPortfolioByUrl("url1");
+            const afterComponents = JSON.parse(JSON.stringify(portfolio.components));
+            const prevStyle = await styleModel.findById(portfolio.style).populate("classes").lean();
+
+            // Modify the index of the first and second components
+            afterComponents[0].index = 1;
+            afterComponents[1].index = 0;
+
+            const updatedPortfolio = await editPortfolio(portfolio.url, portfolio.title, portfolio.description, afterComponents, prevStyle);
+
+            expect(updatedPortfolio.data.components[0].index).toBe(1);
+            expect(updatedPortfolio.data.components[1].index).toBe(0);
+
+        })
+
+        test("Edit portfolio of invalid url", async function () {
+            return editPortfolio("invalid-url", "new title", "description", portfolio1.components, portfolio1.style)
+                .catch(error => expect(error.message)
+                    .toMatch("Portfolio not found"));
+        })
+
+
+    })
 })

@@ -171,7 +171,6 @@ async function getComponentUpdatesAndRemovals(previousComponents: any[], current
             // Compare fields to detect changes
             // @ts-ignore
             const allKeys = Object.keys(prevComponent.toObject());
-            console.log("allKeys", allKeys)
             const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew", "__t", "parent_id"];
             const keys = allKeys.filter(key => !keysToRemove.includes(key));
             for (const key of keys) {
