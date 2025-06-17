@@ -10,6 +10,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mongo:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,5 +35,7 @@ jobs:
         working-directory: ./backend
 
       - name: Run Jest tests
+        env:
+          MONGO_URI: mongodb://localhost:27017/test
         run: yarn test
         working-directory: ./backend
