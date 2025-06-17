@@ -1,6 +1,6 @@
 import {PortfolioModel, VersionModel} from "@/models";
 import {IServiceResult, IVersion} from "@/interfaces";
-import {ApiError, Portfolio} from "@/classes";
+import {ApiError} from "@/classes";
 import {
     componentsAreEquals,
     createComponent,
@@ -8,7 +8,6 @@ import {
     createTextComponent,
     removeOrphanComponents
 } from "@/services/componentService";
-import Component from "@/classes/components/Component";
 import TextType from "@/interfaces/TextType";
 import path from "path";
 import fs from "fs";
@@ -17,9 +16,7 @@ import {getHtmlFolder, getImagesFolder, getPortfolioImagesFolder, getPublicFolde
 import {createPortfolioStyle} from "@/services/styleService";
 import mongoose from "mongoose";
 import styleModel from "@/models/StyleModel";
-import Style from "@/classes/Style";
 import StyleClass from "@/classes/StyleClass";
-import Changes from "@/classes/Changes";
 import puppeteer from "puppeteer";
 import {createFirstVersion, createVersion} from "@/services/versionService";
 import styleClassModel from "@/models/StyleClassModel";
@@ -200,158 +197,12 @@ async function createInitialPortfolio(
  * @returns {Promise<any[]>} - An array of portfolios.
  */
 async function getPortfoliosByUserId(userId: string): Promise<any> {
-    return PortfolioModel.find({user: userId}).catch(error => {
+    return PortfolioModel.find({user: userId}).lean().catch(error => {
         console.log("Error getting portfolios by userId", error)
         throw new ApiError(500, "Error getting portfolios by userId");
     })
 }
 
-/**
- * Identifies updates and removals of components between two versions of a portfolio.
- * @param {Component[]} previousComponents - The components in the previous version.
- * @param {Component[]} currentComponents - The components in the current version.
- * @param {Style} prevStyle - The style of the previous version.
- * @param {Style} currentStyle - The style of the current version.
- * @param {Changes} changes - The object to store detected changes.
- */
-async function getComponentUpdatesAndRemovals(previousComponents: Component[], currentComponents: Component[], prevStyle: Style, currentStyle: Style, changes: Changes) {
-    for (const prevComponent of previousComponents) {
-        const currentComponent = currentComponents.find(
-            (component) => component.componentId === prevComponent.componentId
-        );
-
-
-        if (!currentComponent) {
-            // Component was removed
-            changes.removeComponent(prevComponent)
-
-        } else {
-
-            if (currentComponent.__t === "ContainerComponent") {
-                // Manage container components
-                // @ts-ignore
-                getComponentAdditions(prevComponent.components, currentComponent.components, changes)
-
-                // @ts-ignore
-                await getComponentUpdatesAndRemovals(prevComponent.components, currentComponent.components, prevStyle, currentStyle, changes);
-
-                changes.addComponent(currentComponent)
-
-                continue;
-            }
-
-            // Compare fields to detect changes
-            // @ts-ignore
-            const allKeys = Object.keys(prevComponent.toObject());
-            const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__", "_doc", "$isNew", "__t", "parent_id"];
-            const keys = allKeys.filter(key => !keysToRemove.includes(key));
-            for (const key of keys) {
-                // @ts-ignore
-                if (prevComponent[key]?.toString() !== currentComponent[key]?.toString() && currentComponent[key] !== undefined) {
-                    // @ts-ignore
-                    changes.addComponentChange(currentComponent, key, prevComponent[key], currentComponent[key])
-
-                }
-            }
-        }
-        // Compare styles
-        compareStyles(prevStyle.classes, currentStyle.classes, prevComponent, changes);
-    }
-}
-
-/**
- * Compares styles between two versions and detects changes.
- * @param {Map<string, StyleClass>} styleA - The style classes of the previous version.
- * @param {Map<string, StyleClass>} styleB - The style classes of the current version.
- * @param {Component} component - The component being compared.
- * @param {Changes} changes - The object to store detected changes.
- */
-function compareStyles(styleA: Map<string, StyleClass>, styleB: Map<string, StyleClass>, component: Component, changes: Changes) {
-
-    const keys = new Set([...styleA.keys(), ...styleB.keys()]);
-    // Remove keys that are not in the style
-    const keysToRemove = ["_id", "createdAt", "updatedAt", "__v", "$__"];
-    for (const key of keysToRemove) {
-        keys.delete(key);
-    }
-
-    for (const key of keys) {
-
-        if (!key.includes(component.className)) {
-            continue;
-        }
-
-        const prevClass = styleA.get(key);
-        const currentClass = styleB.get(key);
-
-        if (!prevClass || !currentClass) {
-            continue;
-        }
-
-        const currentClassKeyValues = Object.entries(currentClass).filter(([key]) => !keysToRemove.includes(key));
-        const currentClassKeyValueObject = Object.fromEntries(currentClassKeyValues);
-        const prevClassKeyValues = Object.entries(prevClass).filter(([key]) => !keysToRemove.includes(key));
-        const prevClassKeyValueObject = Object.fromEntries(prevClassKeyValues);
-
-        for (const key2 of Object.keys(currentClassKeyValueObject)) {
-            if (prevClassKeyValueObject[key2] !== currentClassKeyValueObject[key2]) {
-                changes.addComponentChange(component, key2, prevClassKeyValueObject[key2], currentClassKeyValueObject[key2])
-
-            }
-        }
-
-
-    }
-}
-
-/**
- * Identifies additions of components between two versions of a portfolio.
- * @param {Component[]} previousComponents - The components in the previous version.
- * @param {Component[]} currentComponents - The components in the current version.
- * @param {Changes} changes - The object to store detected changes.
- */
-function getComponentAdditions(previousComponents: Component[], currentComponents: Component[], changes: Changes) {
-
-    for (const currentComponent of currentComponents) {
-        if (!previousComponents.find((component) => component.componentId === currentComponent.componentId)) {
-            // Check if a ContainerComponent with children was added
-            // @ts-ignore
-            if (currentComponent.__t === "ContainerComponent" && currentComponent.components.length != 0) {
-                // @ts-ignore
-                getComponentAdditions([], currentComponent.components, changes)
-                changes.addComponent(currentComponent)
-
-                // @ts-ignore
-                changes.addComponentChange(currentComponent, "components", "[]", currentComponent.components)
-            } else {
-                changes.addComponent(currentComponent)
-
-            }
-        }
-    }
-}
-
-/**
- * Detects changes between two portfolio objects.
- * @param {Portfolio} prevPortfolio - The previous portfolio object.
- * @param {Portfolio} newPortfolio - The new portfolio object.
- * @param {Changes} changes - The object to store detected changes.
- */
-async function getPortfolioChanges(prevPortfolio: Portfolio, newPortfolio: Portfolio, changes: Changes) {
-
-    // Check portfolio attributes
-    if (prevPortfolio.title !== newPortfolio.title) {
-        changes.addPortfolioChange("Title", prevPortfolio.title, newPortfolio.title)
-    }
-
-    if (prevPortfolio.description !== newPortfolio.description) {
-        changes.addPortfolioChange("Description", prevPortfolio.description, newPortfolio.description)
-    }
-
-    if (prevPortfolio.url !== newPortfolio.url) {
-        changes.addPortfolioChange("URL", prevPortfolio.url, newPortfolio.url)
-    }
-}
 
 /**
  * Retrieves a portfolio by its URL.
@@ -506,7 +357,6 @@ async function editPortfolio(
 
     let portfolioStyle = undefined
 
-    console.log(3)
 
     if (reqComponents) {
         for (const reqComponent of reqComponents) {
@@ -520,6 +370,7 @@ async function editPortfolio(
             }
         }
     }
+    console.log(reqStyle.classes)
 
 
     await styleModel.findById(portfolio.style)
@@ -529,14 +380,23 @@ async function editPortfolio(
             }
             const updatedClasses = reqStyle.classes || {};
             const newClasses: any[] = [];
+
+
             for (const styleClass of Object.values(updatedClasses) as StyleClass[]) {
+
+                if (styleClass == null) {
+                    continue
+                }
                 // Create a new style class
                 // @ts-ignore
                 delete styleClass._id;
 
-                const newStyleClass = await styleClassModel.create({
-                    ...styleClass
-                });
+                const newStyleClass = await styleClassModel
+                    .create(styleClass)
+                    .catch(error => {
+                        console.log("Error creating style class", error)
+                        throw new ApiError(500, "Error creating style class");
+                    });
 
                 newClasses.push(newStyleClass)
             }
@@ -553,7 +413,6 @@ async function editPortfolio(
             console.log(err)
         })
 
-    console.log(4)
     return await PortfolioModel
         .findOneAndUpdate(
             {url: portfolioUrl},
@@ -620,8 +479,8 @@ async function takeScreenshot(htmlFilePath: string, outputPath: string) {
     await browser.close();
 }
 
+
 export {
-    getPortfolioChanges,
     createInitialPortfolio,
     getPortfoliosByUserId,
     getPortfolioByUrl,
@@ -629,7 +488,5 @@ export {
     restorePortfolio,
     generateHtmlFiles,
     exportPortfolioAsZip,
-    getComponentAdditions,
-    getComponentUpdatesAndRemovals,
     editPortfolio
 }

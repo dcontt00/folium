@@ -146,7 +146,8 @@ router.put("/:url", authHandler, async (req, res) => {
         req.body.components,
         req.body.style
     );
-
+    console.log("req body components", req.body.components);
+    console.log("updatedPortfolio", result.data);
     res.status(result.status).json(result)
 
 
