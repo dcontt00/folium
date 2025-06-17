@@ -466,7 +466,7 @@ async function editPortfolio(
  * @param {string} outputPath - The path to save the screenshot.
  */
 async function takeScreenshot(htmlFilePath: string, outputPath: string) {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage();
 
     await page.setViewport({width: 600, height: 200})
