@@ -13,6 +13,7 @@ import Changes from "@/classes/Changes";
 import Component from "@/classes/components/Component";
 import Change from "@/classes/Change";
 import {getComponentUpdatesAndRemovals} from "@/services/versionService";
+import {createDirectories} from "@/utils/directories";
 
 
 let createdUser: any = null;
@@ -24,6 +25,11 @@ beforeAll(async () => {
         return result;
     })
     await db?.connection?.dropDatabase()
+
+
+    // Create directories for storing images and HTML files
+    createDirectories()
+
     createdUser = await createUser("name", "surname", "username", "user@mail.com", "password")
         .then((result) => {
             return result.data
