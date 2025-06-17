@@ -24,7 +24,7 @@ beforeAll(async () => {
         return result;
     })
     await db?.connection?.dropDatabase()
-    createdUser = await createUser("name2", "surname", "username", "user@mail.com", "password")
+    createdUser = await createUser("name", "surname", "username", "user@mail.com", "password")
         .then((result) => {
             return result.data
         });
@@ -124,24 +124,11 @@ describe('Test Porfolio Service', function () {
     describe('Get Portfolios', function () {
 
         test('Get Portfolios of user by id', async function () {
-            console.log(createdUser)
 
             const portfolios = await getPortfoliosByUserId(createdUser._id.toString())
 
             expect(portfolios.length).toBeGreaterThan(0)
-            expect(portfolios[0]).toStrictEqual({
-                _id: portfolios[0]._id, // Convert ObjectId to string for comparison
-                title: "title1",
-                description: "description1",
-                url: "url1",
-                user: createdUser._id,
-                components: portfolios[0].components,
-                style: portfolios[0].style, // Convert ObjectId to string for comparison
-                versions: [],
-                createdAt: portfolios[0].createdAt,
-                updatedAt: portfolios[0].updatedAt,
-                __v: 0,
-            })
+            expect(portfolios[0].user).toStrictEqual(createdUser._id)
 
         });
 

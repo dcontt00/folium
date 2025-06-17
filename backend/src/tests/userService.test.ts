@@ -4,7 +4,8 @@ import {createUser, login} from "@/services/userService";
 
 
 beforeAll(async () => {
-    await connectDB()
+    const db = await connectDB()
+    await db?.connection?.dropDatabase();
     await createUser("name", "surname", "username", "email", "password");
 });
 afterAll(async () => {
