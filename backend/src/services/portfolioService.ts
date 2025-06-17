@@ -105,6 +105,8 @@ async function createPortfolio(
         .catch((err) => {
             if (err.code === 11000) { // MongoDB duplicate key error
                 throw new ApiError(400, "URL already exists");
+            } else if (err instanceof mongoose.Error.ValidationError) {
+                throw new ApiError(400, err.message);
             } else {
                 throw new ApiError(500, "Server Error");
             }
