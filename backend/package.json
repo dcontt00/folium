@@ -6,7 +6,7 @@
     "dev": "npx nodemon -x 'ts-node --log-error -r tsconfig-paths/register' -e ts src/app.ts",
     "build": "rimraf ./dist && tsc && tsc-alias ",
     "serve": "node dist/app.js",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "archiver": "^7.0.1",
