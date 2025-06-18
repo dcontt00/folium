@@ -200,8 +200,7 @@ async function createInitialPortfolio(
  */
 async function getPortfoliosByUserId(userId: string): Promise<any> {
     return PortfolioModel.find({user: userId}).lean().catch(error => {
-        console.log("Error getting portfolios by userId", error)
-        throw new ApiError(500, "Error getting portfolios by userId");
+        throw new ApiError(500, "User not found");
     })
 }
 

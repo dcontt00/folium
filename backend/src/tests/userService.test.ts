@@ -15,11 +15,8 @@ afterAll(async () => {
 })
 
 describe('Test User Service', function () {
-
     describe("User Creation", function () {
-
         test('Create user', async () => {
-
             const actualResult = await createUser(
                 "name1",
                 "surname1",
@@ -40,13 +37,11 @@ describe('Test User Service', function () {
                     }
                 });
         });
-
         test('Create user with missing fields', async function () {
             return createUser("", "surname2", "username", "email2", "password2")
                 .catch(error => expect(error.message)
                     .toMatch("Error creating user"));
         });
-
 
         test('Create user with duplicate username', async function () {
             await createUser("name2", "surname2", "username2", "email2", "password");
@@ -55,7 +50,6 @@ describe('Test User Service', function () {
                     .toMatch("A user with this username already exists"));
         });
     })
-
 
     describe("Test Login", function () {
         test('Login with valid credentials', async function () {

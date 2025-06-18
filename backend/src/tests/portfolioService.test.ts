@@ -42,8 +42,6 @@ afterAll(async () => {
 })
 
 describe('Test Porfolio Service', function () {
-
-
     describe("Initial Porfolio Creation", function () {
         test('Create Initial Portfolio', async function () {
             const actualResult = await createInitialPortfolio("title", "url", "description", createdUser._id);
@@ -123,22 +121,32 @@ describe('Test Porfolio Service', function () {
 
     })
 
-    describe('Get Portfolios', function () {
-
+    describe('Get Portfolios of user', function () {
         test('Get Portfolios of user by id', async function () {
-
             const portfolios = await getPortfoliosByUserId(createdUser._id.toString())
-
             expect(portfolios.length).toBeGreaterThan(0)
             expect(portfolios[0].user).toStrictEqual(createdUser._id)
-
         });
 
-        test('Get porfolio by url', async function () {
+        test('Get Portfolios of user by id that does not exist', async function () {
+            return getPortfoliosByUserId("1234")
+                .catch(error => expect(error.message)
+                    .toMatch("User not found"));
+        })
+    });
+
+    describe("Get portfolio by url", function () {
+        test('Get portfolio by url', async function () {
             const portfolio = await getPortfolioByUrl("url1");
             expect(portfolio.title).toBe("title1");
         })
-    });
+
+        test('Get portfolio by url that does not exist', async function () {
+            return getPortfolioByUrl("nonexistent-url")
+                .catch(error => expect(error.message)
+                    .toMatch("Portfolio not found"));
+        })
+    })
 
     describe("Remove portfolio", function () {
         test("Remove portfolio by url", async function () {
@@ -154,7 +162,6 @@ describe('Test Porfolio Service', function () {
                 .catch(error => expect(error.message)
                     .toMatch("Portfolio not found"));
         })
-
     })
 
     describe("Edit portfolio", function () {
@@ -164,7 +171,6 @@ describe('Test Porfolio Service', function () {
             const updatedPortfolio = await editPortfolio("url1", "new title", "description", portfolio1.components, styleArray);
             expect(updatedPortfolio.data.title).toBe("new title");
         })
-
         test("Modify text of second component", async function () {
             const portfolio = await getPortfolioByUrl("url1");
             const afterComponents = JSON.parse(JSON.stringify(portfolio.components));
@@ -177,7 +183,6 @@ describe('Test Porfolio Service', function () {
 
             expect(updatedPortfolio.data.components[1].text).toBe("Modified text");
         })
-
         test("Modify index of first and second component", async function () {
             const portfolio = await getPortfolioByUrl("url1");
             const afterComponents = JSON.parse(JSON.stringify(portfolio.components));
@@ -191,15 +196,21 @@ describe('Test Porfolio Service', function () {
 
             expect(updatedPortfolio.data.components[0].index).toBe(1);
             expect(updatedPortfolio.data.components[1].index).toBe(0);
-
         })
-
         test("Edit portfolio of invalid url", async function () {
             return editPortfolio("invalid-url", "new title", "description", portfolio1.components, portfolio1.style)
                 .catch(error => expect(error.message)
                     .toMatch("Portfolio not found"));
         })
 
+        test("Edit portfolio with empty title", async function () {
+            const portfolio = await getPortfolioByUrl("url1");
+            const afterComponents = JSON.parse(JSON.stringify(portfolio.components));
+            const prevStyle = await styleModel.findById(portfolio.style).populate("classes").lean();
 
+            return editPortfolio("url1", "", "description", afterComponents, prevStyle)
+                .catch(error => expect(error.message)
+                    .toMatch("Portfolio validation failed: title: Path `title` is required."));
+        })
     })
 })
