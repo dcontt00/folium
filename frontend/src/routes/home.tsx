@@ -38,22 +38,32 @@ export default function Home() {
                     <Group h="100%" px="md" justify="space-between">
                         <Burger opened={openedBurger} onClick={toggle} hiddenFrom="sm" size="sm"/>
                         <Avatar src={Logo} radius="xs"/>
-                        <Text>Folium</Text>
+                        <Title order={3}>My portfolios</Title>
                         <Group>
-                            <Button leftSection={<IconCirclePlus/>} onClick={openNewPortfolioModal}>New
-                                Portfolio</Button>
+                            {portfolios.length > 0 &&
+                                <Button
+                                    leftSection={<IconCirclePlus/>}
+                                    onClick={openNewPortfolioModal}
+                                >
+                                    New Portfolio
+                                </Button>
+                            }
                             <UserMenu/>
                         </Group>
                     </Group>
                 </AppShell.Header>
                 <AppShell.Main>
                     <Stack align="center">
-                        <Title order={2}>My portfolios</Title>
+
                         {portfolios.length === 0 ? (
                             <>
                                 <Text>This seems empty</Text>
-                                <Button leftSection={<IconCirclePlus/>} onClick={openNewPortfolioModal}>Create new
-                                    portfolio</Button>
+                                <Button
+                                    leftSection={<IconCirclePlus/>}
+                                    onClick={openNewPortfolioModal}
+                                >
+                                    New portfolio
+                                </Button>
                             </>
                         ) : (
                             <SimpleGrid
