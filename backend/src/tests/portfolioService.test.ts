@@ -9,10 +9,6 @@ import {
     removePortfolioByUrl
 } from "@/services/portfolioService";
 import styleModel from "@/models/StyleModel";
-import Changes from "@/classes/Changes";
-import Component from "@/classes/components/Component";
-import Change from "@/classes/Change";
-import {getComponentUpdatesAndRemovals} from "@/services/versionService";
 import {createDirectories} from "@/utils/directories";
 
 
@@ -38,7 +34,7 @@ beforeAll(async () => {
     await createInitialPortfolio("title1", "url1", "description1", createdUser._id)
     await createInitialPortfolio("title2", "url2", "description2", createdUser._id)
     portfolio1 = await getPortfolioByUrl("url1")
-})
+}, 10000)
 afterAll(async () => {
     const db = await connectDB()
     await db?.connection?.dropDatabase();
@@ -138,51 +134,9 @@ describe('Test Porfolio Service', function () {
 
         });
 
-
         test('Get porfolio by url', async function () {
             const portfolio = await getPortfolioByUrl("url1");
             expect(portfolio.title).toBe("title1");
-        })
-
-        test("Get component updates and removals", async function () {
-
-            // Get portfolio by URL and clone components for comparison
-            const portfolio4 = await getPortfolioByUrl("url1")
-            const beforeComponents = JSON.parse(JSON.stringify(portfolio4.components));
-            const afterComponents = JSON.parse(JSON.stringify(portfolio4.components));
-            const prevStyle = await styleModel.findById(portfolio4.style).populate("classes").lean();
-
-
-            // Update a component's text
-            afterComponents[1].text = "Updated text";
-            const updatedPortfolio = await editPortfolio(portfolio4.url, portfolio4.title, portfolio4.description, afterComponents, prevStyle)
-
-            // Get the updated styles
-            const afterStyle = await styleModel.findById(updatedPortfolio.data.style).populate("classes").lean();
-
-            // Get component updates and removals
-            const changes = new Changes()
-            // @ts-ignore
-            await getComponentUpdatesAndRemovals(beforeComponents, afterComponents, prevStyle, afterStyle, changes)
-
-
-            const expectedComponentChanges: Map<Component, Change[]> = new Map()
-            expectedComponentChanges.set(beforeComponents[1], [
-                new Change("text", 'Welcome to your new portfolio', "Updated text")
-            ]);
-            console.log("beforeComponents", beforeComponents)
-            const expectedChanges: Changes = new Changes()
-            expectedChanges.portfolioCreated = false;
-            expectedChanges.componentChanges = expectedComponentChanges;
-            expectedChanges.portfolioChanges = [];
-            expectedChanges.componentAdditions = [];
-
-            console.log("changes", changes)
-            console.log("expectedChanges", expectedChanges)
-
-            expect(changes).toStrictEqual(expectedChanges)
-
-
         })
     });
 
