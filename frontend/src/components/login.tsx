@@ -1,8 +1,8 @@
-import {Button, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
+import {Button, Image, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
 import {useForm} from '@mantine/form';
 import {useNavigate} from "react-router";
 import axiosInstance from "~/axiosInstance";
-
+import logo from "~/Logo.png"
 
 interface FormValues {
     email: string;
@@ -38,11 +38,13 @@ export default function Login() {
                 })
         })}
         >
-            <Stack>
+            <Stack align={"center"}>
+                <Image src={logo} alt="Folium Logo" w={"50%"}/>
                 <Title order={3}>Login</Title>
 
                 <TextInput
                     withAsterisk
+                    style={{width: '100%'}}
                     label="Email"
                     placeholder="your@email.com"
                     key={form.key('email')}
@@ -51,11 +53,16 @@ export default function Login() {
                 <PasswordInput
                     withAsterisk
                     label="Password"
+                    style={{width: '100%'}}
                     key={form.key('password')}
                     {...form.getInputProps('password')}
                 />
-                <Button type="submit"
-                        disabled={!form.isDirty("email") || !form.isDirty("password")}>Submit</Button>
+                <Button
+                    type="submit"
+                    disabled={!form.isDirty("email") || !form.isDirty("password")}
+                >
+                    Submit
+                </Button>
             </Stack>
         </form>
     );
