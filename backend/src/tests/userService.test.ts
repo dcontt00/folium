@@ -3,13 +3,14 @@ import {afterAll, beforeAll, describe, expect, test} from '@jest/globals';
 import {createUser, login} from "@/services/userService";
 
 
+let db: any = null
 beforeAll(async () => {
-    const db = await connectDB()
+    db = await connectDB()
     await db?.connection?.dropDatabase();
     await createUser("name", "surname", "username", "email", "password");
 });
 afterAll(async () => {
-    const db = await connectDB()
+    db = await connectDB()
     await db?.connection?.dropDatabase();
     await db?.connection?.close()
 })
@@ -45,7 +46,7 @@ describe('Test User Service', function () {
 
         test('Create user with duplicate username', async function () {
             await createUser("name2", "surname2", "username2", "email2", "password");
-            return createUser("name2", "surname2", "username2", "email2", "password")
+            return createUser("name3", "surname3", "username2", "email3", "password")
                 .catch(error => expect(error.message)
                     .toMatch("A user with this username already exists"));
         });

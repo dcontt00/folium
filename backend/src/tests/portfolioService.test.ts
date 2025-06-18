@@ -13,10 +13,10 @@ import {createDirectories} from "@/utils/directories";
 
 
 let createdUser: any = null;
-let portfolio1: any = null;
+let db: any = null;
 
 beforeAll(async () => {
-    const db = await connectDB().then((result) => {
+    db = await connectDB().then((result) => {
         console.log("Connected to database successfully");
         return result;
     })
@@ -33,10 +33,8 @@ beforeAll(async () => {
 
     await createInitialPortfolio("title1", "url1", "description1", createdUser._id)
     await createInitialPortfolio("title2", "url2", "description2", createdUser._id)
-    portfolio1 = await getPortfolioByUrl("url1")
 }, 10000)
 afterAll(async () => {
-    const db = await connectDB()
     await db?.connection?.dropDatabase();
     await db?.connection?.close()
 })
@@ -137,8 +135,9 @@ describe('Test Porfolio Service', function () {
 
     describe("Get portfolio by url", function () {
         test('Get portfolio by url', async function () {
-            const portfolio = await getPortfolioByUrl("url1");
-            expect(portfolio.title).toBe("title1");
+            const portfolio = await getPortfolioByUrl("url2");
+            console.log(portfolio)
+            expect(portfolio.title).toBe("title2");
         })
 
         test('Get portfolio by url that does not exist', async function () {
@@ -166,6 +165,8 @@ describe('Test Porfolio Service', function () {
 
     describe("Edit portfolio", function () {
         test("Edit portfolio title", async function () {
+
+            const portfolio1 = await getPortfolioByUrl("url1");
             const styleArray = Array.from(portfolio1.style); // Convert Map to an array
 
             const updatedPortfolio = await editPortfolio("url1", "new title", "description", portfolio1.components, styleArray);
@@ -198,6 +199,7 @@ describe('Test Porfolio Service', function () {
             expect(updatedPortfolio.data.components[1].index).toBe(0);
         })
         test("Edit portfolio of invalid url", async function () {
+            const portfolio1 = await getPortfolioByUrl("url1");
             return editPortfolio("invalid-url", "new title", "description", portfolio1.components, portfolio1.style)
                 .catch(error => expect(error.message)
                     .toMatch("Portfolio not found"));
