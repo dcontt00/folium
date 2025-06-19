@@ -59,13 +59,16 @@ export default function Register() {
         <form onSubmit={form.onSubmit(async (values) => {
             await axiosInstance.post(`/register`, values)
                 .then((response) => {
-                    console.log(response);
+                    console.log(response.data.message);
                     navigate('/login');
                 })
                 .catch((error) => {
-                    const key = error.response.data.key;
-                    form.setFieldError(key, error.response.data.message);
-                    console.log(error);
+                    if (error.response.data.message.includes("username")) {
+                        form.setFieldError('username', error.response.data.message);
+                    }
+                    if (error.response.data.message.includes("email")) {
+                        form.setFieldError('email', error.response.data.message);
+                    }
                 })
         })}
         >
