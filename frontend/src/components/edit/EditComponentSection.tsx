@@ -4,6 +4,8 @@ import EditButtonComponent from "~/components/edit/editComponents/EditButtonComp
 import EditImageComponent from "~/components/edit/editComponents/EditImageComponent";
 import type StyleClass from "~/interfaces/styleClass";
 import type Style from "~/interfaces/style";
+import {IconInfoCircle} from "@tabler/icons-react";
+import {Alert} from "@mantine/core";
 
 
 interface Props {
@@ -55,7 +57,14 @@ export default function EditComponentSection({
                     onStyleChange={onStyleChange}
                 />
             default:
-                return <div>Component not found</div>
+                return <div>
+                    <Alert
+                        variant="light"
+                        color="blue"
+                        title="Select a component to edit it"
+                        icon={<IconInfoCircle/>}
+                    />
+                </div>
         }
     }
 
