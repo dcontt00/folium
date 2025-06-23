@@ -2,7 +2,6 @@ import type {TextComponentType} from "~/interfaces/interfaces";
 import {Combobox, Input, InputBase, SegmentedControl, Stack, Text, Textarea, useCombobox} from "@mantine/core";
 import {useEffect, useState} from "react";
 import {TextType} from "~/interfaces/textComponent";
-import {capitalize} from "~/utils";
 import type StyleClass from "~/interfaces/styleClass";
 import FontsCombobox from "~/components/edit/portfolioStyle/FontsCombobox";
 import {IconAlignCenter, IconAlignJustified, IconAlignLeft, IconAlignRight, IconBallpen} from "@tabler/icons-react";
@@ -15,14 +14,33 @@ interface Props {
     onStyleChange: (identifier: string, attribute: string, value: string) => void;
 }
 
+function rewriteTextType(type: string): string {
+    switch (type) {
+        case TextType.H1:
+            return "Heading 1";
+        case TextType.H2:
+            return "Heading 2";
+        case TextType.H3:
+            return "Heading 3";
+        case TextType.H4:
+            return "Heading 4";
+        case TextType.H5:
+            return "Heading 5";
+        case TextType.H6:
+            return "Heading 6";
+        case TextType.P:
+            return "Paragraph";
+        default:
+            return type;
+    }
+}
+
 export default function EditTextComponent({component, onEditComponent, styleClass, onStyleChange}: Props) {
     const [text, setText] = useState(component.text);
     const [textType, setTextType] = useState<string | null>(component.type);
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),
     });
-
-    console.log(styleClass)
 
     // Needed when selecting a different component
     useEffect(() => {
@@ -39,6 +57,7 @@ export default function EditTextComponent({component, onEditComponent, styleClas
     }
 
     function onTextTypeChange(value: string) {
+        console.log(value)
         setTextType(value);
         combobox.closeDropdown();
 
@@ -55,7 +74,7 @@ export default function EditTextComponent({component, onEditComponent, styleClas
 
     const textTypeOptions = Object.values(TextType).map((item) => (
         <Combobox.Option value={item} key={item}>
-            {capitalize(item)}
+            {rewriteTextType(item)}
         </Combobox.Option>
     ));
 
@@ -84,7 +103,7 @@ export default function EditTextComponent({component, onEditComponent, styleClas
                         onClick={() => combobox.toggleDropdown()}
                         rightSectionPointerEvents="none"
                     >
-                        {capitalize(textType) || <Input.Placeholder>Pick value</Input.Placeholder>}
+                        {rewriteTextType(textType || "") || <Input.Placeholder>Pick value</Input.Placeholder>}
                     </InputBase>
                 </Combobox.Target>
 
