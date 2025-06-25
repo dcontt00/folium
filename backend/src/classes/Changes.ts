@@ -9,7 +9,7 @@ interface ComponentChanges {
 export default class Changes {
     componentChanges: Map<Component, Change[]>
     portfolioChanges: Change[]
-    componentAdditions: Component[]
+    componentAdditions: string[]
     componentRemovals: Component[]
     portfolioCreated: boolean
 
@@ -17,7 +17,7 @@ export default class Changes {
     constructor() {
         this.componentChanges = new Map<Component, Change[]>();
         this.portfolioChanges = [];
-        this.componentAdditions = [];
+        this.componentAdditions = []
         this.componentRemovals = [];
         this.portfolioCreated = false;
     }
@@ -46,14 +46,44 @@ export default class Changes {
     }
 
     addComponent(component: Component) {
-        this.componentAdditions.push(component);
+
+        switch (component.__t) {
+            case "TextComponent":
+                // @ts-ignore
+                this.componentAdditions.push(`TextComponent with text "${component.text}"`);
+                break
+            case "ImageComponent":
+                let text = "ImageComponent"
+                // @ts-ignore
+                if (component.caption != "") {
+                    // @ts-ignore
+                    text += ` with caption "${component.caption}"`
+                }
+                // @ts-ignore
+                if (component.overlayText != "") {
+                    // @ts-ignore
+                    text += ` with overlayText "${component.overlayText}"`
+                }
+
+                this.componentAdditions.push(text);
+                break
+            case "ButtonComponent":
+                // @ts-ignore
+                this.componentAdditions.push(`ButtonComponent with text "${component.text}" and link "${component.link}"`);
+                break
+            case "ContainerComponent":
+                // @ts-ignore
+                this.componentAdditions.push(`ContainerComponent`);
+                break
+        }
+
     }
 
     toString(): string {
         let output = ""
 
         if (this.componentAdditions.length > 0) {
-            output += `Added Components: ${this.componentAdditions.map(component => component.toString()).join(", ")}`
+            output += `Portfolio Changes: ${this.componentAdditions.map(change => change.toString()).join(", ")}`
         }
 
         if (this.portfolioChanges.length > 0) {
@@ -83,7 +113,7 @@ export default class Changes {
         let portfolioCreated: boolean = this.portfolioCreated
 
         if (this.componentAdditions.length > 0) {
-            componentAdditions = `${this.componentAdditions.map(component => component.__t).join(", ")}`
+            portfolioChanges = `${this.componentAdditions.map(change => change.toString()).join(", ")}`
         }
 
         if (this.portfolioChanges.length > 0) {
@@ -91,7 +121,6 @@ export default class Changes {
         }
 
         if (this.componentChanges.size > 0) {
-
 
             this.componentChanges.forEach((changes, component) => {
                 componentChanges.push({component: component, changes: changes});
