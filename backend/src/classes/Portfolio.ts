@@ -27,7 +27,7 @@ export default class Portfolio {
         const rawHtml = `
         <html>
             <head>
-                <title>Express</title>
+                <title>${this.title}</title>
                 <link href="styles.css" rel="stylesheet">
             </head>
             <body class="root">
