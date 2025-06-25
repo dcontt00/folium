@@ -33,6 +33,9 @@ export default function HeaderButtons({
     const navigate = useNavigate();
     const [tooltipOpened, setTooltipOpened] = useState(false);
     const hasMounted = useRef(false);
+    const [isSaving, setIsSaving] = useState(false);
+
+
     useEffect(() => {
         if (hasMounted.current && !unsaved) {
             setTooltipOpened(true);
@@ -41,6 +44,13 @@ export default function HeaderButtons({
         }
         hasMounted.current = true;
     }, [unsaved]);
+
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        await onSave();
+        setIsSaving(false);
+    };
 
     return (
         <>
@@ -64,7 +74,8 @@ export default function HeaderButtons({
                 >
                     <Button
                         leftSection={<IconDeviceFloppy/>}
-                        onClick={onSave}
+                        onClick={handleSave}
+                        loading={isSaving}
                         variant={unsaved ? "outline" : "filled"}
                     >
                         Save
