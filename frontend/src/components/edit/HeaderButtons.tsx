@@ -5,6 +5,7 @@ import {
     IconConfetti,
     IconDeviceDesktop,
     IconDeviceFloppy,
+    IconDotsCircleHorizontal,
     IconHistory,
     IconSettings
 } from "@tabler/icons-react";
@@ -81,12 +82,6 @@ export default function HeaderButtons({
                         Save
                     </Button>
                 </Tooltip>
-                {/* <Button
-                    leftSection={<IconDeviceDesktop/>}
-                    onClick={onPreview}
-                >
-                    Preview
-                </Button>*/}
                 <Button
                     leftSection={<IconHistory/>}
                     onClick={openHistoryModal}
@@ -94,10 +89,10 @@ export default function HeaderButtons({
                     History
                 </Button>
                 <Button
-                    leftSection={<IconSettings/>}
+                    leftSection={<IconDotsCircleHorizontal/>}
                     onClick={toggleOpenedSettings}
                 >
-                    Settings
+                    More
                 </Button>
             </Group>
             <Group h="100%" px="md" hiddenFrom="sm">
