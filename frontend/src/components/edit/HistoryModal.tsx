@@ -32,11 +32,11 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
         }
     }
 
-    async function previewVersion(version: IVersion) {
+    async function previewVersion(version: IVersion, index: number) {
         try {
             const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${version._id}?restore=false`);
             setPortfolioState(response.data.data);
-            setCurrentVersionIndex(1);
+            setCurrentVersionIndex(index);
         } catch (err: any) {
             setError(err);
         } finally {
@@ -87,9 +87,9 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
                                     ))}
                                 </List>
                                 <Button
-                                    hidden={index !== 0}
-                                    onClick={() => previewVersion(data[0])}
-
+                                    leftSection={<IconRestore/>}
+                                    hidden={index !== 0 || currentVersionIndex === 0}
+                                    onClick={() => previewVersion(data[0], 0)}
                                 >
                                     Restore
                                 </Button>
@@ -105,7 +105,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
                                         variant="light"
                                         leftSection={<IconEye/>}
                                         size="compact-md"
-                                        onClick={() => previewVersion(version)}
+                                        onClick={() => previewVersion(version, index)}
                                     >
                                         Preview
                                     </Button>
