@@ -78,9 +78,9 @@ export default function Profile() {
                     padding={"xl"}
                 >
                     <AppShell.Main>
-                        <Stack p="xl">
+                        <Stack pl={{sm: "20vw", md: "30vw"}} pr={{sm: "20vw", md: "30vw"}}>
                             <Center>
-                                <Stack>
+                                <Stack align={"center"}>
                                     <Title order={3}>Profile</Title>
                                     <Indicator
                                         position="bottom-end"
