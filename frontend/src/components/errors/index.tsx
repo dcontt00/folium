@@ -23,8 +23,10 @@ export default function Errors() {
                     errorCode={401}
                     title="Unauthorized"
                     description="You are not authorized to view this page. Please login to your account."
-                    buttonText="Login"
-                    buttonLink="/login"
+                    button1Text="Login"
+                    button1Link="/login"
+                    button2Text="Register"
+                    button2Link="/register"
                 />
             );
         case 404:

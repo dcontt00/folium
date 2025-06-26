@@ -6,12 +6,23 @@ interface NotFoundProps {
     errorCode: number;
     title: string;
     description: string;
-    buttonText?: string;
-    buttonLink?: string;
+    button1Text?: string;
+    button1Link?: string;
+
+    button2Text?: string;
+    button2Link?: string;
 
 }
 
-export default function NotFound({errorCode, title, description, buttonLink, buttonText}: NotFoundProps) {
+export default function NotFound({
+                                     errorCode,
+                                     title,
+                                     description,
+                                     button1Link,
+                                     button1Text,
+                                     button2Link,
+                                     button2Text
+                                 }: NotFoundProps) {
     const navigate = useNavigate();
     return (
         <Container className={classes.root}>
@@ -25,12 +36,26 @@ export default function NotFound({errorCode, title, description, buttonLink, but
                     variant="subtle"
                     size="md"
                     onClick={() => {
-                        navigate(buttonLink ? buttonLink : "/home")
+                        navigate(button1Link ? button1Link : "/home")
                     }}
                 >
-                    {buttonText ? buttonText : "Take me back to home page"}
+                    {button1Text ? button1Text : "Take me back to home page"}
                 </Button>
             </Group>
+
+            {button2Text && button2Link && (
+                <Group justify="center" mt="md">
+                    <Button
+                        variant="subtle"
+                        size="md"
+                        onClick={() => {
+                            navigate(button2Link);
+                        }}
+                    >
+                        {button2Text}
+                    </Button>
+                </Group>
+            )}
         </Container>
     );
 }
