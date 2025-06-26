@@ -1,5 +1,5 @@
 import {Avatar, Menu} from "@mantine/core";
-import {IconLogout, IconSettings, IconUserCircle,} from "@tabler/icons-react";
+import {IconLogout, IconUserCircle,} from "@tabler/icons-react";
 import {useNavigate} from "react-router";
 import axiosInstance from "~/axiosInstance";
 import {useEffect, useState} from "react";
@@ -39,14 +39,6 @@ export default function UserMenu() {
             </Menu.Target>
 
             <Menu.Dropdown>
-                <Menu.Label>Application</Menu.Label>
-                <Menu.Item leftSection={<IconSettings size={14}/>}>
-                    Settings
-                </Menu.Item>
-
-                <Menu.Divider/>
-
-                <Menu.Label>Account</Menu.Label>
                 <Menu.Item
                     leftSection={<IconUserCircle size={14}/>}
                     onClick={() => navigate("/profile")}
