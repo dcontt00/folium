@@ -50,10 +50,10 @@ export default class Changes {
         switch (component.__t) {
             case "TextComponent":
                 // @ts-ignore
-                this.componentAdditions.push(`TextComponent with text "${component.text}"`);
+                this.componentAdditions.push(`Added TextComponent with text "${component.text}"`);
                 break
             case "ImageComponent":
-                let text = "ImageComponent"
+                let text = "Added ImageComponent"
                 // @ts-ignore
                 if (component.caption != "") {
                     // @ts-ignore
@@ -69,11 +69,11 @@ export default class Changes {
                 break
             case "ButtonComponent":
                 // @ts-ignore
-                this.componentAdditions.push(`ButtonComponent with text "${component.text}" and link "${component.link}"`);
+                this.componentAdditions.push(`Added ButtonComponent with text "${component.text}" and link "${component.link}"`);
                 break
             case "ContainerComponent":
                 // @ts-ignore
-                this.componentAdditions.push(`ContainerComponent`);
+                this.componentAdditions.push(`Added ContainerComponent`);
                 break
         }
 
