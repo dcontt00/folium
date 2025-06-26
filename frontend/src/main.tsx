@@ -57,18 +57,16 @@ async function getUser() {
         });
 }
 
-async function renderPortfolio(params: { portfolioUrl?: string }) {
+async function getPorfolioTitle(params: { portfolioUrl?: string }) {
     const portfolioUrl = params.portfolioUrl
     if (!portfolioUrl) {
         return
     }
-    return await axiosInstance.get(`/portfolio/${portfolioUrl}`)
+    return await axiosInstance.get(`/portfolio/title/${portfolioUrl}`)
         .then((response: AxiosResponse) => {
-            console.log(response.data)
-            const portfolioTitle = response.data.data.title
             return {
-                portfolioUrl: portfolioUrl,
-                portfolioTitle: portfolioTitle
+                url: response.data.data.url,
+                title: response.data.data.title
             }
         }).catch((error) => {
             const responseError = error.response;
@@ -93,7 +91,7 @@ const router = createBrowserRouter([
             {
                 path: "view/:portfolioUrl",
                 Component: PortfolioRoute,
-                loader: async ({params}) => await renderPortfolio(params)
+                loader: async ({params}) => await getPorfolioTitle(params)
             },
             {
                 path: "edit/:portfolioUrl",

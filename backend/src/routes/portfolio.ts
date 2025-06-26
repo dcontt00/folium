@@ -89,6 +89,28 @@ router.get("/:portfolioId/versions", authHandler, async (req, res) => {
 
 });
 
+router.get("/title/:portfolioUrl", async (req, res) => {
+
+    const portfolioUrl = req.params.portfolioUrl;
+    if (!portfolioUrl) {
+        throw new ApiError(400, "Portfolio URL is required");
+    }
+
+    const portfolio = await getPortfolioByUrl(portfolioUrl);
+    if (!portfolio) {
+        throw new ApiError(404, "Portfolio not found");
+    }
+
+    res.status(200).json({
+        status: 200,
+        success: true,
+        data: {
+            title: portfolio.title,
+            url: portfolio.url
+        },
+    });
+})
+
 
 router.get("/version/:versionId", authHandler, async (req, res) => {
     const versionId = req.params.versionId;
@@ -114,11 +136,6 @@ router.use("/view", express.static(getHtmlFolder()))
 
 
 router.get("/:url", authHandler, async (req, res) => {
-    const user = req.user;
-
-    if (!user) {
-        throw new ApiError(404, "User not found");
-    }
 
     const portfolio = await getPortfolioByUrl(req.params.url)
     if (portfolio == null) {
