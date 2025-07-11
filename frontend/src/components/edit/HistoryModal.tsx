@@ -1,6 +1,5 @@
 import {Button, Group, List, Modal, Stack, Text, ThemeIcon, Timeline} from "@mantine/core";
 import {useEffect, useState} from "react";
-import config from "~/config";
 import axiosInstance from "~/axiosInstance";
 import {IconEdit, IconEye, IconPlus, IconRestore, IconTrash} from "@tabler/icons-react";
 import type IVersion from "~/interfaces/IVersion";
@@ -22,7 +21,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
 
     async function fetchHistory() {
         try {
-            const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/${portfolioId}/versions`);
+            const response = await axiosInstance.get(`/portfolio/${portfolioId}/versions`);
             console.log(response.data.data);
             setData(response.data.data);
         } catch (err: any) {
@@ -34,7 +33,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
 
     async function previewVersion(version: IVersion, index: number) {
         try {
-            const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${version._id}?restore=false`);
+            const response = await axiosInstance.get(`/portfolio/version/${version._id}?restore=false`);
             setPortfolioState(response.data.data);
             setCurrentVersionIndex(index);
         } catch (err: any) {
@@ -48,7 +47,7 @@ export default function HistoryModal({portfolioId, opened, onClose, setPortfolio
 
     async function restoreVersion(versionId: string, index: number) {
         try {
-            const response = await axiosInstance.get(`${config.BACKEND_URL}/portfolio/version/${versionId}?restore=true`);
+            const response = await axiosInstance.get(`/portfolio/version/${versionId}?restore=true`);
             setPortfolioState(response.data.data);
             setCurrentVersionIndex(0)
         } catch (err: any) {

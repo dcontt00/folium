@@ -37,6 +37,18 @@ FROM node:20-alpine AS prod
 # Set the working directory
 WORKDIR /app
 
+# Install Chrome
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+
+# Set environment variable for Puppeteer to use Chrome
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
 # Set NODE_ENV to production
 ENV NODE_ENV=production
 ENV GH_OAUTH_CLIENT_ID=$GH_OAUTH_CLIENT_ID
