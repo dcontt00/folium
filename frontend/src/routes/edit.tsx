@@ -123,13 +123,7 @@ export default function Edit() {
             const updatedPortfolio = response.data.data;
             setGotUpdatedPortfolio(true);
             setPortfolioState(updatedPortfolio);
-            // Update the editComponent if it exists
-            if (editComponent) {
-                const updatedComponent = updatedPortfolio.components.find(
-                    (component: ComponentType) => component.componentId === editComponent.componentId
-                );
-                setEditComponent(updatedComponent);
-            }
+            setEditComponent(updatedPortfolio.components);
         }).catch((error) => {
             console.log(error);
         });
