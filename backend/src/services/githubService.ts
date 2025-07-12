@@ -1,6 +1,11 @@
 import axios from "axios";
 import fs from "fs";
 import config from "@/utils/config";
+import {generateHtmlFiles} from "@/services/portfolioService";
+import {getHtmlFolder, getImagesFolder} from "@/utils/directories";
+import path from "path";
+import {ApiError} from "@/classes";
+import userModel from "@/models/UserModel";
 
 const GITHUB_API_URL = "https://api.github.com";
 
@@ -21,6 +26,47 @@ async function revokeGithubToken(clientId: string, clientSecret: string, token: 
         console.error("Error revoking token:", err.message);
         throw new Error("Error revoking token");
     })
+}
+
+async function exportToGithubPages(portfolioUrl: string, userId: string) {
+    // Generate HTML files
+    await generateHtmlFiles(portfolioUrl as string)
+
+    const htmlFolder = getHtmlFolder();
+    const portfolioDir = path.join(htmlFolder, portfolioUrl as string);
+    const portfolioImagesFolder = getImagesFolder()
+
+    if (!fs.existsSync(portfolioDir)) {
+        throw new ApiError(404, "Portfolio directory not found.");
+    }
+
+    const {
+        githubToken,
+        githubUsername
+    } = await userModel.findById(userId).select("githubToken githubUsername").then((user) => {
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        return user;
+    });
+
+    if (!githubToken || !githubUsername) {
+        throw new ApiError(400, "Not authorized with Github");
+    }
+    await uploadFilesToGithubPages(
+        githubToken as string,
+        githubUsername as string,
+        portfolioUrl as string,
+        portfolioDir,
+    );
+
+    const url = `https://${githubUsername}.github.io/${portfolioUrl}/`;
+    return {
+        status: 200,
+        success: true,
+        message: "Portfolio exported to Github Pages successfully",
+        url: url,
+    };
 }
 
 async function getUserFromToken(githubToken: string) {
@@ -244,5 +290,6 @@ export {
     uploadFilesToGithubPages,
     exchangeCodeForToken,
     getUserFromToken,
-    getFileShaIfExists
+    getFileShaIfExists,
+    exportToGithubPages
 }

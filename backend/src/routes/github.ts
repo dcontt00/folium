@@ -1,10 +1,6 @@
 import express from "express"
-import path from "path";
-import fs from "fs";
-import {getHtmlFolder} from "@/utils/directories";
 import {authHandler} from "@/middleware";
-import {exchangeCodeForToken, getUserFromToken, uploadFilesToGithubPages} from "@/services/githubService";
-import {generateHtmlFiles} from "@/services/portfolioService";
+import {exchangeCodeForToken, exportToGithubPages, getUserFromToken} from "@/services/githubService";
 import userModel from "@/models/UserModel";
 import {ApiError} from "@/classes";
 import config from "@/utils/config";
@@ -94,46 +90,12 @@ router.get('/upload', authHandler, async (req, res, next) => {
     }
 
     const {portfolioUrl} = req.query;
-
-    if (!portfolioUrl) {
-        throw new ApiError(400, "Missing required parameters: portfolioUrl");
-        return;
+    if (!portfolioUrl || typeof portfolioUrl !== 'string') {
+        throw new ApiError(400, "Missing or invalid required parameter: portfolioUrl");
     }
-    // Generate HTML files
-    await generateHtmlFiles(portfolioUrl as string)
+    const result = await exportToGithubPages(portfolioUrl, user.id)
 
-    const htmlFolder = getHtmlFolder();
-    const portfolioDir = path.join(htmlFolder, portfolioUrl as string);
-
-    if (!fs.existsSync(portfolioDir)) {
-        res.status(404).send("Portfolio directory not found.");
-        return;
-    }
-
-
-    const {
-        githubToken,
-        githubUsername
-    } = await userModel.findById(user.id).select("githubToken githubUsername").then((user) => {
-        if (!user) {
-            throw new ApiError(404, "User not found");
-        }
-        return user;
-    });
-
-    if (!githubToken || !githubUsername) {
-        throw new ApiError(400, "Not authorized with Github");
-    }
-    await uploadFilesToGithubPages(
-        githubToken as string,
-        githubUsername as string,
-        portfolioUrl as string,
-        portfolioDir,
-    );
-
-    const url = `https://${githubUsername}.github.io/${portfolioUrl}/`;
-
-    res.send({url: url});
+    res.send(result);
 });
 
 router.get("/oauth-url", authHandler, async (req, res) => {

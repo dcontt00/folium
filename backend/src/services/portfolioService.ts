@@ -56,21 +56,33 @@ async function generateHtmlFiles(portfolioUrl: string): Promise<string> {
     fs.mkdirSync(outputDir, {recursive: true}); // Create the directory if it doesn't exist
     const htmlFilePath = path.join(outputDir, 'index.html');
     const cssFilePath = path.join(outputDir, 'styles.css');
+    const imagesPath = path.join(outputDir, "images");
 
     // Write the HTML content to the file
     fs.writeFileSync(htmlFilePath, htmlContent, 'utf-8');
     fs.writeFileSync(cssFilePath, cssContent, 'utf-8');
 
+    // Copy images from the portfolio's images folder to the output directory
+    if (!fs.existsSync(imagesPath)) {
+        fs.mkdirSync(imagesPath, {recursive: true});
+    }
+
+
     // Copy images to the output directory
-    const portfolioImagesPath = path.join(getImagesFolder(), portfolioUrl)
+    const portfolioImagesPath = path.join(getImagesFolder(), "portfolios", portfolioUrl)
     const publicPath = getPublicFolder()
     if (fs.existsSync(portfolioImagesPath)) {
+
+        // Copy placeholder image from public folder to portfolio images folder
+        const placeHolderSourcePath = path.join(publicPath, "placeholder.jpg");
+        const placeHolderDestPath = path.join(outputDir, "images", "placeholder.jpg");
+
+        // Copy images
         const images = fs.readdirSync(portfolioImagesPath);
-        const placeholder = fs.readdirSync(publicPath)
-        images.push(...placeholder)
+        fs.copyFileSync(placeHolderSourcePath, placeHolderDestPath);
         for (const image of images) {
             const sourcePath = path.join(portfolioImagesPath, image);
-            const destPath = path.join(outputDir, image);
+            const destPath = path.join(outputDir, "images", image);
             fs.copyFileSync(sourcePath, destPath);
         }
     }

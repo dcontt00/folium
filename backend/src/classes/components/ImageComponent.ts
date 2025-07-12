@@ -14,11 +14,15 @@ export default class ImageComponent extends Component {
     }
 
     toHtml() {
+        let formattedUrl = this.url;
+        if (!this.url.includes("placehold")) {
+            formattedUrl = "images/" + this.url.split('/').pop();
+        }
         return `
          <div
           class="${this.className}-container">
             <div style="position: relative; width: 100%">
-                <img style="width: 100%" src=${this.url} alt=${this.url}/>
+                <img style="width: 100%" src=${formattedUrl} />
                 ${this.overlayText ? `
                     <div class="${this.className}-overlay">
                         <span style="color: white;">${this.overlayText}</span>
