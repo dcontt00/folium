@@ -76,10 +76,10 @@ async function generateHtmlFiles(portfolioUrl: string): Promise<string> {
         // Copy placeholder image from public folder to portfolio images folder
         const placeHolderSourcePath = path.join(publicPath, "placeholder.jpg");
         const placeHolderDestPath = path.join(outputDir, "images", "placeholder.jpg");
+        fs.copyFileSync(placeHolderSourcePath, placeHolderDestPath);
 
         // Copy images
         const images = fs.readdirSync(portfolioImagesPath);
-        fs.copyFileSync(placeHolderSourcePath, placeHolderDestPath);
         for (const image of images) {
             const sourcePath = path.join(portfolioImagesPath, image);
             const destPath = path.join(outputDir, "images", image);

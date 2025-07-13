@@ -16,7 +16,7 @@ export default class ImageComponent extends Component {
     toHtml() {
         let formattedUrl = this.url;
         if (!this.url.includes("placehold")) {
-            formattedUrl = "images/" + this.url.split('/').pop();
+            formattedUrl = this.url.split('/').pop()!!;
         }
         return `
          <div

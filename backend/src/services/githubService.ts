@@ -2,7 +2,7 @@ import axios from "axios";
 import fs from "fs";
 import config from "@/utils/config";
 import {generateHtmlFiles} from "@/services/portfolioService";
-import {getHtmlFolder, getImagesFolder} from "@/utils/directories";
+import {getHtmlFolder} from "@/utils/directories";
 import path from "path";
 import {ApiError} from "@/classes";
 import userModel from "@/models/UserModel";
@@ -34,7 +34,6 @@ async function exportToGithubPages(portfolioUrl: string, userId: string) {
 
     const htmlFolder = getHtmlFolder();
     const portfolioDir = path.join(htmlFolder, portfolioUrl as string);
-    const portfolioImagesFolder = getImagesFolder()
 
     if (!fs.existsSync(portfolioDir)) {
         throw new ApiError(404, "Portfolio directory not found.");
@@ -76,13 +75,11 @@ async function getUserFromToken(githubToken: string) {
     const response = await axios.get(url, {
         headers: {Authorization: `Bearer ${githubToken}`},
     }).then((result) => {
-        console.log("result", result)
         return result
     }).catch((error) => {
         console.error("Error fetching user from token:", error.message);
         throw new Error("Error fetching user from token");
     })
-    console.log("response", response.data)
     return response.data; // Returns user details
 }
 
@@ -123,20 +120,22 @@ async function uploadFilesToGithubPages(githubToken: string, githubUser: string,
         await createBranch(githubToken, githubUser, portfolioUrl, "gh-pages")
     }
 
-    const files = fs.readdirSync(filePath);
+    let files = fs.readdirSync(filePath, {recursive: true});
     for (const file of files) {
-        const fullPath = `${filePath}/${file}`;
-        await uploadFileToGithubPages(
-            githubToken,
-            githubUser,
-            portfolioUrl,
-            fullPath,
-        );
+        const fullPath = `${filePath}/${file}`
+        if (fs.statSync(fullPath).isFile()) {
+            await uploadFileToGithubPages(
+                githubToken,
+                githubUser,
+                portfolioUrl,
+                fullPath,
+            );
+        }
     }
 }
 
 async function uploadFileToGithubPages(githubToken: string, githubUser: string, portfolioUrl: string, filePath: string) {
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const fileContent = fs.readFileSync(filePath);
     const fileName = filePath.split("/").pop()!;
     const url = `${GITHUB_API_URL}/repos/${githubUser}/${portfolioUrl}/contents/${fileName}`;
 
