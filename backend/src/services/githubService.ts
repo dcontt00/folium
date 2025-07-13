@@ -136,7 +136,9 @@ async function uploadFilesToGithubPages(githubToken: string, githubUser: string,
 
 async function uploadFileToGithubPages(githubToken: string, githubUser: string, portfolioUrl: string, filePath: string) {
     const fileContent = fs.readFileSync(filePath);
-    const fileName = filePath.split("/").pop()!;
+    console.log(filePath)
+    const fileName = filePath.split(portfolioUrl + "/").pop()!;
+    console.log(fileName)
     const url = `${GITHUB_API_URL}/repos/${githubUser}/${portfolioUrl}/contents/${fileName}`;
 
     // Convert file content to Base64
