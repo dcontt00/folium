@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import * as process from "node:process";
 
 function getRootFolder() {
 
@@ -26,7 +27,12 @@ function getThumbnailsFolder() {
 }
 
 function getPublicFolder() {
-    return path.join(getRootFolder(), "src", "public");
+    if (process.env.NODE_ENV === "production") {
+        return path.join(getRootFolder(), "public");
+
+    } else {
+        return path.join(getRootFolder(), "src", "public");
+    }
 }
 
 function getHtmlFolder() {
